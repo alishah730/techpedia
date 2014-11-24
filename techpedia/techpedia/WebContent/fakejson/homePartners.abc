@@ -1,0 +1,18 @@
+{"array":[
+{
+	"imageClickURL": "http://www.ge.com",
+	"imageURL":"images/ge.jpg"
+},
+{
+	"imageClickURL": "http://www.tcs.com",
+	"imageURL":"images/tcs.jpg"
+},
+{
+	"imageClickURL": "http://www.birlasoft.com",
+	"imageURL":"images/birlasoft.jpg"
+},
+{
+	"imageClickURL": "http://www.techmahindra.com/pages/default.aspx",
+	"imageURL":"images/techmahindra.jpg"
+}
+]}
