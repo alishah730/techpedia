@@ -55,27 +55,71 @@
 					<div class="col-xs-12 one1" ng-repeat="project in projects | filter:filterSearch">
 						<div class="panel panel-primary">
 							<div class="panel-heading">
-								{{project.projTitle}}<i style="float: right; position: relative; top: 3px;"
-									class="fa fa-times-circle" ng-click="deleteProject(project)"></i>
+								{{project.projTitle}} (Lead: {{project.projTeamLeaderId}})<i
+									style="float: right; position: relative; top: 3px;" class="fa fa-times-circle"
+									ng-click="deleteProject(project)"></i>
 							</div>
 							<div class="panel-body">
 								<div class="col-md-2">
 									<img src="images/profile.jpg" width=50 height=65 />
 								</div>
-								<div class="col-md-8">
+								<div class="col-md-7">
 									<p>{{project.projDescription}}</p>
 									<p class="sub-text-4"></p>
 								</div>
-								<div class="col-md-2">
+								<div class="col-md-3">
 									<div class="col-md-12">
-										<a class="btn btn-info btn-sm pitch" ng-click="viewProject(project.projId)">View&nbsp;&nbsp;</a>
-										<a class="btn btn-info btn-sm pitch" data-toggle="modal" data-target="#pitchMentorModal"
-											ng-click="pitchProject(project)">Pitch&nbsp;&nbsp;</a> <br /> <br /> <a
-											style="cursor: pointer;" data-toggle="modal" data-target="#uploadModal"
-											class="btn btn-info btn-sm" ng-click="currentProject(project)">Upload</a> <a
-											style="cursor: pointer;" class="btn btn-info btn-sm"
-											ng-click="submitProject(project.projId)">Submit</a>
-									</div>
+										<div class="col-md-6">
+											<a style="cursor: pointer; width: 66.5625" class="btn btn-info btn-sm"
+												ng-click="viewProject(project.projId)">View</a>
+										</div>
+
+										
+
+										<div class="col-md-6">
+											<!-- ng-show="registerId==project.projTeamLeaderId"> -->
+											<a style="cursor: pointer; width: 66.5625" class="btn btn-info btn-sm"
+												ng-click="editProject(project)">Edit</a>
+										</div> </div>
+										
+										<div class="col-md-12">&nbsp;</div>
+										<div class="col-md-12">
+										<div class="col-md-6">
+											<!--  ng-show="registerId==project.projTeamLeaderId"> -->
+											<a style="cursor: pointer; width: 66.5625" class="btn btn-info
+												btn-sm"
+												data-toggle="modal" data-target="#pitchMentorModal" ng-click="pitchProject(project)">Pitch&nbsp;&nbsp;</a>
+										</div>
+										
+										<div class="col-md-6" ng-show="userType=='student'">
+											<a style="cursor: pointer; width: 66.5625px" data-toggle="modal"
+												data-target="#uploadModal" class="btn btn-info btn-sm"
+												ng-click="currentProject(project)">Upload</a>
+										</div>
+
+										<div class="col-md-6" ng-show="userType=='student'&&registerId==project.projTeamLeaderId">
+											<a style="cursor: pointer; width: 66.5625" class="btn btn-info
+												btn-sm"
+												ng-click="submitProject(project.projId)">Submit</a>
+										</div>
+										
+										<div class="col-md-6">
+											<a style="cursor: pointer; width: 66.5625px" class="btn btn-info btn-sm"
+												data-toggle="modal" data-target="#approveProjectModal"
+												ng-click="currentProject(project)">Approve</a>
+										</div>
+
+										</div>
+										<div class="col-md-12">&nbsp;</div>
+									<div class="col-md-12">
+							
+									<div class="col-md-6">
+											<a style="cursor: pointer; width: 120px" class="btn btn-info
+												btn-sm"
+												data-toggle="modal" data-target="#closeProjectModal" ng-click="currentProject(project)">Close Project</a>
+										</div>
+										
+										</div>
 								</div>
 							</div>
 						</div>
@@ -112,6 +156,52 @@
 							<button type="button" class="btn btn-primary" ng-click="uploadProjectDocument()">Upload</button>
 						</div>
 					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="approveProjectModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Accept or reject the project ?</h4>
+				</div>
+				<div class="modal-body">If you are satisfied by the project contents, you may approve it.
+					Otherwise, you may reject it.</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success" ng-click="initiateProject('Y')"
+						data-dismiss="modal">Accept</button>
+					<button type="button" class="btn btn-danger" ng-click="initiateProject('N')"
+						data-dismiss="modal">Reject</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="closeProjectModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Close the project ?</h4>
+				</div>
+				<div class="modal-body">If you are satisfied with the project work, please close it.
+					Otherwise, ask for modification.</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-success" ng-click="closeProject('Y')" data-dismiss="modal">Close
+						Project</button>
+					<button type="button" class="btn btn-danger" ng-click="closeProject('N')" data-dismiss="modal">Modification
+						needed</button>
 				</div>
 			</div>
 		</div>

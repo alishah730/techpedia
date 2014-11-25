@@ -18,18 +18,18 @@ public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
 		restrictedPages.add("manageProjects");
 		restrictedPages.add("manageChallenge");
 		restrictedPages.add("addProject");
-		restrictedPages.add("addChallengeasProj");
 		restrictedPages.add("editProfile");
-		restrictedPages.add("pitch");
-		restrictedPages.add("chooseMentor");
 		restrictedPages.add("challengeDetails");
 		restrictedPages.add("addChallenge");
 		restrictedPages.add("mentorDetails");
-		restrictedPages.add("myChallenge");
 		restrictedPages.add("ideate");
 		restrictedPages.add("addMentor");
-		
-		
+
+		restrictedPages.add("editProject");
+		restrictedPages.add("manageProjects");
+		restrictedPages.add("teamDetails");
+		restrictedPages.add("teams");
+
 		String url = request.getRequestURL().toString().split("/")[request.getRequestURL().toString().split("/").length - 1];
 		if (restrictedPages.contains(url)) {
 			System.out.println("Inside interceptor Evaluation - " + url);

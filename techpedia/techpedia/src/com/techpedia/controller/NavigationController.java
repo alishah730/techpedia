@@ -1,16 +1,5 @@
 package com.techpedia.controller;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Properties;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -28,14 +17,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.techpedia.bean.AddNewFaculty;
-import com.techpedia.bean.AddNewMember;
 import com.techpedia.bean.Challenge;
 import com.techpedia.bean.ChangePassword;
 import com.techpedia.bean.Login;
-import com.techpedia.bean.Mentor;
 import com.techpedia.bean.Project;
 import com.techpedia.bean.UMServiceResponse;
-import com.techpedia.bean.UserProfileVO;
 import com.techpedia.bean.UserProfileVO;
 import com.techpedia.service.DataFetch;
 
@@ -57,6 +43,22 @@ public class NavigationController {
 	 * @PostConstruct public void initLoad() throws IOException { // IP =
 	 * prop.getProperty("ip"); }
 	 */
+
+	@RequestMapping(value = "/ajax/facultyInitiateProject")
+	@ResponseBody
+	public String facultyInitiateProject(ModelMap model, @RequestParam String projectId, @RequestParam String facultyId, @RequestParam String approvalStatus) throws Exception {
+		String jsonRequest = "{\"projId\":" + projectId + ",\"projGuideId\":" + facultyId + ",\"approvalStatus\":\"" + approvalStatus + "\"}";
+		String response = dataFetch.fetchJson("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/facultyinitiatedproject", jsonRequest);
+		return response;
+	}
+
+	@RequestMapping(value = "/ajax/facultyCloseProject")
+	@ResponseBody
+	public String facultyCloseProject(ModelMap model, @RequestParam String projectId, @RequestParam String facultyId, @RequestParam String approvalStatus) throws Exception {
+		String jsonRequest = "{\"projId\":" + projectId + ",\"projGuideId\":" + facultyId + ",\"approvalStatus\":\"" + approvalStatus + "\"}";
+		String response = dataFetch.fetchJson("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/facultyclosedproject", jsonRequest);
+		return response;
+	}
 
 	@RequestMapping(value = "/ajax/changeImage")
 	@ResponseBody
@@ -366,7 +368,9 @@ public class NavigationController {
 		logger.info("Add CHALLENGE RESPONSE : " + jsonResponse);
 		if (jsonResponse.equalsIgnoreCase("Y")) {
 			return "success";
-		} else {
+		} else if(jsonResponse.contains("success")) {
+			return "success";
+		}else{
 			ObjectMapper mapper = new ObjectMapper();
 			UMServiceResponse serviceResponse = mapper.readValue(jsonResponse, UMServiceResponse.class);
 			return serviceResponse.getExceptionMessage();
@@ -460,6 +464,23 @@ public class NavigationController {
 		return "editProfile";
 	}
 
+	@RequestMapping(value = "/editProject")
+	public String editProject(ModelMap model, HttpServletRequest request, @RequestParam String id) throws Exception {
+		model = dataFetch.fetchFooter(model, url);
+		HttpSession session = request.getSession();
+		session.setAttribute("editProjectId", id);
+		return "editProject";
+	}
+
+	@RequestMapping(value = "/editProjectLoad")
+	@ResponseBody
+	public String editProjectLoad(ModelMap model, HttpServletRequest request) throws Exception {
+		HttpSession session = request.getSession();
+		String id = (String) session.getAttribute("editProjectId");
+		String jsonResponse = dataFetch.fetchJson("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getprojectdetails", id);
+		return jsonResponse;
+	}
+
 	@RequestMapping(value = "/editProfileLoad")
 	@ResponseBody
 	public String editProfileLoad(ModelMap model, HttpServletRequest request) throws Exception {
@@ -509,14 +530,19 @@ public class NavigationController {
 			logger.info("Login response mapped to java object : " + user.toString());
 			session.setAttribute("usertype", user.getUserType());
 			session.setAttribute("username", user.getUserName());
+			session.setAttribute("firstname", user.getFirstName());
+			session.setAttribute("lastname", user.getLastName());
 			session.setAttribute("id", user.getRgstrId());
 			String photo = user.getPhoto();
 			boolean isEmpty = photo == null || photo.trim().length() == 0;
 			if (isEmpty)
 				session.setAttribute("photo", "images/UserDefault.jpg");
-			else
-				session.setAttribute("photo", photo);
-
+			else {
+				if (photo.contains("data:"))
+					session.setAttribute("photo", photo);
+				else
+					session.setAttribute("photo", "data:image/jpeg;base64," + photo);
+			}
 			return "success";
 		} else {
 			logger.debug("login failed");
@@ -545,6 +571,18 @@ public class NavigationController {
 		return (String) session.getAttribute("id");
 	}
 
+	@RequestMapping(value = "/getFirstname")
+	@ResponseBody
+	public String getFirstnameFromSession(HttpServletRequest request) throws Exception {
+		HttpSession session = request.getSession();
+		return (String) session.getAttribute("id");
+	}
+	@RequestMapping(value = "/getLastname")
+	@ResponseBody
+	public String getLastnameFromSession(HttpServletRequest request) throws Exception {
+		HttpSession session = request.getSession();
+		return (String) session.getAttribute("id");
+	}
 	@RequestMapping(value = "/getTeamId")
 	@ResponseBody
 	public String getTeamIdFromSession(HttpServletRequest request) throws Exception {

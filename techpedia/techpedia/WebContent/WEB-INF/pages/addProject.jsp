@@ -1,3 +1,4 @@
+<%@ page import="java.util.Random"%>
 <html ng-app="techpedia">
 <jsp:include page="template/dashboardHeader.jsp" />
 <div class="clearfix"></div>
@@ -39,6 +40,7 @@
 			<!-- END PAGE HEADER-->
 			<%
 				String challengeId = (String) request.getAttribute("challengeId");
+			    String challengeTitle = (String) request.getAttribute("challengeTitle");
 			%>
 
 			<div class="row">
@@ -48,7 +50,7 @@
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						This project will get created against <a target="_blank"
-							href="challengeDetails<%=challengeId%>">this challenge</a> (Challenge Id :
+							href="challengeDetails<%=challengeId%>">{{challenge.challengTitle}}</a> (Challenge Id :
 						<%=challengeId%>)
 					</div>
 					<input style="display: none;" id="challengeId" name="challengeId" type="text"
@@ -74,15 +76,12 @@
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon" style="border-right: 1px solid #ccc">Title </span> <input
 															id="projectTitle" name="projTitle" type="text" class="form-control rname"
-															placeholder="Project Title" ng-model="addProject.projTitle" required
-															ng-pattern="/^(\D)+$/" />
+															placeholder="Project Title" ng-model="addProject.projTitle" required />
 													</div>
 													<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 														ng-show="addProjectInformation.projTitle.$dirty && addProjectInformation.projTitle.$error.required">
 														Project Title is required</div>
-													<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-														ng-show="addProjectInformation.projTitle.$dirty && addProjectInformation.projTitle.$error.pattern">Project
-														Title can only contain text</div>
+
 												</div>
 
 												<div class="col-xs-12">&nbsp;</div>
@@ -91,7 +90,7 @@
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon" style="border-right: 1px solid #ccc">Branches</span> <input
 															id="projectBranches" name="projBranchesString" type="text"
-															class="form-control remail" placeholder="Project branches" />
+															class="form-control" placeholder="Project branches" ng-model="addProject.projBranchesString" required/>
 													</div>
 												</div>
 
@@ -101,7 +100,7 @@
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon" style="border-right: 1px solid #ccc">Keywords</span> <input
 															id="projectKeywords" name="projKeywordsString" type="text" class="form-control"
-															placeholder="Keywords" />
+															placeholder="Keywords"ng-model="addProject.projKeywordsString" required />
 													</div>
 												</div>
 
@@ -109,9 +108,9 @@
 
 												<div class="col-xs-12">
 													<div class="input-group input-group-sm">
-														<span class="input-group-addon" style="border-right: 1px solid #ccc">Team</span> <input
+														<span class="input-group-addon" style="border-right: 1px solid #ccc">Team Members</span> <input
 															readonly id="teamMembers" name="projTeamMembersString" type="text"
-															class="form-control" placeholder="Team Members"
+															class="form-control" placeholder="Add Team Members"
 															ng-model="addProject.projTeamMembersString" /> <span class="input-group-addon"
 															style="border-left: 1px solid #ccc; width: 10px;"> <a data-toggle="modal"
 															data-target="#searchTeamMemberModal" href="#">Search</a></span>
@@ -150,7 +149,7 @@
 														<span class="input-group-addon" style="border-right: 1px solid #ccc">Start</span> <input
 															id="projectStartDate" name="projStartDate" type="text" class="form-control"
 															placeholder="Project Start Date" ng-model="addProject.projStartDate"
-															datepicker-angular /> <span class="input-group-addon"
+															datepicker-angular  /> <span class="input-group-addon"
 															style="border-left: 1px solid #ccc">DD-MMM-YYYY</span>
 													</div>
 
@@ -163,7 +162,7 @@
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon" style="border-right: 1px solid #ccc">End</span> <input
 															id="projectEndDate" name="projEndDate" type="text" class="form-control"
-															placeholder="Project End Date" ng-model="addProject.projEndDate" datepicker-angular />
+															placeholder="Project End Date" ng-model="addProject.projEndDate" datepicker-angular  />
 														<span class="input-group-addon" style="border-left: 1px solid #ccc">DD-MMM-YYYY</span>
 													</div>
 
@@ -173,7 +172,7 @@
 												<div class="col-xs-12">
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon" style="border-right: 1px solid #ccc">Year </span> <input
-															id="projectYear" name="projYear" type="text" class="form-control rname"
+															id="projectYear" name="projYear" type="text" class="form-control"
 															placeholder="Project Year" readonly />
 													</div>
 												</div>
@@ -183,7 +182,7 @@
 												<div class="col-xs-12">
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon" style="border-right: 1px solid #ccc">Duration</span> <input
-															id="projectDuration" name="projDuration" type="email" class="form-control remail"
+															id="projectDuration" name="projDuration" type="text" class="form-control"
 															placeholder="Project duration (in months)" readonly /> <span
 															class="input-group-addon" style="border-right: 1px solid #ccc">months</span>
 													</div>
@@ -344,11 +343,22 @@
 						<div>
 							<div class="col-xs-12">
 								<div class="col-xs-12 col-md-8">
-									<div class="input-group input-group-sm">
-										<span class="input-group-addon" style="border-right: 1px solid #ccc">1562 </span> <input
-											name="captcha" type="text" class="form-control" placeholder="Captcha" />
-									</div>
+								<div class="input-group input-group-sm" id="captchavalue">
+									<span id="captchaVal" class="input-group-addon" style="border-right: 1px solid #ccc">
+										<%
+											Random aRandom = new Random();
+											long aStart = 1000;
+											long aEnd = 9999;
+											long range = (long) aEnd - (long) aStart + 1;
+											long fraction = (long) (range * aRandom.nextDouble());
+											int randomNumber = (int) (fraction + aStart);
+											System.err.println("RANDOM NUMBER: " + randomNumber);
+											out.write(String.valueOf(randomNumber));
+										%>
+									</span> <input name="captcha" type="text" class="form-control" id="captcha" placeholder="Captcha" />
 								</div>
+
+							</div>
 								<div class="col-xs-12 col-md-4">
 									<a href="#" class="btn btn-primary add-project-submit" style="width: 99px; height: 34px;">Add
 										project</a>

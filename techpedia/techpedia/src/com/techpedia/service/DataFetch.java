@@ -161,8 +161,9 @@ public class DataFetch {
 		ObjectMapper mapper = new ObjectMapper();
 		String response = "";
 		try {
-			challenge.setChallengStartDate("1410261148400");
-			challenge.setChallengCloseDate("1410261148400");
+			/*challenge.setChallengStartDate("1410261148400");
+			challenge.setChallengCloseDate("1410261148400");*/
+			challenge.setChallengYear(challenge.getChallengStartDate().getYear()+1900);
 			challenge.setChallengCommentsPublish("Y");
 			System.out.println("challengevalues" + challenge.getChallengTypeId());
 			String json = mapper.writeValueAsString(challenge);

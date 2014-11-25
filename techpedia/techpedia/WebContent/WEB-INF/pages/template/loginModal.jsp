@@ -54,9 +54,10 @@
 								<div class="control-group">
 									<label class="control-label" for="signin"></label>
 									<div class="controls">
-										<div class="col-xs-12">
-											<input type="submit" class="btn btn-success" id="login-submit" value="Login" />
-											<button style="width: 100px;" class="btn btn-info" ng-click="facebookLogin()">Facebook</button>
+										<div class="col-xs-13">
+											&nbsp;<input type="submit" class="btn btn-success" id="login-submit" value="Login" />
+											<input type="reset" class="btn btn-warning" id="login-submit" value="Reset"/>
+											<button style="width:100px;" class="btn btn-info" ng-click="facebookLogin()">Facebook</button>
 											<div id="login-error-div" style="color: red;"></div>
 										</div>
 									</div>

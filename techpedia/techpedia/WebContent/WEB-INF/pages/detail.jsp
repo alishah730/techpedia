@@ -72,11 +72,12 @@
 						if (session.getAttribute("username") != null) {
 					%>
 					<div class="col-md-8" ng-hide="doesFollow">
-						<a href="#" class="btn btn-info btn-sm accept-style" ng-click="follow()">Follow</a><br> <br>
+						<a style="cursor: pointer;" class="btn btn-info btn-sm accept-style" ng-click="follow()">Follow</a><br>
+						<br>
 					</div>
 
 					<div class="col-md-8" ng-show="doesFollow">
-						<a href="#" class="btn btn-info btn-sm accept-style" ng-click="unfollow()">Unfollow</a><br>
+						<a style="cursor: pointer;" class="btn btn-info btn-sm accept-style" ng-click="unfollow()">Unfollow</a><br>
 						<br>
 					</div>
 					<%

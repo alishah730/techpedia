@@ -1,11 +1,25 @@
 var techpedia = angular.module('techpedia', []);
 
+techpedia.filter('anyInvalidDirtyFields', function() {
+	return function(form) {
+		for ( var prop in form) {
+			if (form.hasOwnProperty(prop)) {
+				if (form[prop].$invalid && form[prop].$dirty) {
+					return true;
+				}
+			}
+		}
+		return false;
+	};
+	
+});
+
 techpedia.directive('datepicker-angular', function() {
 	return {
 		require : 'ngModel',
 		link : function(scope, el, attr, ngModel) {
 			$(el).datepicker({
-				dateFormat : 'yy-mm-dd',
+				dateFormat : 'yy-mm-dd',	
 				onSelect : function(dateText) {
 					scope.$apply(function() {
 						ngModel.$setViewValue(dateText);
@@ -15,6 +29,8 @@ techpedia.directive('datepicker-angular', function() {
 		}
 	};
 });
+
+
 
 techpedia.directive("autoComplete", function() {
 	return {
@@ -71,6 +87,130 @@ techpedia.directive('base64', function() {
 	};
 });
 
+techpedia.controller('EditProjectController', function($scope, $http) {
+
+	$scope.getUrlVars = function() {
+		var vars = [], hash;
+		var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+		for (var i = 0; i < hashes.length; i++) {
+			hash = hashes[i].split('=');
+			vars.push(hash[0]);
+			vars[hash[0]] = hash[1];
+		}
+		return vars;
+	};
+
+	$scope.InitLoad = function() {
+
+		$scope.edit = {};
+		$scope.edit.university = '';
+		$scope.edit.studentID = '';
+		$scope.edit.collge = '';
+		$scope.edit.state = '';
+
+		$http({
+			method : 'POST',
+			url : 'getId',
+			data : $.param({}),
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded'
+			}
+		}).success(function(data, status, headers, config) {
+			$scope.registerId = data;
+
+			$http({
+				method : 'POST',
+				url : 'editProfileLoad',
+				data : $.param({}),
+				headers : {
+					'Content-Type' : 'application/x-www-form-urlencoded'
+				}
+			}).success(function(data, status, headers, config) {
+				$scope.edit.university = data.university;
+				$scope.edit.studentID = data.studentID;
+				$scope.edit.collge = data.collge;
+				$scope.edit.state = data.state;
+			}).error(function(data, status, headers, config) {
+				$scope.message = [];
+				$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+			});
+		}).error(function(data, status, headers, config) {
+			$scope.message = [];
+			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+		});
+
+		$http({
+			method : 'POST',
+			url : 'editProjectLoad',
+			data : $.param({}),
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded'
+			}
+		}).success(function(data, status, headers, config) {
+
+			var m_names = new Array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+
+			// Getting the project ID from URL as the service returns 0
+
+			// Converting date from millisecond format to human readable and app
+			// required format
+			data.projId = $scope.getUrlVars()["id"];
+			// console.log(data.projStartDate);
+			var projStartDate = new Date(Number(data.projStartDate));
+			// console.log(projStartDate);
+			var curr_date = projStartDate.getDate();
+			var curr_month = projStartDate.getMonth();
+			var curr_year = projStartDate.getFullYear();
+			data.projStartDate = curr_date + "-" + m_names[curr_month].substring(0, 3) + "-" + curr_year;
+			// console.log(curr_date + "-" + m_names[curr_month].substring(0, 3)
+			// + "-" + curr_year);
+
+			// console.log(data.projEndDate);
+			var projEndDate = new Date(Number(data.projEndDate));
+			// console.log(projEndDate);
+			var curr_date = projEndDate.getDate();
+			var curr_month = projEndDate.getMonth();
+			var curr_year = projEndDate.getFullYear();
+			data.projEndDate = curr_date + "-" + m_names[curr_month].substring(0, 3) + "-" + curr_year;
+			// console.log(curr_date + "-" + m_names[curr_month].substring(0, 3)
+			// + "-" + curr_year);
+
+			// Getting branches into the select 2 options
+			var dataArray = [];
+			for (var i = 0; i < data.projKeywords.length; i++) {
+				var keyword = data.projKeywords[i];
+				var json = {};
+				json.id = keyword;
+				json.text = keyword;
+				dataArray.push(json);
+			}
+			console.log(JSON.stringify(dataArray));
+			$("#projectKeywords").select2("data", dataArray);
+
+			// Getting keywords into the select 2 options
+			var dataArray = [];
+			for (var i = 0; i < data.projBranchList.length; i++) {
+				var id = data.projBranchList[i].branchId;
+				var text = data.projBranchList[i].projBranchDesc;
+				// alert(id + " " + text);
+				var json = {};
+				json.id = id;
+				json.text = text;
+				dataArray.push(json);
+
+			}
+			console.log(JSON.stringify(dataArray));
+			$("#projectBranches").select2("data", dataArray);
+			$("#projectBranches").select2("readonly", true);
+
+			$scope.edit = data;
+		}).error(function(data, status, headers, config) {
+			$scope.message = [];
+			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+		});
+	};
+});
+
 techpedia.controller('FooterController', function($scope, $http) {
 	$scope.InitLoad = function() {
 		$http({
@@ -83,7 +223,8 @@ techpedia.controller('FooterController', function($scope, $http) {
 		}).success(function(data, status, headers, config) {
 			$scope.mentors = data;
 		}).error(function(data, status, headers, config) {
-			// TBD;
+			$scope.message = [];
+			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
 	};
 
@@ -94,6 +235,11 @@ techpedia.controller('FooterController', function($scope, $http) {
 
 techpedia.controller('IndexController', function($scope, $http) {
 	$scope.InitLoad = function() {
+		$scope.projects = [ {
+			projTitle : 'Loading title',
+			projDescription : 'Loading description'
+		} ];
+
 		$http({
 			method : 'POST',
 			url : 'projectSpotlightLoad',
@@ -162,7 +308,7 @@ techpedia.controller('LoginModalController', function($scope, $http) {
 				$scope.message.push("Request sent. Check your email");
 			} else {
 				$scope.message = [];
-				$scope.message.push("Failed to send reqest, try later");
+				$scope.message.push("Failed to send request, try later");
 			}
 		}).error(function(data, status, headers, config) {
 			$scope.message = [];
@@ -425,7 +571,14 @@ techpedia.controller('TeamDetailsController', function($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
-			alert(data);
+			// alert(data);
+			if (data === 'Y') {
+				$scope.message = [];
+				$scope.message.push("Team member added");
+			} else {
+				$scope.message = [];
+				$scope.message.push("Some error occured in adding team member");
+			}
 		}).error(function(data, status, headers, config) {
 			$scope.message = [];
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
@@ -446,7 +599,14 @@ techpedia.controller('TeamDetailsController', function($scope, $http) {
 					'Content-Type' : 'application/x-www-form-urlencoded'
 				}
 			}).success(function(data, status, headers, config) {
-				alert(data);
+				// alert(data);
+				if (data === 'Y') {
+					$scope.message = [];
+					$scope.message.push("Team member removed");
+				} else {
+					$scope.message = [];
+					$scope.message.push("Some problem occured while removing team member");
+				}
 				$scope.initLoad();
 			}).error(function(data, status, headers, config) {
 				$scope.message = [];
@@ -634,6 +794,7 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 			}
 		}).success(function(data, status, headers, config) {
 			$scope.registerId = data;
+			console.log($scope.registerId);
 		}).error(function(data, status, headers, config) {
 			$scope.message = [];
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
@@ -758,7 +919,7 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 				}
 			}).success(function(data, status, headers, config) {
 				$scope.message = [];
-				if (data == 'Y') {
+				if (data === 'Y') {
 					var index = $scope.projects.indexOf(project);
 					$scope.projects.splice(index, 1);
 					$scope.message.push("Project deleted succesfully");
@@ -770,6 +931,70 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 				$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 			});
 		}
+	};
+
+	$scope.editProject = function(project) {
+		window.location = 'editProject?id=' + project.projId;
+	};
+
+	$scope.initiateProject = function(state) {
+		// alert($scope.registerId + $scope.chosenProject.projId + " " + state);
+		$http({
+			method : 'POST',
+			url : 'ajax/facultyInitiateProject',
+			data : $.param({
+				projectId : $scope.chosenProject.projId,
+				facultyId : $scope.registerId,
+				approvalStatus : state
+			}),
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded'
+			}
+		}).success(function(data, status, headers, config) {
+			$scope.message = [];
+			if (data === 'Y') {
+				if (state === 'Y') {
+					$scope.message.push("Project initiated succesfully");
+				} else {
+					$scope.message.push("Project initiation rejected by you");
+				}
+			} else {
+				$scope.message.push("Failed to initiate project, please try again later");
+			}
+		}).error(function(data, status, headers, config) {
+			$scope.message = [];
+			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+		});
+	};
+
+	$scope.closeProject = function(state) {
+		// alert($scope.registerId + $scope.chosenProject.projId + " " + state);
+		$http({
+			method : 'POST',
+			url : 'ajax/facultyCloseProject',
+			data : $.param({
+				projectId : $scope.chosenProject.projId,
+				facultyId : $scope.registerId,
+				approvalStatus : state
+			}),
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded'
+			}
+		}).success(function(data, status, headers, config) {
+			$scope.message = [];
+			if (data === 'Y') {
+				if (state === 'Y') {
+					$scope.message.push("Project closed succesfully");
+				} else {
+					$scope.message.push("Closing of project rejected by you");
+				}
+			} else {
+				$scope.message.push("Failed to close project, please try again later");
+			}
+		}).error(function(data, status, headers, config) {
+			$scope.message = [];
+			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+		});
 	};
 });
 
@@ -1068,7 +1293,7 @@ function ProjectDetail($scope, $http) {
 	};
 };
 
-function AddProjectController($scope, $http) {
+techpedia.controller('AddProjectController', function($scope, $http) {
 	$scope.InitLoad = function() {
 		$scope.addProject = {};
 		$scope.addProject.university = '';
@@ -1098,7 +1323,9 @@ function AddProjectController($scope, $http) {
 				$scope.addProject.studentID = data.studentID;
 				$scope.addProject.collge = data.collge;
 				$scope.addProject.state = data.state;
+				
 			}).error(function(data, status, headers, config) {
+				
 				$scope.message = [];
 				$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 			});
@@ -1107,9 +1334,9 @@ function AddProjectController($scope, $http) {
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
 	};
-};
+});
 
-function ChangePhotoController($scope, $http) {
+techpedia.controller('ChangePhotoController', function($scope, $http) {
 	$scope.InitLoad = function() {
 		$scope.canSaveImage = false;
 	};
@@ -1143,13 +1370,13 @@ function ChangePhotoController($scope, $http) {
 			}
 		}).success(function(data, status, headers, config) {
 			$scope.id = data;
-			alert($scope.id);
+			// alert($scope.id);
 			$http({
 				method : 'POST',
 				url : 'ajax/changeImage',
 				data : $.param({
 					registerId : $scope.id,
-					photoByteArray : $scope.file.base64
+					photoByteArray : "data:" + $scope.file.filetype + ";base64," + $scope.file.base64
 				}),
 				headers : {
 					'Content-Type' : 'application/x-www-form-urlencoded'
@@ -1171,8 +1398,9 @@ function ChangePhotoController($scope, $http) {
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
 	};
-}
-function EditProfileController($scope, $http) {
+});
+
+techpedia.controller('EditProfileController', function($scope, $http) {
 	$scope.initialEditProfileData = function() {
 		$scope.message = [];
 		$http({
@@ -1184,8 +1412,40 @@ function EditProfileController($scope, $http) {
 			}
 		}).success(function(data, status, headers, config) {
 			$scope.edit = data;
+			$scope.edit.photo = '';
 		}).error(function(data, status, headers, config) {
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+		});
+
+		$scope.data = [ {
+			"branchId" : 1,
+			"projBranchDesc" : "Chemical Engineering"
+		}, {
+			"branchId" : 2,
+			"projBranchDesc" : "Electronic and Communiaction"
+		}, {
+			"branchId" : 3,
+			"projBranchDesc" : "Mechanical"
+		}, {
+			"branchId" : 4,
+			"projBranchDesc" : "Electrical Engineering"
+		},{
+			"branchId" : 5,
+			"projBranchDesc" : "Computer Science"
+		} ];
+	};
+
+	$scope.search = function() {
+		// alert($scope.form.searchTerm);
+		$http({
+			method : 'GET',
+			data : $.param({}),
+			url : 'getSuggestedBranches?q=' + $scope.searchTerm
+		}).success(function(data, status, headers, config) {
+			$scope.data = data;
+		}).error(function(data, status, headers, config) {
+			// called asynchronously if an error occurs
+			// or server returns response with an error status.
 		});
 	};
 
@@ -1207,9 +1467,9 @@ function EditProfileController($scope, $http) {
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
 	};
-};
+});
 
-function ChangePasswordController($scope, $http) {
+techpedia.controller('ChangePasswordController', function($scope, $http) {
 	$scope.data = {};
 	$scope.changePassword = function() {
 		$http({
@@ -1232,16 +1492,16 @@ function ChangePasswordController($scope, $http) {
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
 	};
-};
+});
 
-function RegisterController($scope, $http) {
+techpedia.controller('RegisterController', function($scope, $http) {
 	$scope.message = [];
 	$scope.register = {};
 	$scope.register.userType = "student";
 	$scope.typeOfUser = function(data) {
 		$scope.register.userType = data;
 	};
-
+	
 	$scope.$watch('file', function() {
 		$scope.register.photo = "data:" + $scope.file.filetype + ";base64," + $scope.file.base64;
 	}, true);
@@ -1259,7 +1519,11 @@ function RegisterController($scope, $http) {
 		}, {
 			"branchId" : 4,
 			"projBranchDesc" : "Electrical Engineering"
-		} ];
+		},
+		 {
+			"branchId" : 5,
+			"projBranchDesc" : "Computer Science"
+		}];
 	};
 
 	$scope.search = function() {
@@ -1275,7 +1539,7 @@ function RegisterController($scope, $http) {
 			// or server returns response with an error status.
 		});
 	};
-
+	
 	$scope.registerSubmit = function() {
 		$http({
 			method : 'POST',
@@ -1297,9 +1561,10 @@ function RegisterController($scope, $http) {
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
 	};
-};
+	
+});
 
-function AddChallengeController($scope, $http) {
+techpedia.controller('AddChallengeController', function($scope, $http) {
 	$scope.data = {};
 	$scope.addChallenge = function() {
 		$scope.message = [];
@@ -1312,16 +1577,22 @@ function AddChallengeController($scope, $http) {
 			}
 		}).success(function(data, status, headers, config) {
 			$scope.message = [];
-			$scope.message.push("Challenge added succesfully");
-			$scope.cssClass = "success";
+			
+				$scope.message.push("Challenge added succesfully");
+				$scope.cssClass = "success";
+			
+			
 		}).error(function(data, status, headers, config) {
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 			$scope.cssClass = "danger";
 		});
 	};
-};
+	
+	
+	
+});
 
-function ProjectsPageController($scope, $http) {
+techpedia.controller('ProjectsPageController', function($scope, $http) {
 	$scope.initialProjectsData = function() {
 		$scope.isSearchResult = false;
 		$scope.count = 0;
@@ -1407,9 +1678,9 @@ function ProjectsPageController($scope, $http) {
 			;// SERVICE NOT AVAILABLE
 		}
 	};
-};
+});
 
-function MentorsPageController($scope, $http) {
+techpedia.controller('MentorsPageController', function($scope, $http) {
 	$scope.initialMentorsData = function() {
 		$scope.count = 0;
 		$scope.message = [];
@@ -1450,9 +1721,9 @@ function MentorsPageController($scope, $http) {
 	$scope.clickMentor = function(id) {
 		window.location = 'mentorDetails' + id;
 	};
-};
+});
 
-function ChallengesPageController($scope, $http) {
+techpedia.controller('ChallengesPageController', function($scope, $http) {
 	$scope.initialChallengesData = function() {
 		$scope.isSearchResult = false;
 		$scope.count = 0;
@@ -1522,14 +1793,38 @@ function ChallengesPageController($scope, $http) {
 			;// SERVICE NOT AVAILABLE
 		}
 	};
-};
+});
 
-function NewMemberController($scope, $http) {
+techpedia.controller('NewMemberController', function($scope, $http) {
 	;
-};
+});
 
 techpedia.controller("TestController", function($scope) {
 	$scope.InitLoad = function() {
 		;
 	};
 });
+techpedia.directive('passwordMatch', [function () {
+    return {
+        restrict: 'A',
+        scope:true,
+        require: 'ngModel',
+        link: function (scope, elem , attrs,control) {
+            var checker = function () {
+ 
+                //get the value of the first password
+                var e1 = scope.$eval(attrs.ngModel); 
+ 
+                //get the value of the other password  
+                var e2 = scope.$eval(attrs.passwordMatch);
+                return e1 == e2;
+            };
+            scope.$watch(checker, function (n) {
+ 
+                //set the form control to valid if both 
+                //passwords are the same, else invalid
+                control.$setValidity("pwmatch", n);
+            });
+        }
+    };
+}]);
