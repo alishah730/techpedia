@@ -54,7 +54,7 @@
 						</div>
 						<div class="panel-body">
 							<div class="col-md-3">
-								<img src="{{member.photo||'images/UserDefault.jpg'}}" width=60 height=65 />
+								<img src="{{'data:image/jpeg;base64,'+member.photo||'images/UserDefault.jpg'}}" width=60 height=65 />
 							</div>
 							<div class="col-md-9">
 								<p>{{member.state}}</p>

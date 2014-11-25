@@ -84,7 +84,7 @@
 							<div class="col-md-3">
 								<div class="post col-xs-12 category">
 									<h5 class="header-customize">
-										{{challenge.challengTitle}}<br />{{challenge.challengDescription}}
+										{{challenge.challengTitle}}
 									</h5>
 									<div class="portofoliothumb">
 										<img src="{{challenge.challengImgPath||'images/no_project.png'}}" class="fourimage" alt="" />

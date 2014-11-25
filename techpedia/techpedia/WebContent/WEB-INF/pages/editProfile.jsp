@@ -54,7 +54,8 @@
 							<div class="panel panel-default">
 								<div class="panel-heading">New Image</div>
 								<div class="panel-body">
-									<img alt="" width=100 height=100 src="{{editProfile.photo}}" />
+									<img alt="" width=100 height=100
+										src="{{editProfile.photo||'images/UserDefault.jpg'}}" />
 								</div>
 							</div>
 						</div>
@@ -72,7 +73,7 @@
 									Photo</button>
 							</div>
 
-							<div class="col-xs-12" ng-show="msg.size.length>0">File size cannot be more then 10 KB</div>
+							<div class="col-xs-12" ng-show="msg.size.length>0">File size cannot be more than 10 KB</div>
 							<div class="col-xs-12" ng-show="message.length>0">
 								<div ng-repeat="msg in message">{{msg}}</div>
 							</div>
@@ -90,7 +91,7 @@
 								<div class="input-group input-group-sm">
 									<span class="input-group-addon">Old</span> <input name="oldPassword" type="password"
 										class="form-control" ng-model="data.oldPassword" placeholder="Old Password" required
-										ng-minlength="6" ng-maxlength="16" />
+										 ng-maxlength="16" />
 								</div>
 								<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 									ng-show="changePasswordForm.oldPassword.$dirty && changePasswordForm.oldPassword.$error.required">Old
@@ -107,7 +108,7 @@
 								<div class="input-group input-group-sm">
 									<span class="input-group-addon">New</span> <input name="newPassword" type="password"
 										class="form-control" placeholder="New Password" ng-model="data.newPassword" required
-										ng-minlength="6" ng-maxlength="16" />
+										ng-minlength="6" ng-maxlength="16"ng-pattern="/^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/" />
 								</div>
 								<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 									ng-show="changePasswordForm.newPassword.$dirty && changePasswordForm.newPassword.$error.required">New
@@ -127,7 +128,7 @@
 									<span class="input-group-addon">Confirm</span> <input name="confirmPassword"
 										type="password" class="form-control" placeholder="Confirm password"
 										ng-model="confirmPassword" required ng-minlength="6" ng-maxlength="16"
-										pw-check="newPassword" />
+										password-match="data.newPassword" />
 								</div>
 								<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 									ng-show="changePasswordForm.confirmPassword.$dirty && changePasswordForm.confirmPassword.$error.required">Password
@@ -201,7 +202,7 @@
 													<div class="col-xs-12">
 														<div class="input-group input-group-sm">
 															<span class="input-group-addon">Username </span> <input name="userName" type="text"
-																class="form-control" placeholder="Username" ng-model="edit.userName" />
+															readonly class="form-control" placeholder="Username" ng-model="edit.userName" />
 														</div>
 													</div>
 
@@ -375,6 +376,23 @@
 															ng-model="edit.university" />
 													</div>
 												</div>
+
+												<div class="col-xs-12">&nbsp;</div>
+
+												<div class="col-xs-12 col-md-6">
+													<div class="input-group input-group-sm">
+														<span class="input-group-addon">Branch</span>
+														<div class="col-xs-12">
+															<input type="text" class="form-control" placeholder="Search branches"
+																ng-model="searchTerm" ng-change="search()" value="" />
+														</div>
+														<div class="col-xs-12">
+															<select class="form-control" ng-model="edit.branchIdOfStudent"
+																ng-options="item.branchId as item.projBranchDesc for item in data">
+															</select>
+														</div>
+													</div>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -384,9 +402,9 @@
 											<div class="panel-body">
 												<div class="col-xs-12 col-md-6">
 													<div class="input-group input-group-sm">
-														<span class="input-group-addon" style="border-right: 1px solid #ccc; width: 138px;">College
-															name </span> <input name="cntctPerNameofCollege" id="collegecontactname" type="text"
-															class="form-control" placeholder="College name" ng-model="edit.cntctPerNameofCollege" />
+														<span class="input-group-addon" style="border-right: 1px solid #ccc; width: 138px;">Contact Person
+															Name </span> <input name="cntctPerNameofCollege" id="collegecontactname" type="text"
+															class="form-control" placeholder="College contact person name" ng-model="edit.cntctPerNameofCollege" />
 													</div>
 												</div>
 
@@ -504,9 +522,16 @@
 												<div class="col-xs-12">&nbsp;</div>
 												<div class="col-xs-12 col-md-6">
 													<div class="input-group input-group-sm">
-														<span class="input-group-addon" style="border-right: 1px solid #ccc; width: 138px;">Speciality
-														</span> <input name="specializationOfFaculty" type="text" class="form-control"
-															placeholder="Speciality" ng-model="edit.specializationOfFaculty" />
+														<span class="input-group-addon">Speciality </span>
+														<div class="col-xs-12">
+															<input type="text" class="form-control" placeholder="Search branches"
+																ng-model="searchTerm" ng-change="search()" value="" />
+														</div>
+														<div class="col-xs-12">
+															<select class="form-control" ng-model="edit.branchIdOfFaculty"
+																ng-options="item.branchId as item.projBranchDesc for item in data">
+															</select>
+														</div>
 													</div>
 												</div>
 												<div class="col-xs-12 col-md-6">
@@ -582,9 +607,16 @@
 												<div class="col-xs-12">&nbsp;</div>
 												<div class="col-xs-12 col-md-6">
 													<div class="input-group input-group-sm">
-														<span class="input-group-addon" style="border-right: 1px solid #ccc; width: 135px">Speciality
-														</span> <input name="specializationOfMentor" type="text" class="form-control"
-															placeholder="Speciality" ng-model="edit.specializationOfMentor" />
+														<span class="input-group-addon">Speciality </span>
+														<div class="col-xs-12">
+															<input type="text" class="form-control" placeholder="Search branches"
+																ng-model="searchTerm" ng-change="search()" value="" />
+														</div>
+														<div class="col-xs-12">
+															<select class="form-control" ng-model="edit.branchIdOfMentor"
+																ng-options="item.branchId as item.projBranchDesc for item in data">
+															</select>
+														</div>
 													</div>
 												</div>
 												<div class="col-xs-12 col-md-6">

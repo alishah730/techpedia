@@ -1,7 +1,7 @@
 <!-- <link rel="stylesheet" href="css/jquery-ui.css"> -->
 <!-- <script src="js/jquery.min.js"></script> -->
-<!-- <script src="js/skel.min.js"></script> -->
-<!-- <script src="js/init.js"></script> -->
+<script src="js/skel.min.js"></script>
+<script src="js/init.js"></script>
 <!-- <script src="js/dashboardJs/bootstrap-hover-dropdown.min.js" type="text/javascript"></script> -->
 
 <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -54,7 +54,7 @@
 							<!-- BEGIN USER LOGIN DROPDOWN -->
 							<li class="dropdown dropdown-user"><a href="#" class="dropdown-toggle"
 								data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> <span
-									class="username"> Hi, <%=session.getAttribute("username")%>
+									class="username"> Hi, <%=session.getAttribute("firstname")%>&nbsp;<%=session.getAttribute("lastname")%>
 								</span> <i class="fa fa-angle-down"></i>
 							</a>
 								<ul class="dropdown-menu">

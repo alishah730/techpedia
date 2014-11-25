@@ -114,7 +114,7 @@ Set the viewport width to device width for mobile
 					<li class="dropdown dropdown-user"><a href="#" class="dropdown-toggle"
 						data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> <img alt=""
 							class="img-circle" src="<%=session.getAttribute("photo")%>" /> <span class="username">
-								Hi, <%=session.getAttribute("username")%>
+								Hi, <%=session.getAttribute("firstname")%>&nbsp;<%=session.getAttribute("lastname")%>
 						</span> <i class="fa fa-angle-down"></i>
 					</a>
 						<ul class="dropdown-menu">

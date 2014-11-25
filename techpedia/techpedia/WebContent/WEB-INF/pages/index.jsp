@@ -128,7 +128,7 @@
 								<!-- BEGIN USER LOGIN DROPDOWN -->
 								<li class="dropdown dropdown-user"><a href="#" class="dropdown-toggle"
 									data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> <span
-										class="username"> Hi, <%=session.getAttribute("username")%>
+										class="username"> Hi, <%=session.getAttribute("firstname")%>&nbsp;<%=session.getAttribute("lastname")%>
 									</span> <i class="fa fa-angle-down"></i>
 								</a>
 									<ul class="dropdown-menu">
@@ -241,6 +241,7 @@
 								<div>
 									<h3 style="cursor: pointer;" ng-click="viewProject(project)">{{project.projTitle}}</h3>
 									<p style="cursor: pointer;" ng-click="viewProject(project)">{{project.projDescription}}
+
 									
 									<p>
 									<footer>

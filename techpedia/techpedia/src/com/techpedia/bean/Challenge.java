@@ -21,12 +21,13 @@ public class Challenge {
 	String challengCollege; // Nullable
 	String rgstrId; // Nullable-Mandatory for academic challenge
 	byte[] challengeDocuments;
-	Date challengYear;
+	int challengYear;
 	int challengeDuration; // in months
 	String challengeCollegeState;
-	String challengStartDate;
+	Date challengStartDate;
 	Date challengEndDate;
-	String challengCloseDate;
+	
+	Date challengCloseDate;
 	String challengeMentor1ID; // Nullable-Mandatory for academic challenge
 	String challengeMentor2ID; // Nullable-Mandatory for academic challenge
 	String challengeTeamID;
@@ -37,6 +38,11 @@ public class Challenge {
 	String challengCommentsPublish; // Display comments or not , default 'N'
 	String challengeBusinessPlan; // Nullable
 	String challengeImage; // Nullable, default image if null.
+	/*String challengeImpact;
+	String challengeSourceFund;
+	String challengeIncentive;
+	String challengeDeliveryExpectation;
+	String challengeBenchmark;*/
 
 	@JsonIgnore
 	public String getChallengeID() {
@@ -141,11 +147,11 @@ public class Challenge {
 		this.challengeDocuments = challengeDocuments;
 	}
 
-	public Date getChallengYear() {
+	public int getChallengYear() {
 		return challengYear;
 	}
 
-	public void setChallengYear(Date challengeYear) {
+	public void setChallengYear(int challengeYear) {
 		this.challengYear = challengeYear;
 	}
 
@@ -167,19 +173,19 @@ public class Challenge {
 		this.challengeCollegeState = challengeCollegeState;
 	}
 
-	public String getChallengStartDate() {
+	public Date getChallengStartDate() {
 		return challengStartDate;
 	}
 
-	public void setChallengStartDate(String challengeStartDate) {
+	public void setChallengStartDate(Date challengeStartDate) {
 		this.challengStartDate = challengeStartDate;
 	}
 
-	public String getChallengCloseDate() {
+	public Date getChallengCloseDate() {
 		return challengCloseDate;
 	}
 
-	public void setChallengCloseDate(String challengeEndDate) {
+	public void setChallengCloseDate(Date challengeEndDate) {
 		this.challengCloseDate = challengeEndDate;
 	}
 
@@ -271,4 +277,46 @@ public class Challenge {
 	public void setChallengeImage(String challengeImage) {
 		this.challengeImage = challengeImage;
 	}
+	
+
+	
+	/*public String getChallengeImpact() {
+		return challengeImpact;
+	}
+
+	public void setChallengeImpact(String challengeImpact) {
+		this.challengeImpact = challengeImpact;
+	}
+
+	public String getChallengeSourceFund() {
+		return challengeSourceFund;
+	}
+
+	public void setChallengeSourceFund(String challengeSourceFund) {
+		this.challengeSourceFund = challengeSourceFund;
+	}
+
+	public String getChallengeIncentive() {
+		return challengeIncentive;
+	}
+
+	public void setChallengeIncentive(String challengeIncentive) {
+		this.challengeIncentive = challengeIncentive;
+	}
+
+	public String getChallengeDeliveryExpectation() {
+		return challengeDeliveryExpectation;
+	}
+
+	public void setChallengeDeliveryExpectation(String challengeDeliveryExpectation) {
+		this.challengeDeliveryExpectation = challengeDeliveryExpectation;
+	}
+
+	public String getChallengeBenchmark() {
+		return challengeBenchmark;
+	}
+
+	public void setChallengeBenchmark(String challengeBenchmark) {
+		this.challengeBenchmark = challengeBenchmark;
+	}*/
 }

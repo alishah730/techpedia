@@ -37,7 +37,7 @@
 				<div class="panel panel-default">
 					<!-- Default panel contents -->
 					<div class="panel-heading">Teams</div>
-					<div class="panel-body" ng-show="teams.length<=0">This user does not belong to any team</div>
+					<div class="panel-body" ng-show="teams.length == null">This user does not belong to any team</div>
 
 					<!-- List group -->
 					<ul class="list-group" ng-show="teams.length>0">

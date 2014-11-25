@@ -38,38 +38,7 @@
 
 			<br />
 			<div class="clearfix"></div>
-
-			<div class="row" ng-show="showProjectsIFollow">
-				<div class="panel panel-primary">
-					<div class="panel-heading">Projects I Follow</div>
-					<div class="panel-body">
-						<div class="alert alert-sm alert-info alert-dismissible" role="alert"
-							ng-show="projectsIFollow==0">Nothing to display</div>
-						<div class="col-xs-12" ng-repeat="project in projectsIFollow | filter: filterSearch">
-							<div class="panel panel-warning">
-								<div class="panel-heading">{{project.projTitle}}</div>
-								<div class="panel-body">
-									<div class="col-md-4">
-										<img src="{{project.projImage||'images/no_project.png'}}" />
-									</div>
-									<div class="col-md-6">
-										<p>{{project.projDescription}}</p>
-									</div>
-
-									<div class="col-md-2">
-
-										<div class="col-xs-12">
-											<button class="btn btn-info" ng-click="viewProject(project)">View project</button>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div class="clearfix"></div>
+	
 
 			<div class="row" ng-show="showMyProjects">
 				<div class="panel panel-primary">
@@ -100,6 +69,38 @@
 					</div>
 				</div>
 			</div>
+			<div class="clearfix"></div>
+			<div class="row" ng-show="showProjectsIFollow">
+				<div class="panel panel-primary">
+					<div class="panel-heading">Projects I Follow</div>
+					<div class="panel-body">
+						<div class="alert alert-sm alert-info alert-dismissible" role="alert"
+							ng-show="projectsIFollow==0">Nothing to display</div>
+						<div class="col-xs-12" ng-repeat="project in projectsIFollow | filter: filterSearch">
+							<div class="panel panel-warning">
+								<div class="panel-heading">{{project.projTitle}}</div>
+								<div class="panel-body">
+									<div class="col-md-4">
+										<img src="{{project.projImage||'images/no_project.png'}}" />
+									</div>
+									<div class="col-md-6">
+										<p>{{project.projDescription}}</p>
+									</div>
+
+									<div class="col-md-2">
+
+										<div class="col-xs-12">
+											<button class="btn btn-info" ng-click="viewProject(project)">View project</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		
 		</div>
 	</div>
 </div>
