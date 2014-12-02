@@ -73,7 +73,7 @@
 						<a href="#" ng-click="clickMentor(mentor.rgstrId)">
 							<div class="post col-md-3 category">
 								<h5 class="header-customize">
-									{{mentor.firstName}}<br />{{mentor.designationOfMentor}}
+									{{mentor.firstName}}&nbsp;{{mentor.lastName}}<br />{{mentor.designationOfMentor}}
 								</h5>
 								<div class="portofoliothumb">
 									<img src="{{mentor.photo||'images/UserDefault.jpg'}}" class="fourimage" alt="" />

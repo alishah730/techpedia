@@ -699,7 +699,7 @@
 											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalCollegeForm.techpdaFactlyCoordtr.$invalid && registerAdditionalCollegeForm.techpdaFactlyCoordtr.$pristine }">
 												<span class="input-group-addon">Techpedia faculty *</span> <input id="collegecontactname"
 													maxlength=100 name="techpdaFactlyCoordtr" type="text" class="form-control"
-													placeholder="Techpedia faculty co-ordinator" ng-model="register.techpdaFactlyCoordtr"
+													placeholder="Faculty registered with Techpedia" ng-model="register.techpdaFactlyCoordtr"
 													required ng-pattern="/^(\D)+$/" />
 											</div>
 

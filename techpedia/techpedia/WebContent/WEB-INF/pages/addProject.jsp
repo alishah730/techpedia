@@ -40,7 +40,7 @@
 			<!-- END PAGE HEADER-->
 			<%
 				String challengeId = (String) request.getAttribute("challengeId");
-			    String challengeTitle = (String) request.getAttribute("challengeTitle");
+			  
 			%>
 
 			<div class="row">
@@ -50,8 +50,8 @@
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						This project will get created against <a target="_blank"
-							href="challengeDetails<%=challengeId%>">{{challenge.challengTitle}}</a> (Challenge Id :
-						<%=challengeId%>)
+							href="challengeDetails<%=challengeId%>">Challenge Id :
+						<%=challengeId%></a> 
 					</div>
 					<input style="display: none;" id="challengeId" name="challengeId" type="text"
 						value=<%=challengeId%> />
