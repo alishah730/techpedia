@@ -1,8 +1,8 @@
 package com.ge.techpedia.service.helper;
 
-import com.ge.techpedia.bean.Project;
 import com.techpedia.email.exception.EmailServiceException;
 import com.techpedia.email.util.TechPediaEmailFunction;
+import com.techpedia.projectmanagement.bean.Project;
 
 public class ProjectManagementEMailHelper {
 	public static void sendEmail(Project project)
