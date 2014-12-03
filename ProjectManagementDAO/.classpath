@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="ProjectManagementDAO/src"/>
 	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate-commons-annotations-4.0.2.Final.jar"/>
 	<classpathentry kind="lib" path="lib/hibernate-core-4.2.13.Final.jar"/>
