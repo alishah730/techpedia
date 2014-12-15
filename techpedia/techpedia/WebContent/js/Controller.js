@@ -393,7 +393,7 @@ techpedia.controller('ChallengeDetailsController', function($scope, $http) {
 	};
 
 	$scope.acceptChallenge = function(challenge) {
-		window.location = window.location = 'acceptChallenge?challengeId=' + challenge.challengId;
+		window.location = window.location = 'acceptChallenge?challengeId=' + challenge.challengId+'&&challengeTitle='+challenge.challengTitle;
 	};
 
 	$scope.deleteDocument = function(document) {
@@ -653,7 +653,8 @@ techpedia.controller('ManageChallengesController', function($scope, $http) {
 	};
 
 	$scope.acceptChallenge = function(challenge) {
-		window.location = 'acceptChallenge?challengeId=' + challenge.challengId;
+		window.location = window.location = 'acceptChallenge?challengeId=' + challenge.challengId+'&&challengeTitle='+challenge.challengTitle;
+
 	};
 
 	$scope.viewChallenge = function(challenge) {
