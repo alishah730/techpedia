@@ -81,8 +81,8 @@
 				<div class="row">
 					<div id="portofolio" ng-repeat="challenge in challenges | filter:filterSearch">
 						<a href="#" ng-click="clickChallenge(challenge.challengId)">
-							<div class="col-md-3">
-								<div class="post col-xs-12 category">
+							<div class="col-md-6">
+								<div class="post col-xs-15 category">
 									<h5 class="header-customize">
 										{{challenge.challengTitle}}
 									</h5>
