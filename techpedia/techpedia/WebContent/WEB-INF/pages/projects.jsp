@@ -73,7 +73,7 @@
 				</div>
 
 				<div class="alert alert-sm alert-info alert-dismissible" role="alert"
-					ng-show="projects.length==0">Loading projects</div>
+					ng-show="projects.length==0">No project matching the keyword</div>
 
 				<div class="row">
 					<div id="portofolio" ng-repeat="project in projects | filter:filterSearch">
