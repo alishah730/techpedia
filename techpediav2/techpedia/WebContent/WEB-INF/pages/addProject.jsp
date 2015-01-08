@@ -110,9 +110,9 @@
 												<div class="col-xs-12">
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon" style="border-right: 1px solid #ccc">Team Members</span> <input
-															readonly id="teamMembers" name="projTeamMembersString" type="text"
+															 id="teamMembers" name="projTeamMembersString" type="text"
 															class="form-control" placeholder="Add Team Members"
-															ng-model="addProject.projTeamMembersString" /> <span class="input-group-addon"
+															ng-model="addProject.projTeamMembersString" onclick="makeDisable()" /> <span class="input-group-addon"
 															style="border-left: 1px solid #ccc; width: 10px;"> <a data-toggle="modal"
 															data-target="#searchTeamMemberModal" href="#">Search</a></span>
 													</div>
@@ -576,6 +576,17 @@
 <![endif]-->
 
 <!-- END JAVASCRIPTS -->
+<script type="text/javascript">
+function makeDisable(){
+var value=$('#teamMembers').val();
+
+if(value === ''){
+$("#teamMembers").prop("readonly",true);
+}else{
+$("#teamMembers").prop("readonly",false);
+}
+} 
+</script>
 </body>
 <!-- END BODY -->
 </html>
