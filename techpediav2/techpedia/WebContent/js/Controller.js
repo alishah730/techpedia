@@ -1711,13 +1711,13 @@ techpedia.controller('ProjectsPageController', function($scope, $http) {
 
 techpedia.controller('MentorsPageController', function($scope, $http) {
 	$scope.initialMentorsData = function() {
-		$scope.count = 0;
+		$scope.count = 1;
 		$scope.message = [];
 		$http({
 			method : 'POST',
 			url : 'mentorsFetch',
 			data : $.param({
-				set : 0
+				set : 1
 			}),
 			headers : {
 				'Content-Type' : 'application/x-www-form-urlencoded'

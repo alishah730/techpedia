@@ -1169,9 +1169,10 @@
 							</div>
 						</form> -->
 						<div class="col-xs-12">
-							<a href="#" class="btn btn-primary reg-ctn-2"
+							<!-- <a href="#" class="btn btn-primary reg-ctn-2"
 								ng-disabled="registerAdditionalStudentForm.$invalid&&registerAdditionalCollegeForm.$invalid&&registerAdditionalFacultyForm.$invalid&&registerAdditionalMentorForm.$invalid"><span
-								style="color: white;">Continue</span></a>
+								style="color: white;">Continue</span></a> -->
+								<a href="#"><input type="submit" class="btn btn-primary reg-ctn-2" onclick="checkAdditionalEmpty()" value="Continue"></a>
 						</div>
 					</div>
 
@@ -1241,6 +1242,25 @@
         
     }
 }
+ function checkAdditionalEmpty() {
+	    var empty = null;
+	    
+	    $("input", registerAdditionalStudentForm).each(function() {
+	      if($(this).val() === ""){
+	        //if($.trim($("#firstName").val()) === "" || $.trim($("#lastName").val()) === ""|| $.trim($("#userName").val()) === ""|| $.trim($("#password").val()) === ""|| $.trim($("#confirmPassword").val()) === ""|| $.trim($("#mobile").val()) === ""|| $.trim($("#addrLn1").val()) === ""|| $.trim($("#district").val()) === ""|| $.trim($("#city").val()) === ""|| $.trim($("#state").val()) === ""|| $.trim($("#country").val()) === ""|| $.trim($("#pincode").val()) === ""|| $.trim($("#email").val()) === "")      {
+	        	empty="isempty"
+	        
+	        }
+	        
+	        else{
+	        	empty="notempty";
+	        }
+	    });
+	    if(empty === "isempty") {
+	       return alert("Some of the field are empty . Please fill the * marked field ");
+	        
+	    }
+	}
 </script>
 </body>
 <!-- END BODY -->
