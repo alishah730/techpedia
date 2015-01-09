@@ -111,9 +111,9 @@
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon" style="border-right: 1px solid #ccc">Team Members</span> <input
 															 id="teamMembers" name="projTeamMembersString" type="text"
-															class="form-control" placeholder="Add Team Members"
+															class="form-control" placeholder="Add Team Members" disabled
 															ng-model="addProject.projTeamMembersString" onclick="makeDisable()" /> <span class="input-group-addon"
-															style="border-left: 1px solid #ccc; width: 10px;"> <a data-toggle="modal"
+															style="border-left: 1px solid #ccc; width: 10px;" disabled> <a data-toggle="modal"
 															data-target="#searchTeamMemberModal" href="#">Search</a></span>
 													</div>
 
