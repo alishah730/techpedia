@@ -55,7 +55,7 @@
 					<div class="col-xs-12 one1" ng-repeat="project in projects | filter:filterSearch">
 						<div class="panel panel-primary">
 							<div class="panel-heading">
-								{{project.projTitle}} (Lead: {{project.projTeamLeaderId}})<i
+								{{project.projTitle}} <!-- (Lead: {{project.projTeamLeaderId}}) --><i
 									style="float: right; position: relative; top: 3px;" class="fa fa-times-circle"
 									ng-click="deleteProject(project)"></i>
 							</div>

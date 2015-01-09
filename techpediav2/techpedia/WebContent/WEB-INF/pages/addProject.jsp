@@ -249,7 +249,7 @@
 												<div class="input-group input-group-sm">
 													<span class="input-group-addon" style="border-right: 1px solid #ccc">University
 													</span> <input name="projUniversity" id="projectUniversity" type="text" class="form-control"
-														placeholder="Project University" value="IIT" readonly ng-model="addProject.university" />
+														placeholder="Project University" value="IIT" readonly  onfocus="this.blur()" ng-model="addProject.university" />
 												</div>
 											</div>
 

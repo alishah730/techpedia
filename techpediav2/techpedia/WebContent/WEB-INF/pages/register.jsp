@@ -478,9 +478,13 @@
 															style='display: none;' ng-file="file" base64 />
 													</div>
 													<div class="col-xs-12">&nbsp;</div>
-													<div class="col-xs-12">
+													
 														<button class='btn btn-sm btn-info photo-btn-click'>Upload photo</button>
+														<div class="col-xs-12" ng-show="msg.size.length>0">File size cannot be more than 10 KB</div>
+							<div class="col-xs-12" ng-show="message.length>0">
+								<div ng-repeat="msg in message">{{msg}}</div>
 													</div>
+													
 												</div>
 											</div>
 										</div>
@@ -548,7 +552,7 @@
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm">
-												<span class="input-group-addon">Student ID *</span> <input name="studentID" type="text"
+												<span class="input-group-addon">Student ID *</span> <input name="studentID" type="text" id="studentID"
 													class="form-control" placeholder="Student ID" ng-model="register.studentID"  required data-toggle='tooltip' data-placement='right' 
 														title="Please enter valid ID"/>
 											</div>
@@ -596,7 +600,7 @@
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
-												<span class="input-group-addon">University *</span> <input name="university" type="text"
+												<span class="input-group-addon">University *</span> <input name="university" type="text" id="university"
 													class="form-control" placeholder="University" ng-model="register.university" required
 													ng-maxlength="100" ng-pattern="/^(\D)+$/" />
 											</div>
@@ -838,7 +842,7 @@
 										</div>
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
-												<span class="input-group-addon">College name *</span> <input name="collgeOfFaculty"
+												<span class="input-group-addon">College name *</span> <input name="collgeOfFaculty" id="collgeOfFaculty"
 													type="text" class="form-control" placeholder="College name"
 													ng-model="register.collgeOfFaculty" required ng-pattern="/^(\D)+$/" />
 											</div>
@@ -873,7 +877,7 @@
 										</div>
 													<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm"  >
-												<span class="input-group-addon">University *</span> <input name="universityOfFaculty"
+												<span class="input-group-addon">University *</span> <input name="universityOfFaculty" id="universityOfFaculty"
 													type="text" class="form-control" placeholder="University"
 													ng-model="register.universityOfFaculty" required ng-pattern="/^(\D)+$/" />
 											</div>
@@ -889,7 +893,7 @@
 										
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm"  >
-												<span class="input-group-addon">Experience *</span> <input name="proffesionalExpOfFaculty"
+												<span class="input-group-addon">Experience *</span> <input name="proffesionalExpOfFaculty" id="proffesionalExpOfFaculty"
 													type="text" class="form-control" placeholder="Profeesional experience in months"
 													ng-model="register.proffesionalExpOfFaculty" ng-pattern="/^(\d)+$/" />
 											</div>
@@ -901,7 +905,7 @@
 										
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm"  >
-												<span class="input-group-addon">Webpage link *</span> <input name="psnlWebpgLink"
+												<span class="input-group-addon">Webpage link *</span> <input name="psnlWebpgLink" id="psnlWebpgLink"
 													type="url" class="form-control" placeholder="Personal webpage link"
 													ng-model="register.psnlWebpgLink" />
 											</div>
@@ -915,7 +919,7 @@
 										
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm"  >
-												<span class="input-group-addon">Alumni *</span> <input name="alumni" type="text"
+												<span class="input-group-addon">Alumni *</span> <input name="alumni" type="text" id="alumni"
 													class="form-control" placeholder="Alumni" ng-model="register.alumni"
 													ng-pattern="/^(\D)+$/" />
 											</div>
@@ -939,7 +943,7 @@
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Affiliated university *</span> <input
-													name="affltUniversityOfFaculty" type="text" class="form-control"
+													name="affltUniversityOfFaculty" id="affltUniversityOfFaculty" type="text" class="form-control"
 													placeholder="Affiliated university name" ng-model="register.affltUniversityOfFaculty"
 													ng-pattern="/^(\D)+$/" />
 											</div>
@@ -1246,8 +1250,9 @@
 	    var empty = null;
 	    
 	    $("input", registerAdditionalStudentForm).each(function() {
-	      if($(this).val() === ""){
-	        //if($.trim($("#firstName").val()) === "" || $.trim($("#lastName").val()) === ""|| $.trim($("#userName").val()) === ""|| $.trim($("#password").val()) === ""|| $.trim($("#confirmPassword").val()) === ""|| $.trim($("#mobile").val()) === ""|| $.trim($("#addrLn1").val()) === ""|| $.trim($("#district").val()) === ""|| $.trim($("#city").val()) === ""|| $.trim($("#state").val()) === ""|| $.trim($("#country").val()) === ""|| $.trim($("#pincode").val()) === ""|| $.trim($("#email").val()) === "")      {
+	      //if($(this).val() === ""){
+	        if($.trim($("#studentdegree").val()) === "" || $.trim($("#dateOfBirthDatePicker").val()) === ""|| $.trim($("#studentID").val()) === ""|| $.trim($("#studentCompletionYear").val()) === ""|| $.trim($("#CollegeNames").val()) === ""|| $.trim($("#university").val()) === ""|| $.trim($("#branchIdOfStudent2").val()) === ""|| $.trim($("#facultydegree").val()) === ""|| $.trim($("#collgeOfFaculty").val()) === ""|| $.trim($("#branchIdOfFaculty2").val()) === ""|| $.trim($("#universityOfFaculty").val()) === ""|| $.trim($("#proffesionalExpOfFaculty").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#alumni").val()) === ""|| $.trim($("#facultycompletionyear").val()) === ""|| $.trim($("#affltUniversityOfFaculty").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === "")     
+	        {
 	        	empty="isempty"
 	        
 	        }
