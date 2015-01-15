@@ -1,40 +1,32 @@
 package com.ge.techpedia.service;
 
-import java.util.ArrayList;
-
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Response;
 
-import com.ge.techpedia.bean.Challenge;
-import com.ge.techpedia.bean.ChallengeTypeMasterVO;
-import com.ge.techpedia.bean.DeleteChallDocVO;
-import com.ge.techpedia.bean.DownChallengeDocVO;
-import com.ge.techpedia.bean.Project;
-import com.ge.techpedia.bean.ProjectDocument;
-import com.ge.techpedia.bean.SearchByKeyVO;
-import com.ge.techpedia.bean.UploadChallDocVO;
-import com.ge.techpedia.dao.ChallengeDao;
-import com.ge.techpedia.dao.impl.ChallengeDaoImpl;
-import com.ge.techpedia.exception.AcceptChallengeException;
-import com.ge.techpedia.exception.ChallengesByLoggedInUserException;
-import com.ge.techpedia.exception.CreateChallengeException;
-import com.ge.techpedia.exception.DeleteDocumentException;
-import com.ge.techpedia.exception.DownloadChallengeDocException;
-import com.ge.techpedia.exception.GetAllChallengeException;
-import com.ge.techpedia.exception.GetChallengeDetailException;
-import com.ge.techpedia.exception.GetChallengeException;
-import com.ge.techpedia.exception.SearchChallengeException;
-import com.ge.techpedia.exception.SuggestedChallengeNotFoundException;
-import com.ge.techpedia.exception.UploadChallengeDocException;
+import com.ge.techpedia.service.helper.ChallengeServiceHelper;
+import com.techpedia.projectmanagement.bean.Challenge;
+import com.techpedia.projectmanagement.bean.DeleteChallDocVO;
+import com.techpedia.projectmanagement.bean.DownChallengeDocVO;
+import com.techpedia.projectmanagement.bean.Project;
+import com.techpedia.projectmanagement.bean.SearchByKeyVO;
+import com.techpedia.projectmanagement.bean.UploadChallDocVO;
+import com.techpedia.projectmanagement.exception.AcceptChallengeException;
+import com.techpedia.projectmanagement.exception.ChallengesByLoggedInUserException;
+import com.techpedia.projectmanagement.exception.CreateChallengeException;
+import com.techpedia.projectmanagement.exception.DeleteDocumentException;
+import com.techpedia.projectmanagement.exception.DownloadChallengeDocException;
+import com.techpedia.projectmanagement.exception.GetAllChallengeException;
+import com.techpedia.projectmanagement.exception.GetChallengeDetailException;
+import com.techpedia.projectmanagement.exception.GetChallengeException;
+import com.techpedia.projectmanagement.exception.SearchChallengeException;
+import com.techpedia.projectmanagement.exception.SuggestedChallengeNotFoundException;
+import com.techpedia.projectmanagement.exception.UploadChallengeDocException;
 
 @Path("challengeservice")
 public class ChallengeService {
-
-	ChallengeDao challengeDao = null;
-	
 	
 	/**
 	 * @param challenge
@@ -44,16 +36,8 @@ public class ChallengeService {
 	@Path("createChallenge")
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public Response createChallenge(Challenge challenge) {
-
-		String returnVal = null;
-		
-		try {
-			returnVal = getChallengeDao().createChallenge(challenge);
-		} catch (CreateChallengeException e) {
-			returnVal = e.getMessage();
-		}
-		return Response.status(200).entity(returnVal).build();
+	public Response createChallenge(Challenge challenge) throws CreateChallengeException{		
+		return Response.ok().status(200).entity(ChallengeServiceHelper.createChallenge(challenge)).type("application/json").build();
 	}
 	
 	/**
@@ -64,16 +48,8 @@ public class ChallengeService {
 	@Path("getallchallenge")
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public ArrayList<Challenge> getAllChallenge(String iterationCount) {
-
-		ArrayList<Challenge> challenges = new ArrayList<Challenge>();
-		
-		try {
-			challenges = getChallengeDao().getAllChallenge(iterationCount);
-		} catch (GetAllChallengeException e) {
-			e.getMessage();
-		}
-		return challenges;
+	public Response getAllChallenge(String iterationCount) throws GetAllChallengeException{
+		return Response.ok().status(200).entity(ChallengeServiceHelper.getAllChallenge(iterationCount)).type("application/json").build();
 	}
 	
 	/**
@@ -84,14 +60,8 @@ public class ChallengeService {
 	@Path("getsuggestedchallenges")
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public ArrayList<ChallengeTypeMasterVO> getSuggestedChallenges(String term){
-		ArrayList<ChallengeTypeMasterVO> suggestedChallenges = new ArrayList<ChallengeTypeMasterVO>();
-		try {
-			suggestedChallenges = getChallengeDao().getSuggestedChallenges(term);
-		} catch (SuggestedChallengeNotFoundException e) {
-			e.getMessage();
-		}
-		return suggestedChallenges;
+	public Response getSuggestedChallenges(String term) throws SuggestedChallengeNotFoundException{
+		return Response.ok().status(200).entity(ChallengeServiceHelper.getSuggestedChallenges(term)).type("application/json").build();
 	}
 	
 	/**
@@ -102,14 +72,8 @@ public class ChallengeService {
 	@Path("getchallenge")
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public ArrayList<Challenge> getChallenge(String rgstrId){
-		ArrayList<Challenge> challenges = new ArrayList<Challenge>();
-		try {
-			challenges = getChallengeDao().getChallenge(rgstrId);
-		} catch (GetChallengeException e) {
-			e.getMessage();
-		}
-		return challenges;
+	public Response getChallenge(String rgstrId) throws GetChallengeException{		
+		return Response.ok().status(200).entity(ChallengeServiceHelper.getChallenge(rgstrId)).type("application/json").build();
 	}
 	
 	/**
@@ -120,14 +84,8 @@ public class ChallengeService {
 	@Path("searchchallengebytitle")
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public ArrayList<Challenge> searchChallengeByTitle(SearchByKeyVO searchByKeyVO){
-		ArrayList<Challenge> challenges = new ArrayList<Challenge>();
-		try {
-			challenges = getChallengeDao().searchChallengeByTitle(searchByKeyVO);
-		} catch (SearchChallengeException e) {
-			e.getMessage();
-		}
-		return challenges;
+	public Response searchChallengeByTitle(SearchByKeyVO searchByKeyVO) throws SearchChallengeException{		
+		return Response.ok().status(200).entity(ChallengeServiceHelper.searchChallengeByTitle(searchByKeyVO)).type("application/json").build();
 	}
 	
 	/**
@@ -138,14 +96,8 @@ public class ChallengeService {
 	@Path("getchallengedetail")
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public Challenge getChallengeDetail(String ChallengeId){
-		Challenge challenge = new Challenge();
-		try {
-			challenge = getChallengeDao().getChallengeDetail(ChallengeId);
-		} catch (GetChallengeDetailException e) {
-			e.getMessage();
-		}
-		return challenge;
+	public Response getChallengeDetail(String ChallengeId) throws GetChallengeDetailException{		
+		return Response.ok().status(200).entity(ChallengeServiceHelper.getChallengeDetail(ChallengeId)).type("application/json").build();
 	}
 
 	/**
@@ -156,14 +108,8 @@ public class ChallengeService {
 	@Path("uploadchallengedocument")
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public String uploadChallengeDocument(UploadChallDocVO uploadChallDocVO){
-		String result = null;
-		try {
-			result = getChallengeDao().uploadChallengeDocument(uploadChallDocVO);
-		} catch (UploadChallengeDocException e) {			
-			e.printStackTrace();
-		}
-		return result;
+	public Response uploadChallengeDocument(UploadChallDocVO uploadChallDocVO) throws UploadChallengeDocException{		
+		return Response.ok().status(200).entity(ChallengeServiceHelper.uploadChallengeDocument(uploadChallDocVO)).type("application/json").build();
 	}
 	
 	/**
@@ -174,14 +120,8 @@ public class ChallengeService {
 	@Path("downloadchallengedocument")
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public ArrayList<ProjectDocument> downloadChallengeDocument(DownChallengeDocVO challengeDocVO){
-		ArrayList<ProjectDocument> projectDocuments = new ArrayList<ProjectDocument>();
-		try {
-			projectDocuments = getChallengeDao().downloadChallengeDocument(challengeDocVO);
-		} catch (DownloadChallengeDocException e) {			
-			e.printStackTrace();
-		}
-		return projectDocuments;
+	public Response downloadChallengeDocument(DownChallengeDocVO challengeDocVO) throws DownloadChallengeDocException{		
+		return Response.ok().status(200).entity(ChallengeServiceHelper.downloadChallengeDocument(challengeDocVO)).type("application/json").build();
 	}
 	
 	/**
@@ -192,50 +132,24 @@ public class ChallengeService {
 	@Path("getchallengesbyloggedinuser")
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public ArrayList<Challenge> getChallengesByLoggedInUser(String rgstrId){
-		ArrayList<Challenge> challenges = new ArrayList<Challenge>();
-		try {
-			challenges = getChallengeDao().getChallengesByLoggedInUser(rgstrId);
-		} catch (ChallengesByLoggedInUserException e) {			
-			e.printStackTrace();
-		}
-		return challenges;
+	public Response getChallengesByLoggedInUser(String rgstrId) throws ChallengesByLoggedInUserException{		
+		return Response.ok().status(200).entity(ChallengeServiceHelper.getChallengesByLoggedInUser(rgstrId)).type("application/json").build();
 	}
 	
 	@POST
 	@Path("acceptchallenge")
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public String acceptChallenge(Project project){
-		String result = null;
-		try {
-			result = getChallengeDao().acceptChallenge(project);
-		} catch (AcceptChallengeException e) {			
-			e.printStackTrace();
-		}
-		return result;
+	public Response acceptChallenge(Project project) throws AcceptChallengeException{		
+		return Response.ok().status(200).entity(ChallengeServiceHelper.acceptChallenge(project)).type("application/json").build();
 	}
 	
 	@POST
 	@Path("deletechallengedocument")
 	@Consumes("application/json")
 	@Produces({"application/json"})
-	public String deleteChallengeDocument(DeleteChallDocVO deleteChallDocVO){
-		String result = null;
-		try {
-			result = getChallengeDao().deleteChallengeDocument(deleteChallDocVO);
-		} catch (DeleteDocumentException e) {			
-			e.printStackTrace();
-		}
-		return result;
-	}
-	
-	private ChallengeDao getChallengeDao() {
-		
-		if (this.challengeDao == null) {
-			this.challengeDao = new ChallengeDaoImpl();
-		}
-		return this.challengeDao;
-	}
+	public Response deleteChallengeDocument(DeleteChallDocVO deleteChallDocVO) throws DeleteDocumentException{		
+		return Response.ok().status(200).entity(ChallengeServiceHelper.deleteChallengeDocument(deleteChallDocVO)).type("application/json").build();
+	}	
 
 }

@@ -47,5 +47,14 @@ public class ProjectManagementServiceConstant {
 	public static String FACULTY_INITIATED_PROJECT_FAILURE = "Project Initiated by faculty Failed.";
 	public static String FACULTY_CLOSED_PROJECT_SUCCESS = "Project Closed by faculty Successfully.";
 	public static String FACULTY_CLOSED_PROJECT_FAILURE = "Project Closed by faculty Failed.";
+	
+	public static String CHALLENGE_CREATE_SUCCESS = "Challenge Created Successfully.";
+	public static String CHALLENGE_CREATE_FAILURE = "Challenge Creation Failed.";
+	public static String CHALLENGE_UPDATE_SUCCESS = "Challenge Updated Successfully.";
+	public static String CHALLENGE_UPDATE_FAILURE = "Challenge Updation Failed.";
+	public static String CHALLENGE_ACCEPT_SUCCESS = "Challenge Accepted Successfully.";
+	public static String CHALLENGE_ACCEPT_FAILURE = "Accept Challenge Failed.";
+	public static String CHALLENGE_DOC_DELETE_SUCCESS = "Challenge Document Deleted Successfully.";
+	public static String CHALLENGE_DOC_DELETE_FAILURE = "Challenge Document Deletion Failed.";
 }
 
