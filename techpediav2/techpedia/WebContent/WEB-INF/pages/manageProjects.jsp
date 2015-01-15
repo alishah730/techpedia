@@ -230,7 +230,7 @@
 							<img class="pitch-image" src="{{mentor.photo||'images/UserDefault.jpg'}}" width=90 height=100 />
 						</div>
 						<div class="col-md-10">
-							<div class="col-md-12">{{mentor.fname}} {{mentor.mname}} {{mentor.lname}}</div>
+							<div class="col-md-12">{{mentor.fName}} {{mentor.mName}} {{mentor.lName}}</div>
 							<div class="col-md-12">{{mentor.designation}}</div>
 							<div class="col-md-12">{{mentor.degree}}</div>
 							<div class="col-md-12 red">Experience: {{mentor.experience}}</div>
