@@ -634,7 +634,7 @@
 										 <div class="col-xs-12" >
 													<select id="branchIdOfStudent" class="form-control"
 														ng-model="register.branchIdOfStudent" 
-														ng-options="item.branchId as item.projBranchDesc for item in data">
+														ng-options="item.branchId as item.projBranchDesc for item in data" >
 													</select>
 												</div> 
 											</div>
@@ -652,9 +652,9 @@
 									<div class="panel-body">
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm">
-												<span class="input-group-addon">College name *</span> <input name="collegeName"
+												<span class="input-group-addon">College name *</span> <input name="collegeName" id="collegeName"
 													type="text" class="form-control" placeholder="College name"
-													ng-model="register.collegeName" required ng-pattern="/^(\D)+$/" />
+													ng-model="register.collegeName" required ng-pattern="/^(\D)+$/" required />
 											</div>
 
 
@@ -670,9 +670,9 @@
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm">
-												<span class="input-group-addon">Principal name *</span> <input name="prinicipalName"
+												<span class="input-group-addon">Principal name *</span> <input name="prinicipalName" id="prinicipalName"
 													type="text" class="form-control" placeholder="Principal name"
-													ng-model="register.prinicipalName" required ng-pattern="/^(\D)+$/" />
+													ng-model="register.prinicipalName" required ng-pattern="/^(\D)+$/" required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -688,9 +688,9 @@
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
-												<span class="input-group-addon">University *</span>  <input name="affltUniversityOfCollege"
+												<span class="input-group-addon">University *</span>  <input name="affltUniversityOfCollege" id="affltUniversityOfCollege"
 													type="text" class="form-control" placeholder="University name"
-													ng-model="register.affltUniversityOfCollege" required ng-pattern="/^(\D)+$/" /> 
+													ng-model="register.affltUniversityOfCollege" required ng-pattern="/^(\D)+$/"  required/> 
 													 
 											</div>
 
@@ -708,7 +708,7 @@
 												<span class="input-group-addon">Techpedia faculty *</span> <input id="collegecontactname"
 													maxlength=100 name="techpdaFactlyCoordtr" type="text" class="form-control"
 													placeholder="Techpedia faculty co-ordinator" ng-model="register.techpdaFactlyCoordtr"
-													required ng-pattern="/^(\D)+$/" />
+													required ng-pattern="/^(\D)+$/" required />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -740,7 +740,7 @@
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
-												<span class="input-group-addon">Website link *</span> <input name="webpage" type="url"
+												<span class="input-group-addon">Website link *</span> <input name="webpage" id="webpage" type="url"
 													class="form-control" placeholder="College url" ng-model="register.webpage" required/>
 											</div>
 
@@ -754,7 +754,7 @@
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Facility offered *</span> <input
-													name="facilitiesOffrdToStudents" type="text" class="form-control"
+													name="facilitiesOffrdToStudents" id="facilitiesOffrdToStudents" type="text" class="form-control"
 													placeholder="Facility offered to students"
 													ng-model="register.facilitiesOffrdToStudents" required />
 											</div>
@@ -773,7 +773,7 @@
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">College description *</span> <input
-													id="collegecontactname" name="collegeDesc" type="text" class="form-control"
+													id="collegeDesc" name="collegeDesc" type="text" class="form-control"
 													placeholder="College description" ng-model="register.collegeDesc" required/>
 											</div>
 										</div>
@@ -830,7 +830,7 @@
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Degree *</span> <input id="facultydegree" maxlength=100
 													name="degreeOfFaculty" type="text" class="form-control" placeholder="Degree"
-													ng-model="register.degreeOfFaculty" required ng-pattern="/^(\D)+$/" />
+													ng-model="register.degreeOfFaculty" required ng-pattern="/^(\D)+$/" required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -844,7 +844,7 @@
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">College name *</span> <input name="collgeOfFaculty" id="collgeOfFaculty"
 													type="text" class="form-control" placeholder="College name"
-													ng-model="register.collgeOfFaculty" required ng-pattern="/^(\D)+$/" />
+													ng-model="register.collgeOfFaculty" required ng-pattern="/^(\D)+$/" required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -863,15 +863,13 @@
 											<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Speciality *</span>
-											<div class="col-xs-12">
-													<input type="text" class="form-control" placeholder="Search branches" id="branchIdOfFaculty2"
-														ng-model="searchTerm" ng-change="search()" value="" />
-												</div>	
-												<div class="col-xs-12">
-													<select class="form-control" ng-model="register.branchIdOfFaculty" required
-														ng-options="item.branchId as item.projBranchDesc for item in data"  placeholder="Search branches" data-toggle='tooltip' data-placement='right' 
-														title='Please enter your specialised branch'>
-													</select>
+										<div class="col-xs-12">
+													<input type="text" class="form-control" placeholder="Search branches" id="specializationOfFaculty2"
+														ng-model="searchTerm" ng-change="search()" value="" required />
+												</div>												<div class="col-xs-12">
+											<select class="form-control" ng-model="register.specializationOfFaculty" 
+													ng-options="item.branchId as item.projBranchDesc for item in data">
+ 													</select> 
 												</div> 
 											</div>
 										</div>
@@ -879,7 +877,7 @@
 											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">University *</span> <input name="universityOfFaculty" id="universityOfFaculty"
 													type="text" class="form-control" placeholder="University"
-													ng-model="register.universityOfFaculty" required ng-pattern="/^(\D)+$/" />
+													ng-model="register.universityOfFaculty" required ng-pattern="/^(\D)+$/" required />
 											</div>
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 												ng-show="registerAdditionalFacultyForm.universityOfFaculty.$dirty && registerAdditionalFacultyForm.universityOfFaculty.$error.required">University
@@ -895,7 +893,7 @@
 											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Experience *</span> <input name="proffesionalExpOfFaculty" id="proffesionalExpOfFaculty"
 													type="text" class="form-control" placeholder="Profeesional experience in months"
-													ng-model="register.proffesionalExpOfFaculty" ng-pattern="/^(\d)+$/" />
+													ng-model="register.proffesionalExpOfFaculty" ng-pattern="/^(\d)+$/" required />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -907,7 +905,7 @@
 											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Webpage link *</span> <input name="psnlWebpgLink" id="psnlWebpgLink"
 													type="url" class="form-control" placeholder="Personal webpage link"
-													ng-model="register.psnlWebpgLink" />
+													ng-model="register.psnlWebpgLink" required />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -921,7 +919,7 @@
 											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Alumni *</span> <input name="alumni" type="text" id="alumni"
 													class="form-control" placeholder="Alumni" ng-model="register.alumni"
-													ng-pattern="/^(\D)+$/" />
+													ng-pattern="/^(\D)+$/" required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -933,7 +931,7 @@
 												<span class="input-group-addon">Association list *</span> <input
 													id="facultycompletionyear" maxlength=100 name="memshipInAssocns" type="text"
 													class="form-control" placeholder="Association or membership name list"
-													ng-model="register.memshipInAssocns" />
+													ng-model="register.memshipInAssocns" required />
 											</div>
 										</div>
 										
@@ -945,7 +943,7 @@
 												<span class="input-group-addon">Affiliated university *</span> <input
 													name="affltUniversityOfFaculty" id="affltUniversityOfFaculty" type="text" class="form-control"
 													placeholder="Affiliated university name" ng-model="register.affltUniversityOfFaculty"
-													ng-pattern="/^(\D)+$/" />
+													ng-pattern="/^(\D)+$/" required />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -966,7 +964,7 @@
 									<div class="panel-body">
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm">
-												<span class="input-group-addon">Degree *</span> <input name="degreeOfMentor" type="text"
+												<span class="input-group-addon">Degree *</span> <input name="degreeOfMentor"  id="degreeOfMentor" type="text"
 													class="form-control" placeholder="Degree" ng-model="register.degreeOfMentor" required
 													ng-pattern="/^(\D)+$/" />
 											</div>
@@ -980,9 +978,9 @@
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm"  >
-												<span class="input-group-addon">Designation *</span> <input name="designationOfMentor"
+												<span class="input-group-addon">Designation *</span> <input name="designationOfMentor" id="designationOfMentor"
 													type="text" class="form-control" placeholder="Designation"
-													ng-model="register.designationOfMentor" required ng-pattern="/^(\D)+$/" />
+													ng-model="register.designationOfMentor" required ng-pattern="/^(\D)+$/"  required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -1001,7 +999,7 @@
 
 												<div class="col-xs-12">
 													<input type="text" class="form-control" placeholder="Search branches" id="branchIdOfMentor2"
-														ng-model="searchTerm" ng-change="search()" value="" />
+														ng-model="searchTerm" ng-change="search()" value="" required />
 												</div>												<div class="col-xs-12">
 											<select class="form-control" ng-model="register.branchIdOfMentor" 
 													ng-options="item.branchId as item.projBranchDesc for item in data">
@@ -1013,9 +1011,9 @@
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
-												<span class="input-group-addon">Experience *</span> <input name="professionalExperience"
+												<span class="input-group-addon">Experience *</span> <input name="professionalExperience" id="professionalExperience"
 													type="text" class="form-control" placeholder="Professional experience in months"
-													ng-model="register.professionalExperience" required ng-pattern="/^(\d)+$/" />
+													ng-model="register.professionalExperience" required ng-pattern="/^(\d)+$/"  required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -1031,17 +1029,17 @@
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Association *</span> <input maxlength=200
-													name="institutionalAssctnInfo" type="text" class="form-control"
-													placeholder="Institution association info" ng-model="register.institutionalAssctnInfo" />
+													name="institutionalAssctnInfo" id="institutionalAssctnInfo" type="text" class="form-control"
+													placeholder="Institution association info" ng-model="register.institutionalAssctnInfo" required/>
 											</div>
 										</div>
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Time spare *</span> <input
-													name="timeUspaceForMentoringPerMnth" type="text" class="form-control"
+													name="timeUspaceForMentoringPerMnth" id="timeUspaceForMentoringPerMnth" type="text" class="form-control"
 													placeholder="Time spare for mentoring per month" ng-pattern="/^(\d)+$/"
-													ng-model="register.timeUspaceForMentoringPerMnth" />
+													ng-model="register.timeUspaceForMentoringPerMnth" required />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -1052,8 +1050,8 @@
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Mentor profile *</span>
-												<textarea rows="3" cols="32" name="mentorProfile" placeholder="Mentor Profile"
-													ng-model="register.mentorProfile" style="resize:none;"></textarea>
+												<textarea rows="3" cols="32" name="mentorProfile" id="mentorProfile" placeholder="Mentor Profile"
+													ng-model="register.mentorProfile" style="resize:none;" required></textarea>
 											</div>
 										</div>
 
@@ -1061,7 +1059,7 @@
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Webpage link *</span> <input id="mentorwebpage"
 													name="webpage" type="url" class="form-control" placeholder="Personal webpage link"
-													ng-model="register.webpage" />
+													ng-model="register.webpage" required />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -1071,16 +1069,16 @@
 										<div class="col-xs-12">&nbsp;</div>
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
-												<span class="input-group-addon">Commitment *</span> <input id="mentorwebpage"
+												<span class="input-group-addon">Commitment *</span> <input id="commitmentUBringIn"
 													maxlength=100 name="commitmentUBringIn" type="text" class="form-control"
-													placeholder="Commitment you bring" ng-model="register.commitmentUBringIn" />
+													placeholder="Commitment you bring" ng-model="register.commitmentUBringIn" required/>
 											</div>
 										</div>
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
-												<span class="input-group-addon">Interest *</span> <input name="intOnGrassrtInnovators"
+												<span class="input-group-addon">Interest *</span> <input name="intOnGrassrtInnovators"  id="intOnGrassrtInnovators"
 													type="text" class="form-control" placeholder="grass root innovators interest"
-													ng-model="register.intOnGrassrtInnovators" />
+													ng-model="register.intOnGrassrtInnovators" required/>
 											</div>
 										</div>
 										<div class="col-xs-12 col-md-6"></div>
@@ -1251,7 +1249,11 @@
 	    
 	    $("input", registerAdditionalStudentForm).each(function() {
 	      //if($(this).val() === ""){
-	        if($.trim($("#studentdegree").val()) === "" || $.trim($("#dateOfBirthDatePicker").val()) === ""|| $.trim($("#studentID").val()) === ""|| $.trim($("#studentCompletionYear").val()) === ""|| $.trim($("#CollegeNames").val()) === ""|| $.trim($("#university").val()) === ""|| $.trim($("#branchIdOfStudent2").val()) === ""|| $.trim($("#facultydegree").val()) === ""|| $.trim($("#collgeOfFaculty").val()) === ""|| $.trim($("#branchIdOfFaculty2").val()) === ""|| $.trim($("#universityOfFaculty").val()) === ""|| $.trim($("#proffesionalExpOfFaculty").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#alumni").val()) === ""|| $.trim($("#facultycompletionyear").val()) === ""|| $.trim($("#affltUniversityOfFaculty").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === "")     
+	        if($.trim($("#studentdegree").val()) === "" || $.trim($("#dateOfBirthDatePicker").val()) === ""|| $.trim($("#studentID").val()) === ""|| $.trim($("#studentCompletionYear").val()) === ""|| $.trim($("#CollegeNames").val()) === ""|| $.trim($("#university").val()) === ""|| $.trim($("#branchIdOfStudent2").val()) === 
+	        	                                     ""|| $.trim($("#facultydegree").val()) === ""|| $.trim($("#collgeOfFaculty").val()) === ""|| $.trim($("#specializationOfFaculty2").val()) === 
+ ""|| $.trim($("#universityOfFaculty").val()) === ""|| $.trim($("#proffesionalExpOfFaculty").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#alumni").val()) === ""|| $.trim($("#facultycompletionyear").val()) === ""|| $.trim($("#affltUniversityOfFaculty").val()) === ""|| $.trim($("#college").val()) === 
+	        	                                     ""|| $.trim($("#degreeOfMentor").val()) === ""|| $.trim($("#designationOfMentor").val()) === ""|| $.trim($("#branchIdOfMentor2").val()) === ""|| $.trim($("#professionalExperience").val()) === ""|| $.trim($("#institutionalAssctnInfo").val()) === ""|| $.trim($("#timeUspaceForMentoringPerMnth").val()) === ""|| $.trim($("#mentorProfile").val()) === ""|| $.trim($("#mentorwebpage").val()) ===
+	        	                                     ""|| $.trim($("#intOnGrassrtInnovators").val()) === ""|| $.trim($("#collegeName").val()) ===  ""|| $.trim($("#prinicipalName").val()) === ""|| $.trim($("#affltUniversityOfCollege").val()) ==="" || $.trim($("#collegecontactname").val()) ==="" || $.trim($("#collegecontactemail").val()) ==="" || $.trim($("#webpage").val()) ==="" || $.trim($("#facilitiesOffrdToStudents").val()) ==="")     
 	        {
 	        	empty="isempty"
 	        
