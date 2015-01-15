@@ -115,8 +115,8 @@
 					<div class="col-md-7">
 						<div class="progress">
 							<div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
-								aria-valuenow="{{popularity}}" aria-valuemin="0" aria-valuemax="100" style="width:"{{popularity}}"%">
-								<span class="sr-only">{{popularity}}%</span>
+								aria-valuenow=" {{mentor. popularity}}" aria-valuemin="0" aria-valuemax="100" style="width:" {{mentor. popularity}}"%">
+								<span class="sr-only"> {{mentor. popularity}}%</span>
 							</div>
 						</div>
 					</div>
