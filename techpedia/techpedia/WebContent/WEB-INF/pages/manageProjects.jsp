@@ -70,25 +70,25 @@
 								<div class="col-md-3">
 									<div class="col-md-12">
 										<div class="col-md-6">
-											<a style="cursor: pointer; width: 66.5625" class="btn btn-info btn-sm"
-												ng-click="viewProject(project.projId)">View</a>
+											<a style="cursor: pointer; width: 66.5625px" class="btn btn-info btn-sm"
+												ng-click="viewProject(project.projId)">&nbsp;&nbsp;View&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
 										</div>
 
 										
 
 										<div class="col-md-6">
 											<!-- ng-show="registerId==project.projTeamLeaderId"> -->
-											<a style="cursor: pointer; width: 66.5625" class="btn btn-info btn-sm"
-												ng-click="editProject(project)">Edit</a>
+											<a style="cursor: pointer; width: 66.5625px" class="btn btn-info btn-sm"
+												ng-click="editProject(project)">&nbsp;&nbsp;&nbsp;Edit&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a>
 										</div> </div>
 										
 										<div class="col-md-12">&nbsp;</div>
 										<div class="col-md-12">
 										<div class="col-md-6">
 											<!--  ng-show="registerId==project.projTeamLeaderId"> -->
-											<a style="cursor: pointer; width: 66.5625" class="btn btn-info
+											<a style="cursor: pointer; width: 66.5625px" class="btn btn-info
 												btn-sm"
-												data-toggle="modal" data-target="#pitchMentorModal" ng-click="pitchProject(project)">Pitch&nbsp;&nbsp;</a>
+												data-toggle="modal" data-target="#pitchMentorModal" ng-click="pitchProject(project)">&nbsp;Pitch&nbsp;&nbsp;</a>
 										</div>
 										
 										<div class="col-md-6" ng-show="userType=='student'">
@@ -103,20 +103,22 @@
 												ng-click="submitProject(project.projId)">Submit</a>
 										</div>
 										
-										<div class="col-md-6">
-											<a style="cursor: pointer; width: 66.5625px" class="btn btn-info btn-sm"
-												data-toggle="modal" data-target="#approveProjectModal"
-												ng-click="currentProject(project)">Approve</a>
-										</div>
+										
 
 										</div>
 										<div class="col-md-12">&nbsp;</div>
 									<div class="col-md-12">
 							
+							        <div class="col-md-6">
+											<a style="cursor: pointer; width: 66.5625px" class="btn btn-info btn-sm"
+												data-toggle="modal" data-target="#approveProjectModal"
+												ng-click="currentProject(project)">Approve</a>
+										</div>
+									
 									<div class="col-md-6">
-											<a style="cursor: pointer; width: 120px" class="btn btn-info
+											<a style="cursor: pointer; width: 66.5625px" class="btn btn-info
 												btn-sm"
-												data-toggle="modal" data-target="#closeProjectModal" ng-click="currentProject(project)">Close Project</a>
+												data-toggle="modal" data-target="#closeProjectModal" ng-click="currentProject(project)">Close</a>
 										</div>
 										
 										</div>
@@ -216,15 +218,18 @@
 					<button type="button" class="close" data-dismiss="modal">
 						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
 					</button>
-					<h4 class="modal-title" id="myModalLabel">
-						Search mentor
-						<div class="alert alert-sm alert-info alert-dismissible" role="alert"
-							ng-show="message.length>0">
-							<li ng-repeat="msg in message">{{msg}}</li>
-						</div>
-					</h4>
+				
 				</div>
 				<div class="modal-body">
+					<h3 class="modal-title" id="myModalLabel">
+						Select Mentor
+						<!-- <div class="alert alert-sm alert-info alert-dismissible" role="alert"
+							ng-show="message.length>0">
+							<li ng-repeat="msg in message">{{msg}}</li>
+						</div> -->
+					</h3>
+				<div class="col-md-12">&nbsp;</div>
+				<div class="col-md-12">&nbsp;</div>
 					<div class="col-xs-12" ng-repeat="mentor in suggestedMentors">
 						<div class="col-md-2">
 							<img class="pitch-image" src="{{mentor.photo||'images/UserDefault.jpg'}}" width=90 height=100 />
@@ -237,8 +242,11 @@
 							<div class="col-md-12">
 								<a style="cursor: pointer;" class="btn btn-sm btn-success" ng-click="addMentor(mentor)">Add
 									to project</a>
-							</div>
+									</div>
 						</div>
+						<div class="col-md-12">&nbsp;</div>
+						<hr>
+						<div class="col-md-12">&nbsp;</div>
 					</div>
 				</div>
 				<div class="modal-footer">
