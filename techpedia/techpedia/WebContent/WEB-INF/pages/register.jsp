@@ -17,6 +17,9 @@
 					<ul class="page-breadcrumb breadcrumb">
 						<li><a href="./">Home</a> &raquo;</li>
 						<li>Register</li>
+						
+						
+						
 
 						<li class="pull-right">
 							<div id="dashboard-report-range" class="dashboard-date-range tooltips"
