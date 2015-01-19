@@ -19,9 +19,7 @@
 						<li>Register</li>
 						
 						
-						
-
-						<li class="pull-right">
+							<li class="pull-right">
 							<div id="dashboard-report-range" class="dashboard-date-range tooltips"
 								data-placement="bottom" data-original-title="Change dashboard date range">
 								<i class="icon-calendar"></i> <span></span> <i class="fa fa-angle-down"></i>
@@ -138,7 +136,7 @@
 
 
 
-
+<div class="col-xs-12">&nbsp;gdfgdgsdfghsfhfh</div>
 
 
 											
