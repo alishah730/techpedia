@@ -227,6 +227,11 @@ public class DataFetch {
 		String jsonResponse = restServiceClient(serviceURL, q, "application/json");
 		return jsonResponse;
 	}
+	public String getsuggestedchallenges(String serviceURL, String post) {
+		String jsonResponse = restServiceClient(serviceURL, post, "application/json");
+		System.err.println(jsonResponse);
+		return jsonResponse;
+	}
 
 	public String getSuggestedKeywords(String serviceURL, String q) throws Exception {
 		ArrayList<String> parts = new ArrayList<String>();

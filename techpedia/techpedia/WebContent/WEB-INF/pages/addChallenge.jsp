@@ -6,7 +6,7 @@
 	<div class="page-sidebar-wrapper">
 		<jsp:include page="template/dashboardMenu.jsp" />
 	</div>
-	<div class="page-content-wrapper" ng-controller="AddChallengeController">
+	<div class="page-content-wrapper" ng-controller="AddChallengeController" ng-init="InitChallengeLoad()">
 		<div class="page-content">
 			<div class="row">
 				<div class="col-md-12">
@@ -55,7 +55,7 @@
 											<!-- <div class="col-xs-12">&nbsp;</div> -->
 											<div class="col-xs-12">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" >Title </span> <input
+													<span class="input-group-addon" >Title *</span> <input
 														id="challengeTitle" name="challengTitle" type="text" class="form-control rname"
 														placeholder="Challenge Title" ng-model="challenge.challengeTitle" required
 														ng-maxlength="30" ng-minlength="5" />
@@ -73,22 +73,38 @@
 												<div class="col-xs-12">&nbsp;</div>
 
 
-												<div class="col-xs-12">
-													<div class="input-group input-group-sm">
+																		<div class="col-xs-12">
+													<div class="input-group input-group-sm"><span class="input-group-addon" >Challenge
+															Type *</span> 
+													<input type="text" class="form-control" placeholder="Search Type" id="challengeTypeId2"
+														ng-model="challenge.searchTerm" ng-change="searchChallengeType()" value="" />
+												<select id="challengeTypeId" class="form-control" name="challengeTypeId"
+														ng-model="challenge.challengeTypeId"
+														ng-options="item.challengTypeId as item.challengTypeDesc for item in data">
+													</select>
+												</div>	
+												
+												<!-- 	<div class="input-group input-group-sm">
 														<span class="input-group-addon" >Challenge
-															Type</span> <select name="challengTypeId" class="form-control">
+															Type *</span> <select name="challengTypeId" class="form-control">
 															<option value="20">Industry </option>
 															<option value="10">Academic</option>
 															<option value="30">Innovation</option>
 														</select>
-													</div>
-
+													</div> -->
+										<!-- 			<div class="col-xs-12">
+													<select id="challengeTypeId" class="form-control" name="challengeTypeId"
+														ng-model="challenge.challengeTypeId"
+														ng-options="item.challengTypeId as item.challengTypeDesc for item in data">
+													</select>
+												</div>
+ -->
 												</div>
 												<div class="col-xs-12">&nbsp;</div>
 
 												<div class="col-xs-12 ">
 													<div class="input-group input-group-sm">
-														<span class="input-group-addon">Start date</span> <input id="challengStartDate"
+														<span class="input-group-addon">Start date *</span> <input id="challengStartDate"
 															name="challengStartDate" type="text" class="form-control"
 															placeholder="Challenge Start date" ng-model="challenge.challengStartdate" 
 															datepicker-angular /><span class="input-group-addon">YYYY-MM-DD</span>
@@ -104,7 +120,7 @@
 												<div class="col-xs-12">&nbsp;</div>
 												<div class="col-xs-12 ">
 													<div class="input-group input-group-sm">
-														<span class="input-group-addon">End date</span> <input id="challengCloseDate"
+														<span class="input-group-addon">End date *</span> <input id="challengCloseDate"
 															name="challengCloseDate" type="text" class="form-control"
 															placeholder="Challenge End date" ng-model="challenge.challengCloseDate" 
 															datepicker-angular /><span class="input-group-addon">YYYY-MM-DD</span>
@@ -121,7 +137,7 @@
 												<div class="col-xs-12">&nbsp;</div>
 												<div class="col-xs-12">
 												<div class="input-group input-group-sm">
-														<span class="input-group-addon">Challenge Source Fund</span> <input id="challengeSourceFund"
+														<span class="input-group-addon">Challenge Source Fund *</span> <input id="challengeSourceFund"
 														name="challengeSourceFund" type="text" class="form-control" placeholder="Challenge Source Fund"
 														ng-model="challenge.challengeSourceFund" required ng-maxlength="30" ng-minlength="5" />
 												</div>
@@ -150,7 +166,7 @@
 										
 										<div class="col-xs-12">
 												<div class="input-group input-group-sm">
-														<span class="input-group-addon">Challenge Impact</span> <input id="challengeImpact"
+														<span class="input-group-addon">Challenge Impact *</span> <input id="challengeImpact"
 														name="challengeImpact" type="text" class="form-control" placeholder="Challenge Impact"
 														ng-model="challenge.challengeImpact" required ng-maxlength="30" ng-minlength="5" />
 												</div>
@@ -167,7 +183,7 @@
 												<div class="col-xs-12">&nbsp;</div>
 												<div class="col-xs-12">
 												<div class="input-group input-group-sm">
-														<span class="input-group-addon">Challenge Incentive</span> <input id="challengeIncentive"
+														<span class="input-group-addon">Challenge Incentive *</span> <input id="challengeIncentive"
 														name="challengeIncentive" type="text" class="form-control" placeholder="Challenge Incentive"
 														ng-model="challenge.challengeIncentive" required ng-maxlength="30" ng-minlength="5" />
 												</div>
@@ -184,7 +200,7 @@
 												<div class="col-xs-12">&nbsp;</div>
 												<div class="col-xs-12">
 												<div class="input-group input-group-sm">
-														<span class="input-group-addon">Challenge Delivery Expectation</span> <input id="challengeDeliveryExpectation"
+														<span class="input-group-addon">Challenge Delivery Expectation *</span> <input id="challengeDeliveryExpectation"
 														name="challengeDeliveryExpectation" type="text" class="form-control" placeholder="Challenge Delivery Expectation"
 														ng-model="challenge.challengeDeliveryExpectation" required ng-maxlength="30" ng-minlength="5" />
 												</div>
@@ -201,7 +217,7 @@
 												<div class="col-xs-12">&nbsp;</div>
 												<div class="col-xs-12">
 												<div class="input-group input-group-sm">
-														<span class="input-group-addon">Challenge Benchmark</span> <input id="challengeBenchmark"
+														<span class="input-group-addon">Challenge Benchmark *</span> <input id="challengeBenchmark"
 														name="challengeBenchmark" type="text" class="form-control" placeholder="Challenge Benchmark"
 														ng-model="challenge.challengeBenchmark" required ng-maxlength="30" ng-minlength="5" />
 												</div>
@@ -219,14 +235,14 @@
 								<div class="col-xs-12 col-md-6">
 									<!-- USER INFO START -->
 									<div class="panel panel-default">
-										<div class="panel-heading">Challenge Abstract</div>
+										<div class="panel-heading">Challenge Abstract *</div>
 										<div class="panel-body challenge-state-info">
 											<div class="col-xs-12">
 												<div class="input-group input-group-sm">
 
 													<textarea id="challengeAbstract" placeholder="Challenge abstract..."
 														class="textarea-text" style="resize: none; " name="challengAbstract"
-														rows="4" cols="32" ng-model="challenge.challengeAbstract"></textarea>
+														rows="4" cols="32" ng-model="challenge.challengeAbstract" required></textarea>
 												</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 													ng-show="addChallengeForm.challengeAbstract.$dirty && addChallengeForm.challengeAbstract.$error.required">Challenge
@@ -239,14 +255,14 @@
 
 									<div class="col-xs-12 col-md-6 ">
 										<div class="panel panel-default">
-											<div class="panel-heading">Challenge Description</div>
+											<div class="panel-heading">Challenge Description *</div>
 											<div class="panel-body challenge-state-info">
 												
 													<div class="input-group input-group-sm">
 
 														<textarea id="challengeDescription" placeholder="Challenge description..."
 															class="textarea-text" style="resize: none;" name="challengDescription" rows="4" cols="32"
-															ng-model="challenge.challengeDescription"></textarea>
+															ng-model="challenge.challengeDescription" required></textarea>
 													</div>
 													<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 														ng-show="addChallengeForm.challengeDescription.$dirty && addChallengeForm.challengeDescription.$error.required">Challenge

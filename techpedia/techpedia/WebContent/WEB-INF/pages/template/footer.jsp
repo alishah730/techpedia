@@ -1,6 +1,12 @@
 <!-- FOOOTER 
 ================================================== -->
 <link rel="stylesheet" href="css/responsive.css">
+<!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+     <script src="js/respond.min.js"></script>
+ <![endif]-->
+<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
+<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
 <div id="footer" ng-controller="FooterController" ng-init="InitLoad()">
 	<footer class="row" style="margin-left: 15%">
 		<p class="back-top floatright">

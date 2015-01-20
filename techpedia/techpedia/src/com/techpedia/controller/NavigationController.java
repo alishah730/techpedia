@@ -424,6 +424,7 @@ public class NavigationController {
 		String response = dataFetch.getSuggestedFaculty("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getsuggestedfaculty", q);
 		return response;
 	}
+	
 
 	@RequestMapping(value = "/getSuggestedKeywords", method = RequestMethod.POST)
 	@ResponseBody
@@ -438,7 +439,14 @@ public class NavigationController {
 		String response = dataFetch.getSuggestedBranches("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getsuggestedbranches", q);
 		return response;
 	}
-
+	@RequestMapping(value = "/getsuggestedchallenges", method = RequestMethod.GET)
+	@ResponseBody
+	public String getsuggestedchallenges(ModelMap model, @RequestParam String q) throws Exception {
+	
+		String response = dataFetch.getsuggestedchallenges("http://" + IP + ":8080/techpediaProjectManagementService/challengeservice/getsuggestedchallenges", q);
+	
+		return response;
+	}
 	@RequestMapping(value = "/addProjectRequest")
 	public @ResponseBody
 	String addProjectRequest(ModelMap model, @ModelAttribute Project project) throws Exception {
@@ -661,7 +669,7 @@ public class NavigationController {
 	@RequestMapping(value = "/challengesFetch")
 	@ResponseBody
 	public String challengesFetch(ModelMap model, @RequestParam("set") String set) throws Exception {
-		String response = dataFetch.fetchChallenges("http://" + IP + ":8080/techpediaProjectManagementService/challengeservice/getchallenge", model, set);
+		String response = dataFetch.fetchChallenges("http://" + IP + ":8080/techpediaProjectManagementService/challengeservice/getallchallenge", model, set);
 		return response;
 	}
 

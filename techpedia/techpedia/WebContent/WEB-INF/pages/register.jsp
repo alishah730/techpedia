@@ -1,6 +1,7 @@
 <%@ page import="java.util.Random"%>
 <html ng-app="techpedia">
 <jsp:include page="template/dashboardHeader.jsp" />
+
 <div class="clearfix"></div>
 <div class="page-container">
 	<div class="page-sidebar-wrapper">
@@ -102,7 +103,7 @@
 										<div class="panel-heading">User Information</div>
 										<div class="panel-body user-info">
 											<div class="col-xs-12">
-												 <div class="input-group input-group-sm " ng-class="{ 'has-error' : registerBasicForm.firstName.$invalid && registerBasicForm.firstName.$pristine }">
+												 <div class="input-group input-group-sm " >
 													<span class="input-group-addon"> First name *</span> 
 													<input name="firstName" type="text" id="firstName"
 														 class="form-control rname my-tooltip" placeholder="First name" ng-model="register.firstName"
@@ -160,7 +161,7 @@
 											<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12">
-												<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerBasicForm.lastName.$invalid && registerBasicForm.lastName.$pristine }">
+												<div class="input-group input-group-sm" >
 													<span class="input-group-addon">Last name *</span> <input name="lastName" type="text" id="lastName"
 														class="form-control rname" placeholder="Last name" ng-model="register.lastName"
 														required ng-maxlength="30" ng-pattern="/^(\D)+$/" data-toggle='tooltip' data-placement='right' 
@@ -182,7 +183,7 @@
 											<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12">
-												<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerBasicForm.userName.$invalid && registerBasicForm.userName.$pristine }">
+												<div class="input-group input-group-sm" >
 													<span class="input-group-addon">Username *</span> <input name="userName" type="text" id="userName"
 														class="form-control" placeholder="Username" ng-model="register.userName" required
 														ng-maxlength="40" data-toggle='tooltip' data-placement='right' 
@@ -201,11 +202,11 @@
 											<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerBasicForm.password.$invalid && registerBasicForm.password.$pristine }">
+											<div class="input-group input-group-sm" >
 													<span class="input-group-addon">Password *</span> <input name="password" type="password" id="password"
 														class="form-control" placeholder="Password" ng-model="register.password" required
 														ng-minlength="6" ng-maxlength="16" ng-pattern="/^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/" data-toggle='tooltip' data-placement='right' 
-														title='Password should be of "asdf123#" format'/>
+														title='Password should contain atleast one numeric value and one special character'/>
 												</div>
 
 												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -224,9 +225,9 @@
 											<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerBasicForm.confirmPassword.$invalid && registerBasicForm.confirmPassword.$pristine }">
+											<div class="input-group input-group-sm" >
 													<span class="input-group-addon">Confirm *</span> <input name="confirmPassword"
-														type="password" class="form-control" placeholder="Confirm password"
+														type="password" class="form-control" placeholder="Confirm password" id="confirmPassword"
 														ng-model="register.confirmPassword" required ng-minlength="6" ng-maxlength="16" password-match="register.password" data-toggle='tooltip' data-placement='right' 
 														title='Password & Confirm password should be same '/>
 												</div>
@@ -251,7 +252,7 @@
 											<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12">
-												<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerBasicForm.mobile.$invalid && registerBasicForm.mobile.$pristine }">
+												<div class="input-group input-group-sm">
 													<span class="input-group-addon">Mobile *</span> <input name="mobile" type="text" id="mobile"
 														class="form-control" placeholder="Mobile" ng-model="register.mobile" required
 														ng-minlength=10 ng-maxlength=10 data-toggle='tooltip' data-placement='right' 
@@ -303,7 +304,7 @@
 										<div class="panel-body personal-info">
 
 											<div class="col-xs-12">
-												<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerBasicForm.addrLn1.$invalid && registerBasicForm.addrLn1.$pristine }">
+												<div class="input-group input-group-sm">
 													<span class="input-group-addon">Address *</span> <input name="addrLn1" type="text" id="addrLn1"
 														class="form-control" placeholder="Line 1(required)" ng-model="register.addrLn1" required
 														ng-max-length="100" data-toggle='tooltip' data-placement='right'
@@ -329,7 +330,7 @@
 											<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerBasicForm.district.$invalid && registerBasicForm.district.$pristine }">
+											<div class="input-group input-group-sm" >
 													<span class="input-group-addon">District *</span> <input name="district" type="text" id="district"
 														class="form-control" placeholder="District" ng-model="register.district" required
 														ng-maxlength="100" ng-pattern="/^(\D)+$/" data-toggle='tooltip' data-placement='right' 
@@ -349,7 +350,7 @@
 											<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerBasicForm.city.$invalid && registerBasicForm.city.$pristine }">
+											<div class="input-group input-group-sm" >
 													<span class="input-group-addon">City *</span> <input name="city" type="text" id="city"
 														class="form-control" placeholder="City" ng-model="register.city" required 
 														ng-maxlength="100" ng-pattern="/^(\D)+$/" data-toggle='tooltip' data-placement='right' 
@@ -369,7 +370,7 @@
 
 											<div class="col-xs-12">&nbsp;</div>
 											<div class="col-xs-12">
-												<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerBasicForm.state.$invalid && registerBasicForm.state.$pristine }">
+												<div class="input-group input-group-sm">
 													<span class="input-group-addon">State *</span> <input name="state" type="text" id="state"
 														class="form-control" placeholder="State" ng-model="register.state" required
 														ng-maxlength="100" ng-pattern="/^(\D)+$/" data-toggle='tooltip' data-placement='right' 
@@ -388,7 +389,7 @@
 
 											<div class="col-xs-12">&nbsp;</div>
 											<div class="col-xs-12">
-												<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerBasicForm.country.$invalid && registerBasicForm.country.$pristine }">
+												<div class="input-group input-group-sm">
 													<span class="input-group-addon">Country *</span> <input name="country" type="text" id="country"
 														class="form-control" placeholder="Country" ng-model="register.country" required
 														ng-maxlength="100" ng-pattern="/^(\D)+$/" data-toggle='tooltip' data-placement='right' 
@@ -410,7 +411,7 @@
 											<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerBasicForm.pincode.$invalid && registerBasicForm.pincode.$pristine }">
+											<div class="input-group input-group-sm" >
 													<span class="input-group-addon">Pincode *</span> <input name="pincode" type="text" id="pincode"
 														class="form-control" placeholder="Pincode" ng-model="register.pincode" required
 														ng-minlength="6" ng-maxlength="6" ng-pattern="/^(\d)+$/" data-toggle='tooltip' data-placement='right' 
@@ -432,7 +433,7 @@
 											</div>
 											<div class="col-xs-12">&nbsp;</div>
 											<div class="col-xs-12">
-												<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerBasicForm.email.$invalid && registerBasicForm.email.$pristine }">
+												<div class="input-group input-group-sm">
 													<span class="input-group-addon">Email *</span> <input name="email" type="email" id="email"
 														maxlength=100 class="form-control remail email-input" placeholder="Email"
 														ng-model="register.email" required data-toggle='tooltip' data-placement='right' 
@@ -477,18 +478,23 @@
 															style='display: none;' ng-file="file" base64 />
 													</div>
 													<div class="col-xs-12">&nbsp;</div>
-													<div class="col-xs-12">
+													
 														<button class='btn btn-sm btn-info photo-btn-click'>Upload photo</button>
+														<div class="col-xs-12" ng-show="msg.size.length>0">File size cannot be more than 10 KB</div>
+							<div class="col-xs-12" ng-show="message.length>0">
+								<div ng-repeat="msg in message">{{msg}}</div>
 													</div>
+													
 												</div>
 											</div>
 										</div>
 									</div>
 								</div>
 								<div class="col-xs-12">
-									
-<a href="#" class="btn btn-primary reg-ctn-1" ><span
-										style="color: white;">Continue</span></a>
+<!-- 									
+<a href="#" class="btn btn-primary reg-ctn-1" onclick="checkEmpty()"><span
+										style="color: white;">Continue</span></a> -->
+										<a href="#"><input type="submit" class="btn btn-primary reg-ctn-1" onclick="checkEmpty()" value="Continue"></a>
 								</div>
 							</form>
 						</div>
@@ -499,14 +505,14 @@
 						Information</h3>
 					<div>
 						<input name="userType" id="userType" type="text" style="display: none;">
-						<form id="registerAdditionalStudentForm" name="registerAdditionalStudentForm" method="post"
+						<form id="rfegisterAdditionalStudentForm" name="registerAdditionalStudentForm" method="post"
 							novalidate>
 							<div class="dynamic-div" id="student" ng-show="register.userType=='student'">
 								<div class="panel panel-default">
 									<div id="profession" class="panel-heading">Student</div>
 									<div class="panel-body">
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalStudentForm.degreeOfStudent.$invalid && registerBasicForm.email.$pristine }" >
+											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Degree *</span> <input id="studentdegree" maxlength=100
 													name="degreeOfStudent" type="text" class="form-control" placeholder="Degree"
 													ng-model="register.degreeOfStudent" required ng-maxlength="100" ng-pattern="/^(\D)+$/" required data-toggle='tooltip' data-placement='right' 
@@ -525,7 +531,7 @@
 										</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm">
+											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Date of birth *</span> <input id="dateOfBirthDatePicker"
 													name="dob" type="text" class="form-control" placeholder="Date of birth"
 													ng-model="register.dob" datepicker-angular /><span class="input-group-addon">YYYY-MM-DD</span>
@@ -545,8 +551,8 @@
 										<div class="col-xs-12">&nbsp;</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalStudentForm.studentID.$invalid && registerBasicForm.email.$pristine }" >
-												<span class="input-group-addon">Student ID *</span> <input name="studentID" type="text"
+											<div class="input-group input-group-sm">
+												<span class="input-group-addon">Student ID *</span> <input name="studentID" type="text" id="studentID"
 													class="form-control" placeholder="Student ID" ng-model="register.studentID"  required data-toggle='tooltip' data-placement='right' 
 														title="Please enter valid ID"/>
 											</div>
@@ -556,7 +562,7 @@
 										</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm">
+											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Completion Year *</span> <input
 													id="studentCompletionYear" name="completionYear" type="text" class="form-control"
 													placeholder="Completion year" ng-model="register.completionYear" datepicker-angular /><span
@@ -573,7 +579,7 @@
 										<div class="col-xs-12">&nbsp;</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalStudentForm.studentID.$invalid && registerBasicForm.email.$pristine }" >
+											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">College name *</span> <input id="CollegeNames"
 													name="collge" type="text" class="form-control" placeholder="College name"
 													ng-model="register.collge" required ng-maxlength="100" ng-pattern="/^(\D)+$/" />
@@ -593,8 +599,8 @@
 										</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalStudentForm.university.$invalid && registerAdditionalStudentForm.university.$pristine }" >
-												<span class="input-group-addon">University *</span> <input name="university" type="text"
+											<div class="input-group input-group-sm" >
+												<span class="input-group-addon">University *</span> <input name="university" type="text" id="university"
 													class="form-control" placeholder="University" ng-model="register.university" required
 													ng-maxlength="100" ng-pattern="/^(\D)+$/" />
 											</div>
@@ -618,19 +624,19 @@
 											<div class="input-group input-group-sm">
 												<span class="input-group-addon">Branch *</span>
 												<div class="col-xs-12">
-													<input type="text" class="form-control" placeholder="Search branches" id="branchIdOfFaculty2"
-														ng-model="searchTerm" ng-change="search()" value="" />
+													<input type="text" class="form-control" placeholder="Search branches" id="branchIdOfStudent2"
+														ng-model="searchTerm" ng-change="search()" value="" required/>
 												</div> 
 												<!--  <div class="col-xs-12">
 													<input type="text" class="form-control" placeholder="Search branches" id="branchIdOfStudent2"
 														ng-model="searchTerm" ng-change="search()" value="" />
-												</div>
-										 <div class="col-xs-12">
+												</div> -->
+										 <div class="col-xs-12" >
 													<select id="branchIdOfStudent" class="form-control"
-														ng-model="register.branchIdOfStudent"
-														ng-options="item.branchId as item.projBranchDesc for item in data">
+														ng-model="register.branchIdOfStudent" 
+														ng-options="item.branchId as item.projBranchDesc for item in data" >
 													</select>
-												</div>  -->
+												</div> 
 											</div>
 										</div>
 									</div>
@@ -645,11 +651,13 @@
 									<div id="profession" class="panel-heading">College</div>
 									<div class="panel-body">
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalCollegeForm.collegeName.$invalid && registerAdditionalCollegeForm.collegeName.$pristine }" >
-												<span class="input-group-addon">College name *</span> <input name="collegeName"
+											<div class="input-group input-group-sm">
+												<span class="input-group-addon">College name *</span> <input name="collegeName" id="collegeName"
 													type="text" class="form-control" placeholder="College name"
-													ng-model="register.collegeName" required ng-pattern="/^(\D)+$/" />
+													ng-model="register.collegeName" required ng-pattern="/^(\D)+$/" required />
 											</div>
+
+
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 												ng-show="registerAdditionalCollegeForm.collegeName.$dirty && registerAdditionalCollegeForm.collegeName.$error.required">College
@@ -661,10 +669,10 @@
 										</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalCollegeForm.prinicipalName.$invalid && registerAdditionalCollegeForm.prinicipalName.$pristine }">
-												<span class="input-group-addon">Principal name *</span> <input name="prinicipalName"
+											<div class="input-group input-group-sm">
+												<span class="input-group-addon">Principal name *</span> <input name="prinicipalName" id="prinicipalName"
 													type="text" class="form-control" placeholder="Principal name"
-													ng-model="register.prinicipalName" required ng-pattern="/^(\D)+$/" />
+													ng-model="register.prinicipalName" required ng-pattern="/^(\D)+$/" required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -679,10 +687,10 @@
 										<div class="col-xs-12">&nbsp;</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalCollegeForm.affltUniversityOfCollege.$invalid && registerAdditionalCollegeForm.affltUniversityOfCollege.$pristine }">
-												<span class="input-group-addon">University *</span>  <input name="affltUniversityOfCollege"
+											<div class="input-group input-group-sm" >
+												<span class="input-group-addon">University *</span>  <input name="affltUniversityOfCollege" id="affltUniversityOfCollege"
 													type="text" class="form-control" placeholder="University name"
-													ng-model="register.affltUniversityOfCollege" required ng-pattern="/^(\D)+$/" /> 
+													ng-model="register.affltUniversityOfCollege" required ng-pattern="/^(\D)+$/"  required/> 
 													 
 											</div>
 
@@ -696,11 +704,11 @@
 										</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalCollegeForm.techpdaFactlyCoordtr.$invalid && registerAdditionalCollegeForm.techpdaFactlyCoordtr.$pristine }">
+											<div class="input-group input-group-sm">
 												<span class="input-group-addon">Techpedia faculty *</span> <input id="collegecontactname"
 													maxlength=100 name="techpdaFactlyCoordtr" type="text" class="form-control"
-													placeholder="Faculty registered with Techpedia" ng-model="register.techpdaFactlyCoordtr"
-													required ng-pattern="/^(\D)+$/" />
+													placeholder="Techpedia faculty co-ordinator" ng-model="register.techpdaFactlyCoordtr"
+													required ng-pattern="/^(\D)+$/" required />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -715,10 +723,10 @@
 										<div class="col-xs-12">&nbsp;</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalCollegeForm.prinicipalEmail.$invalid && registerAdditionalCollegeForm.prinicipalEmail.$pristine }">
+											<div class="input-group input-group-sm">
 												<span class="input-group-addon">Principal email *</span> <input id="collegecontactemail"
 													name="prinicipalEmail" maxlength=100 type="email" class="form-control"
-													placeholder="Principal email id" ng-model="register.principalEmail" />
+													placeholder="Principal email id" ng-model="register.principalEmail"  required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -731,9 +739,9 @@
 										</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalCollegeForm.webpage.$invalid && registerAdditionalCollegeForm.webpage.$pristine }">
-												<span class="input-group-addon">Website link *</span> <input name="webpage" type="url"
-													class="form-control" placeholder="College url" ng-model="register.webpage" />
+											<div class="input-group input-group-sm" >
+												<span class="input-group-addon">Website link *</span> <input name="webpage" id="webpage" type="url"
+													class="form-control" placeholder="College url" ng-model="register.webpage" required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -744,42 +752,70 @@
 										<div class="col-xs-12">&nbsp;</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalCollegeForm.facilitiesOffrdToStudents.$invalid && registerAdditionalCollegeForm.facilitiesOffrdToStudents.$pristine }">
+											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Facility offered *</span> <input
-													name="facilitiesOffrdToStudents" type="text" class="form-control"
+													name="facilitiesOffrdToStudents" id="facilitiesOffrdToStudents" type="text" class="form-control"
 													placeholder="Facility offered to students"
-													ng-model="register.facilitiesOffrdToStudents" />
+													ng-model="register.facilitiesOffrdToStudents" required />
 											</div>
 										</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalCollegeForm.cntctInfoForNatnlInnovnClub.$invalid && registerAdditionalCollegeForm.cntctInfoForNatnlInnovnClub.$pristine }">
+											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Innovation club *</span> <input id="collegecontactname"
 													maxlength=100 name="cntctInfoForNatnlInnovnClub" type="text" class="form-control"
 													placeholder="Innovation club contact info"
-													ng-model="register.cntctInfoForNatnlInnovnClub" />
+													ng-model="register.cntctInfoForNatnlInnovnClub" required />
 											</div>
 										</div>
 										<div class="col-xs-12">&nbsp;</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalCollegeForm.collegeDesc.$invalid &&  registerAdditionalCollegeForm.collegeDesc.$pristine }">
+											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">College description *</span> <input
-													id="collegecontactname" name="collegeDesc" type="text" class="form-control"
-													placeholder="College description" ng-model="register.collegeDesc" />
+													id="collegeDesc" name="collegeDesc" type="text" class="form-control"
+													placeholder="College description" ng-model="register.collegeDesc" required/>
 											</div>
 										</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm">
-												<span class="input-group-addon logo" style="width: 138px;">Logo </span>
+											<div class="input-group input-group-sm" >
+												<span class="input-group-addon">College Logo</span> 
+											<input ng-model="register.logo" type="text" name="logo" id="logoByte64"
+												style="display: none;" /> <input type="text" name="logo" id="logoByte64Size"
+												style="display: none;" />
+										
+										
+											
+
+												
+													<div class="col-xs-12">
+														<img src="" class='logo' alt='logo'
+														style="display: none;">
+														<input id='hidden-logo-input' type='file' accept='image*;'
+															style='display: none;' ng-file="file" base64 />
+															<button class="btn btn-sm btn-info choose-logo-btn">Upload Logo</button>
+													</div>
+											
+											
+										
+										</div>
+									<!-- 	<div class="input-group input-group-sm">
+												<span class="input-group-addon" style="width: 138px;">Logo </span>
 												<button class="btn btn-info choose-logo-btn">Choose logo</button>
-												<input id="hidden-logo-input" name="logo" type="file" class="form-control" ng-model="register.logo"
-													placeholder="Logo" style="display: none;" />
+													<img width=160 height=120 src='images/gravatar.png' class='logo' alt='logo'
+														style="display: none;">
+											
+												<input id="hidden-logo-input" name="logo" type="file" class="logo" ng-model="register.logo" accept="image/*" 
+													placeholder="Logo" style="display: none;" /><input type="text" name="logo" id="logoByte64Size" onclick="alert()"
+												style="display: none;" />
+													
 											</div>
+					 -->
 										</div>
 									</div>
 								</div>
+							
 							</div>
 						</form>
 
@@ -791,10 +827,10 @@
 									<div class="panel-body">
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalFacultyForm.degreeOfFaculty.$invalid && registerAdditionalFacultyForm.register.degreeOfFaculty.$pristine }">
+											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Degree *</span> <input id="facultydegree" maxlength=100
 													name="degreeOfFaculty" type="text" class="form-control" placeholder="Degree"
-													ng-model="register.degreeOfFaculty" required ng-pattern="/^(\D)+$/" />
+													ng-model="register.degreeOfFaculty" required ng-pattern="/^(\D)+$/" required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -805,10 +841,10 @@
 												degree can only contain text</div> -->
 										</div>
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerAdditionalFacultyForm.collgeOfFaculty.$invalid && registerAdditionalFacultyForm.collgeOfFaculty.$pristine }">
-												<span class="input-group-addon">College name *</span> <input name="collgeOfFaculty"
+											<div class="input-group input-group-sm" >
+												<span class="input-group-addon">College name *</span> <input name="collgeOfFaculty" id="collgeOfFaculty"
 													type="text" class="form-control" placeholder="College name"
-													ng-model="register.collgeOfFaculty" required ng-pattern="/^(\D)+$/" />
+													ng-model="register.collgeOfFaculty" required ng-pattern="/^(\D)+$/" required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -825,25 +861,23 @@
 
 										<div class="col-xs-12">&nbsp;</div>
 											<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm" ng-class="{ 'has-error' : registerBasicForm.lastName.$invalid && registerBasicForm.lastName.$pristine }">
+											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Speciality *</span>
-												<!-- <div class="col-xs-12">
-													<input type="text" class="form-control" placeholder="Search branches"
-														ng-model="searchTerm" ng-change="search()" value="" />
-												</div> -->
-												<div class="col-xs-12">
-													<select class="form-control" ng-model="register.branchIdOfFaculty" required
-														ng-options="item.branchId as item.projBranchDesc for item in data"  placeholder="Search branches" data-toggle='tooltip' data-placement='right' 
-														title='Please enter your specialised branch'>
-													</select>
-												</div>
+										<div class="col-xs-12">
+													<input type="text" class="form-control" placeholder="Search branches" id="specializationOfFaculty2"
+														ng-model="searchTerm" ng-change="search()" value="" required />
+												</div>												<div class="col-xs-12">
+											<select class="form-control" ng-model="register.specializationOfFaculty" 
+													ng-options="item.branchId as item.projBranchDesc for item in data">
+ 													</select> 
+												</div> 
 											</div>
 										</div>
 													<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalFacultyForm.universityOfFaculty.$invalid && registerAdditionalFacultyForm.universityOfFaculty.$pristine }">
-												<span class="input-group-addon">University *</span> <input name="universityOfFaculty"
+											<div class="input-group input-group-sm"  >
+												<span class="input-group-addon">University *</span> <input name="universityOfFaculty" id="universityOfFaculty"
 													type="text" class="form-control" placeholder="University"
-													ng-model="register.universityOfFaculty" required ng-pattern="/^(\D)+$/" />
+													ng-model="register.universityOfFaculty" required ng-pattern="/^(\D)+$/" required />
 											</div>
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 												ng-show="registerAdditionalFacultyForm.universityOfFaculty.$dirty && registerAdditionalFacultyForm.universityOfFaculty.$error.required">University
@@ -856,10 +890,10 @@
 										<div class="col-xs-12">&nbsp;</div>
 										
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalFacultyForm.proffesionalExpOfFaculty.$invalid && registerAdditionalFacultyForm.proffesionalExpOfFaculty.$pristine }">
-												<span class="input-group-addon">Experience *</span> <input name="proffesionalExpOfFaculty"
+											<div class="input-group input-group-sm"  >
+												<span class="input-group-addon">Experience *</span> <input name="proffesionalExpOfFaculty" id="proffesionalExpOfFaculty"
 													type="text" class="form-control" placeholder="Profeesional experience in months"
-													ng-model="register.proffesionalExpOfFaculty" ng-pattern="/^(\d)+$/" />
+													ng-model="register.proffesionalExpOfFaculty" ng-pattern="/^(\d)+$/" required />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -868,10 +902,10 @@
 										</div>
 										
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalFacultyForm.psnlWebpgLink.$invalid && registerAdditionalFacultyForm.psnlWebpgLink.$pristine }">
-												<span class="input-group-addon">Webpage link *</span> <input name="psnlWebpgLink"
+											<div class="input-group input-group-sm"  >
+												<span class="input-group-addon">Webpage link *</span> <input name="psnlWebpgLink" id="psnlWebpgLink"
 													type="url" class="form-control" placeholder="Personal webpage link"
-													ng-model="register.psnlWebpgLink" />
+													ng-model="register.psnlWebpgLink" required />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -882,10 +916,10 @@
 										<div class="col-xs-12">&nbsp;</div>
 										
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalFacultyForm.alumni.$invalid && registerAdditionalFacultyForm.alumni.$pristine }">
-												<span class="input-group-addon">Alumni *</span> <input name="alumni" type="text"
+											<div class="input-group input-group-sm"  >
+												<span class="input-group-addon">Alumni *</span> <input name="alumni" type="text" id="alumni"
 													class="form-control" placeholder="Alumni" ng-model="register.alumni"
-													ng-pattern="/^(\D)+$/" />
+													ng-pattern="/^(\D)+$/" required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -893,11 +927,11 @@
 												can only contain text</div> -->
 										</div>
 <div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalFacultyForm.memshipInAssocns.$invalid && registerAdditionalFacultyForm.memshipInAssocns.$pristine }">
+											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Association list *</span> <input
 													id="facultycompletionyear" maxlength=100 name="memshipInAssocns" type="text"
 													class="form-control" placeholder="Association or membership name list"
-													ng-model="register.memshipInAssocns" />
+													ng-model="register.memshipInAssocns" required />
 											</div>
 										</div>
 										
@@ -905,11 +939,11 @@
 										<div class="col-xs-12">&nbsp;</div>
 										
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalFacultyForm.affltUniversityOfFaculty.$invalid && registerAdditionalFacultyForm.affltUniversityOfFaculty.$pristine }">
+											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Affiliated university *</span> <input
-													name="affltUniversityOfFaculty" type="text" class="form-control"
+													name="affltUniversityOfFaculty" id="affltUniversityOfFaculty" type="text" class="form-control"
 													placeholder="Affiliated university name" ng-model="register.affltUniversityOfFaculty"
-													ng-pattern="/^(\D)+$/" />
+													ng-pattern="/^(\D)+$/" required />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -929,8 +963,8 @@
 									<div id="profession" class="panel-heading">Mentor</div>
 									<div class="panel-body">
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalMentorForm.degreeOfMentor.$invalid && registerAdditionalMentorForm.degreeOfMentor.$pristine }">
-												<span class="input-group-addon">Degree *</span> <input name="degreeOfMentor" type="text"
+											<div class="input-group input-group-sm">
+												<span class="input-group-addon">Degree *</span> <input name="degreeOfMentor"  id="degreeOfMentor" type="text"
 													class="form-control" placeholder="Degree" ng-model="register.degreeOfMentor" required
 													ng-pattern="/^(\D)+$/" />
 											</div>
@@ -943,10 +977,10 @@
 										</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalMentorForm.designationOfMentor.$invalid && registerAdditionalMentorForm.designationOfMentor.$pristine }">
-												<span class="input-group-addon">Designation *</span> <input name="designationOfMentor"
+											<div class="input-group input-group-sm"  >
+												<span class="input-group-addon">Designation *</span> <input name="designationOfMentor" id="designationOfMentor"
 													type="text" class="form-control" placeholder="Designation"
-													ng-model="register.designationOfMentor" required ng-pattern="/^(\D)+$/" />
+													ng-model="register.designationOfMentor" required ng-pattern="/^(\D)+$/"  required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -965,21 +999,21 @@
 
 												<div class="col-xs-12">
 													<input type="text" class="form-control" placeholder="Search branches" id="branchIdOfMentor2"
-														ng-model="searchTerm" ng-change="search()" value="" />
+														ng-model="searchTerm" ng-change="search()" value="" required />
 												</div>												<div class="col-xs-12">
-<!-- 													<select class="form-control" ng-model="register.branchIdOfMentor" -->
-<!-- 														ng-options="item.branchId as item.projBranchDesc for item in data"> -->
-<!-- 													</select> -->
+											<select class="form-control" ng-model="register.branchIdOfMentor" 
+													ng-options="item.branchId as item.projBranchDesc for item in data">
+ 													</select> 
 												</div>
 
 											</div>
 										</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalMentorForm.professionalExperience.$invalid && registerAdditionalMentorForm.professionalExperience.$pristine }">
-												<span class="input-group-addon">Experience *</span> <input name="professionalExperience"
+											<div class="input-group input-group-sm" >
+												<span class="input-group-addon">Experience *</span> <input name="professionalExperience" id="professionalExperience"
 													type="text" class="form-control" placeholder="Professional experience in months"
-													ng-model="register.professionalExperience" required ng-pattern="/^(\d)+$/" />
+													ng-model="register.professionalExperience" required ng-pattern="/^(\d)+$/"  required/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -993,19 +1027,19 @@
 										<div class="col-xs-12">&nbsp;</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalMentorForm.institutionalAssctnInfo.$invalid && registerAdditionalMentorForm.institutionalAssctnInfo.$pristine }">
+											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Association *</span> <input maxlength=200
-													name="institutionalAssctnInfo" type="text" class="form-control"
-													placeholder="Institution association info" ng-model="register.institutionalAssctnInfo" />
+													name="institutionalAssctnInfo" id="institutionalAssctnInfo" type="text" class="form-control"
+													placeholder="Institution association info" ng-model="register.institutionalAssctnInfo" required/>
 											</div>
 										</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalMentorForm.timeUspaceForMentoringPerMnth.$invalid && registerAdditionalMentorForm.timeUspaceForMentoringPerMnth.$pristine }">
+											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Time spare *</span> <input
-													name="timeUspaceForMentoringPerMnth" type="text" class="form-control"
+													name="timeUspaceForMentoringPerMnth" id="timeUspaceForMentoringPerMnth" type="text" class="form-control"
 													placeholder="Time spare for mentoring per month" ng-pattern="/^(\d)+$/"
-													ng-model="register.timeUspaceForMentoringPerMnth" />
+													ng-model="register.timeUspaceForMentoringPerMnth" required />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -1014,18 +1048,18 @@
 										</div>
 										<div class="col-xs-12">&nbsp;</div>
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalMentorForm.mentorProfile.$invalid && registerAdditionalMentorForm.mentorProfile.$pristine }">
+											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Mentor profile *</span>
-												<textarea rows="3" cols="32" name="mentorProfile" placeholder="Mentor Profile"
-													ng-model="register.mentorProfile" style="resize:none;"></textarea>
+												<textarea rows="3" cols="32" name="mentorProfile" id="mentorProfile" placeholder="Mentor Profile"
+													ng-model="register.mentorProfile" style="resize:none;" required></textarea>
 											</div>
 										</div>
 
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalMentorForm.webpage.$invalid && registerAdditionalMentorForm.webpage.$pristine }">
+											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Webpage link *</span> <input id="mentorwebpage"
 													name="webpage" type="url" class="form-control" placeholder="Personal webpage link"
-													ng-model="register.webpage" />
+													ng-model="register.webpage" required />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -1034,17 +1068,17 @@
 										</div>
 										<div class="col-xs-12">&nbsp;</div>
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' :registerAdditionalMentorForm.commitmentUBringIn.$invalid && registerAdditionalMentorForm.commitmentUBringIn.$pristine }">
-												<span class="input-group-addon">Commitment *</span> <input id="mentorwebpage"
+											<div class="input-group input-group-sm" >
+												<span class="input-group-addon">Commitment *</span> <input id="commitmentUBringIn"
 													maxlength=100 name="commitmentUBringIn" type="text" class="form-control"
-													placeholder="Commitment you bring" ng-model="register.commitmentUBringIn" />
+													placeholder="Commitment you bring" ng-model="register.commitmentUBringIn" required/>
 											</div>
 										</div>
 										<div class="col-xs-12 col-md-6">
-											<div class="input-group input-group-sm"  ng-class="{ 'has-error' : registerAdditionalMentorForm.intOnGrassrtInnovators.$invalid && registerAdditionalMentorForm.intOnGrassrtInnovators.$pristine }">
-												<span class="input-group-addon">Interest *</span> <input name="intOnGrassrtInnovators"
+											<div class="input-group input-group-sm" >
+												<span class="input-group-addon">Interest *</span> <input name="intOnGrassrtInnovators"  id="intOnGrassrtInnovators"
 													type="text" class="form-control" placeholder="grass root innovators interest"
-													ng-model="register.intOnGrassrtInnovators" />
+													ng-model="register.intOnGrassrtInnovators" required/>
 											</div>
 										</div>
 										<div class="col-xs-12 col-md-6"></div>
@@ -1137,9 +1171,10 @@
 							</div>
 						</form> -->
 						<div class="col-xs-12">
-							<a href="#" class="btn btn-primary reg-ctn-2"
+							<!-- <a href="#" class="btn btn-primary reg-ctn-2"
 								ng-disabled="registerAdditionalStudentForm.$invalid&&registerAdditionalCollegeForm.$invalid&&registerAdditionalFacultyForm.$invalid&&registerAdditionalMentorForm.$invalid"><span
-								style="color: white;">Continue</span></a>
+								style="color: white;">Continue</span></a> -->
+								<a href="#"><input type="submit" class="btn btn-primary reg-ctn-2" onclick="checkAdditionalEmpty()" value="Continue"></a>
 						</div>
 					</div>
 
@@ -1189,6 +1224,51 @@
 
 <!-- END JAVASCRIPTS -->
  <jsp:include page="template/loginModal.jsp" /> 
+<script type="text/javascript">
+ function checkEmpty() {
+    var empty = null;
+    
+    $("input", registerBasicForm).each(function() {
+       // empty = ($(this).val() == "") ? true : false;
+        if($.trim($("#firstName").val()) === "" || $.trim($("#lastName").val()) === ""|| $.trim($("#userName").val()) === ""|| $.trim($("#password").val()) === ""|| $.trim($("#confirmPassword").val()) === ""|| $.trim($("#mobile").val()) === ""|| $.trim($("#addrLn1").val()) === ""|| $.trim($("#district").val()) === ""|| $.trim($("#city").val()) === ""|| $.trim($("#state").val()) === ""|| $.trim($("#country").val()) === ""|| $.trim($("#pincode").val()) === ""|| $.trim($("#email").val()) === "")      {
+        	empty="isempty"
+        
+        }
+        
+        else{
+        	empty="notempty";
+        }
+    });
+    if(empty === "isempty") {
+       return alert("Some of the field are empty . Please fill the * marked field ");
+        
+    }
+}
+ function checkAdditionalEmpty() {
+	    var empty = null;
+	    
+	    $("input", registerAdditionalStudentForm).each(function() {
+	      //if($(this).val() === ""){
+	        if($.trim($("#studentdegree").val()) === "" || $.trim($("#dateOfBirthDatePicker").val()) === ""|| $.trim($("#studentID").val()) === ""|| $.trim($("#studentCompletionYear").val()) === ""|| $.trim($("#CollegeNames").val()) === ""|| $.trim($("#university").val()) === ""|| $.trim($("#branchIdOfStudent2").val()) === 
+	        	                                     ""|| $.trim($("#facultydegree").val()) === ""|| $.trim($("#collgeOfFaculty").val()) === ""|| $.trim($("#specializationOfFaculty2").val()) === 
+ ""|| $.trim($("#universityOfFaculty").val()) === ""|| $.trim($("#proffesionalExpOfFaculty").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#alumni").val()) === ""|| $.trim($("#facultycompletionyear").val()) === ""|| $.trim($("#affltUniversityOfFaculty").val()) === ""|| $.trim($("#college").val()) === 
+	        	                                     ""|| $.trim($("#degreeOfMentor").val()) === ""|| $.trim($("#designationOfMentor").val()) === ""|| $.trim($("#branchIdOfMentor2").val()) === ""|| $.trim($("#professionalExperience").val()) === ""|| $.trim($("#institutionalAssctnInfo").val()) === ""|| $.trim($("#timeUspaceForMentoringPerMnth").val()) === ""|| $.trim($("#mentorProfile").val()) === ""|| $.trim($("#mentorwebpage").val()) ===
+	        	                                     ""|| $.trim($("#intOnGrassrtInnovators").val()) === ""|| $.trim($("#collegeName").val()) ===  ""|| $.trim($("#prinicipalName").val()) === ""|| $.trim($("#affltUniversityOfCollege").val()) ==="" || $.trim($("#collegecontactname").val()) ==="" || $.trim($("#collegecontactemail").val()) ==="" || $.trim($("#webpage").val()) ==="" || $.trim($("#facilitiesOffrdToStudents").val()) ==="")     
+	        {
+	        	empty="isempty"
+	        
+	        }
+	        
+	        else{
+	        	empty="notempty";
+	        }
+	    });
+	    if(empty === "isempty") {
+	       return alert("Some of the field are empty . Please fill the * marked field ");
+	        
+	    }
+	}
+</script>
 </body>
 <!-- END BODY -->
 </html>

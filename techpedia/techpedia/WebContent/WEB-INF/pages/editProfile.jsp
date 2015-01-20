@@ -1,5 +1,11 @@
 <html ng-app="techpedia">
 <jsp:include page="template/dashboardHeader.jsp" />
+<!--[if lt IE 9]>
+    <script src="js/html5shiv.js"></script>
+     <script src="js/respond.min.js"></script>
+ <![endif]-->
+<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
+<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
 <div class="clearfix"></div>
 <div class="page-container">
 	<div class="page-sidebar-wrapper">
@@ -528,7 +534,7 @@
 																ng-model="searchTerm" ng-change="search()" value="" />
 														</div>
 														<div class="col-xs-12">
-															<select class="form-control" ng-model="edit.branchIdOfFaculty"
+															<select class="form-control" ng-model="edit.specializationOfFaculty"
 																ng-options="item.branchId as item.projBranchDesc for item in data">
 															</select>
 														</div>
@@ -593,7 +599,7 @@
 												<div class="col-xs-12 col-md-6">
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon" style="border-right: 1px solid #ccc; width: 135px">Degree
-														</span> <input name="degreeOfMentor" id="mentordegree" type="text" class="form-control"
+														</span> <input name="degreeOfMentor" id="degreeOfMentor" type="text" class="form-control"
 															placeholder="Degree" ng-model="edit.degreeOfMentor" />
 													</div>
 												</div>

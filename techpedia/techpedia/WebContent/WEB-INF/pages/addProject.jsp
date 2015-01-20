@@ -40,6 +40,7 @@
 			<!-- END PAGE HEADER-->
 			<%
 				String challengeId = (String) request.getAttribute("challengeId");
+			String challengeTitle = (String) request.getParameter("challengeTitle");
 			  
 			%>
 
@@ -50,8 +51,8 @@
 				<div class="panel panel-info">
 					<div class="panel-heading">
 						This project will get created against <a target="_blank"
-							href="challengeDetails<%=challengeId%>">Challenge Id :
-						<%=challengeId%></a> 
+							href="challengeDetails<%=challengeId%>">Challenge:
+						<%=challengeTitle%></a> 
 					</div>
 					<input style="display: none;" id="challengeId" name="challengeId" type="text"
 						value=<%=challengeId%> />
@@ -109,10 +110,10 @@
 												<div class="col-xs-12">
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon" style="border-right: 1px solid #ccc">Team Members</span> <input
-															readonly id="teamMembers" name="projTeamMembersString" type="text"
-															class="form-control" placeholder="Add Team Members"
-															ng-model="addProject.projTeamMembersString" /> <span class="input-group-addon"
-															style="border-left: 1px solid #ccc; width: 10px;"> <a data-toggle="modal"
+															 id="teamMembers" name="projTeamMembersString" type="text"
+															class="form-control" placeholder="Add Team Members" disabled
+															ng-model="addProject.projTeamMembersString" onclick="makeDisable()" /> <span class="input-group-addon"
+															style="border-left: 1px solid #ccc; width: 10px;" disabled> <a data-toggle="modal"
 															data-target="#searchTeamMemberModal" href="#">Search</a></span>
 													</div>
 
@@ -248,7 +249,7 @@
 												<div class="input-group input-group-sm">
 													<span class="input-group-addon" style="border-right: 1px solid #ccc">University
 													</span> <input name="projUniversity" id="projectUniversity" type="text" class="form-control"
-														placeholder="Project University" value="IIT" readonly ng-model="addProject.university" />
+														placeholder="Project University" value="IIT" readonly  onfocus="this.blur()" ng-model="addProject.university" />
 												</div>
 											</div>
 
@@ -575,6 +576,17 @@
 <![endif]-->
 
 <!-- END JAVASCRIPTS -->
+<script type="text/javascript">
+function makeDisable(){
+var value=$('#teamMembers').val();
+
+if(value === ''){
+$("#teamMembers").prop("readonly",true);
+}else{
+$("#teamMembers").prop("readonly",false);
+}
+} 
+</script>
 </body>
 <!-- END BODY -->
 </html>

@@ -393,7 +393,7 @@ techpedia.controller('ChallengeDetailsController', function($scope, $http) {
 	};
 
 	$scope.acceptChallenge = function(challenge) {
-		window.location = window.location = 'acceptChallenge?challengeId=' + challenge.challengId;
+		window.location = window.location = 'acceptChallenge?challengeId=' + challenge.challengId+'&&challengeTitle='+challenge.challengTitle;
 	};
 
 	$scope.deleteDocument = function(document) {
@@ -653,7 +653,8 @@ techpedia.controller('ManageChallengesController', function($scope, $http) {
 	};
 
 	$scope.acceptChallenge = function(challenge) {
-		window.location = 'acceptChallenge?challengeId=' + challenge.challengId;
+		window.location = window.location = 'acceptChallenge?challengeId=' + challenge.challengId+'&&challengeTitle='+challenge.challengTitle;
+
 	};
 
 	$scope.viewChallenge = function(challenge) {
@@ -1503,7 +1504,22 @@ techpedia.controller('RegisterController', function($scope, $http) {
 	};
 	
 	$scope.$watch('file', function() {
-		$scope.register.photo = "data:" + $scope.file.filetype + ";base64," + $scope.file.base64;
+		$scope.editProfile = {};
+		$scope.msg = {};
+		var head = "data:" + $scope.file.filetype + ";base64,";
+		$scope.editProfile.photo = head + $scope.file.base64;
+		$scope.editProfile.photoSize = Math.round(($scope.editProfile.photo.length - head.length) * 3 / 4) / 1000;
+		if ($scope.editProfile.photoSize > 10) {
+			$scope.msg.size = "File size should not me bore than 10 KB";
+		} else {
+			$scope.msg.size = "";
+		}
+		if ($scope.editProfile.photo.indexOf("undefined") > -1) {
+			$scope.editProfile.photo = "images/UserDefault.jpg";
+			$scope.canSaveImage = false;
+		} else {
+			$scope.canSaveImage = true;
+		}
 	}, true);
 
 	$scope.InitLoad = function() {
@@ -1566,6 +1582,34 @@ techpedia.controller('RegisterController', function($scope, $http) {
 
 techpedia.controller('AddChallengeController', function($scope, $http) {
 	$scope.data = {};
+
+	$scope.InitChallengeLoad = function() {
+		$scope.data = [ {
+			"challengTypeId" : 10,
+			"challengTypeDesc" : "Academic"
+		}, {
+			"challengTypeId" : 20,
+			"challengTypeDesc" : "Industry"
+		}, {
+			"challengTypeId" : 30,
+			"challengTypeDesc" : "Innovation"
+		}];
+	};
+
+	$scope.searchChallengeType = function() {
+	//	alert($scope.form.searchTerm);
+		$http({
+			method : 'GET',
+			data : $.param({}),
+			url : 'getsuggestedchallenges?q=' + $scope.searchTerm
+		}).success(function(data, status, headers, config) {
+			$scope.data = data;
+		
+		}).error(function(data, status, headers, config) {
+			// called asynchronously if an error occurs
+			// or server returns response with an error status.
+		});
+	};
 	$scope.addChallenge = function() {
 		$scope.message = [];
 		$http({
@@ -1595,13 +1639,13 @@ techpedia.controller('AddChallengeController', function($scope, $http) {
 techpedia.controller('ProjectsPageController', function($scope, $http) {
 	$scope.initialProjectsData = function() {
 		$scope.isSearchResult = false;
-		$scope.count = 0;
+		$scope.count = 1;
 		$scope.message = [];
 		$http({
 			method : 'POST',
 			url : 'projectsFetch',
 			data : $.param({
-				set : 0
+				set : 1
 			}),
 			headers : {
 				'Content-Type' : 'application/x-www-form-urlencoded'
@@ -1682,13 +1726,13 @@ techpedia.controller('ProjectsPageController', function($scope, $http) {
 
 techpedia.controller('MentorsPageController', function($scope, $http) {
 	$scope.initialMentorsData = function() {
-		$scope.count = 0;
+		$scope.count = 1;
 		$scope.message = [];
 		$http({
 			method : 'POST',
 			url : 'mentorsFetch',
 			data : $.param({
-				set : 0
+				set : 1
 			}),
 			headers : {
 				'Content-Type' : 'application/x-www-form-urlencoded'
@@ -1726,13 +1770,13 @@ techpedia.controller('MentorsPageController', function($scope, $http) {
 techpedia.controller('ChallengesPageController', function($scope, $http) {
 	$scope.initialChallengesData = function() {
 		$scope.isSearchResult = false;
-		$scope.count = 0;
+		$scope.count = 1;
 		$scope.message = [];
 		$http({
 			method : 'POST',
 			url : 'challengesFetch',
 			data : $.param({
-				set : 0
+				set : 1
 			}),
 			headers : {
 				'Content-Type' : 'application/x-www-form-urlencoded'
