@@ -3,8 +3,8 @@ package com.techpedia.usermanagement.dao;
 import java.util.List;
 
 import com.techpedia.chiper.ChiperEncryptException;
+import com.techpedia.usermanagement.dataobject.CollegeUniversityListDO;
 import com.techpedia.usermanagement.dataobject.Mentor1n2Details;
-import com.techpedia.usermanagement.dataobject.MentorsOfProject;
 import com.techpedia.usermanagement.dataobject.PopularMentorsDO;
 import com.techpedia.usermanagement.dataobject.SearchCriteriaDO;
 import com.techpedia.usermanagement.dataobject.SearchForMentorListDO;
@@ -13,6 +13,7 @@ import com.techpedia.usermanagement.dataobject.UserProfileDO;
 import com.techpedia.usermanagement.dataobject.UserRecentComments;
 import com.techpedia.usermanagement.dataobject.UserTeamListDO;
 import com.techpedia.usermanagement.dataobject.UsrAccessDetails;
+import com.techpedia.usermanagement.exception.CollegesFetchException;
 import com.techpedia.usermanagement.exception.CreateProfileException;
 import com.techpedia.usermanagement.exception.CurrentPasswordFetchException;
 import com.techpedia.usermanagement.exception.EmailExistException;
@@ -27,6 +28,7 @@ import com.techpedia.usermanagement.exception.ProfileNotFoundException;
 import com.techpedia.usermanagement.exception.ProfileSearchException;
 import com.techpedia.usermanagement.exception.ProfileUpdateException;
 import com.techpedia.usermanagement.exception.ProjectNotFoundException;
+import com.techpedia.usermanagement.exception.UniversitiesFetchException;
 import com.techpedia.usermanagement.exception.UserExistException;
 import com.techpedia.usermanagement.exception.UserFunctionsNotDefinedException;
 import com.techpedia.usermanagement.exception.UserNotFoundException;
@@ -125,5 +127,19 @@ public class UserManagementDAOImpl implements UserManagementDAO{
 	{
 		return UserManagementDAOHelper.getMentorsOfProject(projId);
 	}
+	
+	
+	public List<CollegeUniversityListDO> getCollegesList(String cName) throws CollegesFetchException {
+
+		return UserManagementDAOHelper.getCollegesList(cName);
+	}
+
+	
+	public List<CollegeUniversityListDO> getUniversitiesList(String uName)
+			throws UniversitiesFetchException {
+
+		return UserManagementDAOHelper.getUniversitiesList(uName);
+	}
+
 
 }
