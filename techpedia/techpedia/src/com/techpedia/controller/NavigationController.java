@@ -661,7 +661,7 @@ public class NavigationController {
 	@RequestMapping(value = "/challengesFetch")
 	@ResponseBody
 	public String challengesFetch(ModelMap model, @RequestParam("set") String set) throws Exception {
-		String response = dataFetch.fetchChallenges("http://" + IP + ":8080/techpediaProjectManagementService/challengeservice/getchallenge", model, set);
+		String response = dataFetch.fetchChallenges("http://" + IP + ":8080/techpediaProjectManagementService/challengeservice/getallchallenge", model, set);
 		return response;
 	}
 
