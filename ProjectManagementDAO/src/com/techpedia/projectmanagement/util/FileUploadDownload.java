@@ -15,7 +15,7 @@ public class FileUploadDownload{
 		
 		String returnVal = "";
 		String dirName = serverLocation+"/"+projId+"/"+regstrId;
-		String fileName = dirName+"/"+docName;
+		String fileName = dirName+"/"+docName;		
 		try {									
 			Files.createDirectories(Paths.get(dirName));			
 			OutputStream outpuStream = new FileOutputStream(new File(fileName));
@@ -32,7 +32,7 @@ public class FileUploadDownload{
 		} catch (IOException e) {
 			throw new Exception("Error while uploading document :"+ e.getMessage());
 		}
-		return returnVal;
+		return returnVal;		
 	}
 	
 public static String saveFile(InputStream xlsFileInputStream, String serverLocation, String docName) throws Exception{

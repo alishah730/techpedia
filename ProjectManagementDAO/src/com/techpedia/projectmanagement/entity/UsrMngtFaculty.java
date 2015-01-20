@@ -40,8 +40,11 @@ public class UsrMngtFaculty
 
   @Column(name="AFFLT_UNIVERSITY")
   private String affltUniversity;
-
-  public UsrMngtFaculty(long rgstrId, String degree, String college, String specification, String university, String alumni, String memshipInAssocns, String psnlWebpgLink, String proExp, String affltUniversity)
+  
+  @Column(name="BRANCH_ID")
+  private long branchId;
+  
+  public UsrMngtFaculty(long rgstrId, String degree, String college, String specification, String university, String alumni, String memshipInAssocns, String psnlWebpgLink, String proExp, String affltUniversity, long branchId)
   {
     this.rgstrId = rgstrId;
     this.degree = degree;
@@ -53,6 +56,7 @@ public class UsrMngtFaculty
     this.psnlWebpgLink = psnlWebpgLink;
     this.proExp = proExp;
     this.affltUniversity = affltUniversity;
+    this.branchId = branchId;
   }
 
   public UsrMngtFaculty()
@@ -158,4 +162,13 @@ public class UsrMngtFaculty
   {
     this.affltUniversity = affltUniversity;
   }
+
+  public long getBranchId() {
+	return branchId;
+  }
+	
+  public void setBranchId(long branchId) {
+	this.branchId = branchId;
+  }
+  
 }

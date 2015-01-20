@@ -21,6 +21,8 @@ public class FacultyVO {
 	private String department;
 	
 	private String email;
+	
+	private int branchId;
 
 	/**
 	 * @return the firstName
@@ -106,5 +108,12 @@ public class FacultyVO {
 		this.email = email;
 	}
 
+	public int getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(int branchId) {
+		this.branchId = branchId;
+	}
 
 }
