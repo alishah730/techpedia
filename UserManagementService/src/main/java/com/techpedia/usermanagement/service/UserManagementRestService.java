@@ -10,6 +10,8 @@ import javax.ws.rs.core.Response;
 import com.techpedia.usermanagement.dataobject.SearchCriteriaDO;
 import com.techpedia.usermanagement.dataobject.UpdateUserPhotoDO;
 import com.techpedia.usermanagement.dataobject.UserProfileDO;
+import com.techpedia.usermanagement.exception.CollegesFetchException;
+import com.techpedia.usermanagement.exception.UniversitiesFetchException;
 import com.techpedia.usermanagement.service.exception.UserManagementServiceException;
 import com.techpedia.usermanagement.service.helper.UserManagementRestServiceHelper;
 
@@ -196,6 +198,26 @@ public class UserManagementRestService {
 	public Response mentorsOfProject(@QueryParam("projId") String projId) throws UserManagementServiceException {
 
 		return Response.ok().status(200).entity(UserManagementRestServiceHelper.mentorsOfProject(projId)).type("application/json").build();
+
+	}
+	
+	@POST
+	@Path("/getCollegeList")
+	@Consumes("application/json")
+	 @Produces("application/json")
+	public Response getCollegeList(@QueryParam("cName") String cName) throws CollegesFetchException, UserManagementServiceException {
+
+		return Response.ok().status(200).entity(UserManagementRestServiceHelper.getCollegesList(cName)).type("application/json").build();
+
+	}
+	
+	@POST
+	@Path("/getUniversityList")
+	@Consumes("application/json")
+	 @Produces("application/json")
+	public Response getUniversityList(@QueryParam("uName") String uName) throws UniversitiesFetchException, UserManagementServiceException {
+
+		return Response.ok().status(200).entity(UserManagementRestServiceHelper.getUniversitiesList(uName)).type("application/json").build();
 
 	}
 
