@@ -105,7 +105,7 @@ public class UserManagementDAOHelper {
 						" User Is already Existed");
 			} else if (emailquery.uniqueResult() != null) {
 				throw new EmailExistException("UM-EX014",
-						"EmailExistException",
+						"EmailAlreadyExistedException",
 						" User Is already Existing with the given email Id");
 			} else {
 
@@ -383,6 +383,7 @@ public class UserManagementDAOHelper {
 							userprofile.getWebpage(),
 							userprofile.getIntOnGrassrtInnovators(),
 							userprofile.getPopularity());
+					System.out.println("Branch id="+userprofile.getBranchIdOfMentor());
 					ss.update("7", uMentor);
 
 				} else if (userprofile.getUserType().equalsIgnoreCase(
@@ -561,6 +562,7 @@ public class UserManagementDAOHelper {
 					uprofileDo.setUniversity(uStudent.getUniversity());
 					uprofileDo.setStudentID(uStudent.getEnrollmentNo());
 					uprofileDo.setCompletionYear(uStudent.getYearOfPass());
+					uprofileDo.setBranchIdOfStudent(uStudent.getBranchId());
 
 				} else if (uprofileDo.getUserType().equals("college")) {
 					UsrMngtCollege ucollege = (UsrMngtCollege) ss.get(
@@ -586,7 +588,7 @@ public class UserManagementDAOHelper {
 							.getAffltUniversity());
 					uprofileDo.setTechpdaFactlyCoordtr(ucollege
 							.getTechpdaFactlyCoordtr());
-
+					
 				} else if (uprofileDo.getUserType().equals("mentor")) {
 					UsrMngtMentor umentor = (UsrMngtMentor) ss.get(
 							UsrMngtMentor.class, RegisterID);
@@ -604,12 +606,19 @@ public class UserManagementDAOHelper {
 							.getCommitmentUBringIn());
 					uprofileDo.setIntOnGrassrtInnovators(umentor
 							.getIntOnGrassrtInnovators());
+					uprofileDo.setExpectationFromMentor(umentor.getExpectationFromMentor());
+					uprofileDo.setPopularity(umentor.getPopularity());
+					uprofileDo.setSpecializationOfFaculty(""+umentor.getBranchId());
+					System.out.println("Popularity "+umentor.getPopularity());
+					System.out.println("ExpectationFromMentor "+umentor.getExpectationFromMentor());
+					System.out.println("getBranchId "+umentor.getBranchId());
+					
 
 				} else if (uprofileDo.getUserType().equals("faculty")) {
 					UsrMngtFaculty ufaculty = (UsrMngtFaculty) ss.get(
 							UsrMngtFaculty.class, RegisterID);
-					uprofileDo.setSpecializationOfFaculty(ufaculty
-							.getSpecification());
+					uprofileDo.setSpecializationOfFaculty(""+ufaculty
+							.getBranchId());
 					uprofileDo.setAlumni(ufaculty.getAlumni());
 					uprofileDo.setMemshipInAssocns(ufaculty
 							.getMemshipInAssocns());
@@ -1396,7 +1405,7 @@ public class UserManagementDAOHelper {
 				+ "INT_ON_GRASSRT_INNOVATORS,COMMITMENT_U_BRING_IN from usr_mngt_mentor as umm, "
 				+ "usr_mngt_contact_info as umci,	usr_mngt_master as master, tb_tech001_mast_projects_brnch as tmpb where umm.BRANCH_ID"
 				+ " in (select PROJ_BRANCH_ID from tb_tech001_mast_projects_brnch where tmpb.PROJ_ID = :PROJ_ID) "
-				+ "and umm.rgstr_id = master.rgstr_id and umm.rgstr_id = umci.rgstr_id order by umm.RGSTR_ID;";
+				+ "and umm.rgstr_id = master.rgstr_id and umm.rgstr_id = umci.rgstr_id order by BRANCH_ID;";
 
 		try {
 			SQLQuery qry = ss.createSQLQuery(qryStr);
