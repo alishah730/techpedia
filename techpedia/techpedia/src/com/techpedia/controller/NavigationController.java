@@ -457,6 +457,7 @@ public class NavigationController {
 	public @ResponseBody
 	String acceptChallengeRequest(ModelMap model, @ModelAttribute Project project) throws Exception {
 		return dataFetch.addProjectRequest(project, "http://" + IP + ":8080/techpediaProjectManagementService/challengeservice/acceptchallenge");
+		
 	}
 
 	@RequestMapping(value = "/")

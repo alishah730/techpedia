@@ -56,7 +56,7 @@
 							</div>
 							<div class="panel-body">
 								<div class="col-md-2">
-									<img src="images/profile.jpg" width=50 height=65 />
+									<img src="{{challenge.challengImgPath||'images/no_project.png'}}" width=50 height=65 />
 								</div>
 								<div class="col-md-8">
 									<p>{{challenge.challengAbstract}}</p>

@@ -118,10 +118,10 @@ Set the viewport width to device width for mobile
 						</span> <i class="fa fa-angle-down"></i>
 					</a>
 						<ul class="dropdown-menu">
-							<li><a href="editProfile"> <i class="fa fa-pencil-square-o"></i> Edit Profile
+							<li><a href="editProfile"> <i class="fa fa-pencil-square-o"></i><span class="title">Edit Profile</span>
 							</a></li>
 
-							<li><a href="logout"> <i class="fa fa-power-off"></i> Log Out
+							<li><a href="logout"> <i class="fa fa-power-off"></i><span class="title">Log Out</span>
 							</a></li>
 
 						</ul></li>
@@ -146,6 +146,9 @@ Set the viewport width to device width for mobile
 												class="fa fa-sign-in"></i>Login</a></li>
 										<li><a href="register"><i class="fa fa-book"></i>Register</a></li>
 									</ul></li>
+								
+								
+								
 								<!-- END USER LOGIN DROPDOWN -->
 								<!-- BEGIN QUICK SIDEBAR TOGGLER -->
 
