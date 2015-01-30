@@ -16,7 +16,7 @@
 			<h1 class="footer-title">Mentors</h1>
 			<div class="col-xs-6 col-sm-6 col-md-4 footer-img" ng-repeat="mentor in mentors">
 				<a style="cursor: pointer;" ng-click="viewMentor(mentor)"><img
-					src="{{mentor.mentorImage||'images/UserDefault.jpg'}}"
+					src="{{mentor.photo||'images/UserDefault.jpg'}}"
 					alt="{{mentor.mentorFirstName}} {{mentor.mentorLastName}}"
 					title="{{mentor.mentorFirstName}} {{mentor.mentorLastName}}" width=60 height=60 /></a>
 			</div>
