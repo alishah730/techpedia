@@ -361,7 +361,7 @@
 
 							</div>
 								<div class="col-xs-12 col-md-4">
-									<a href="#" class="btn btn-primary add-project-submit" style="width: 99px; height: 34px;">Add
+									<a href="addProjectRequest" class="btn btn-primary add-project-submit" style="width: 99px; height: 34px;">Add
 										project</a>
 								</div>
 							</div>
