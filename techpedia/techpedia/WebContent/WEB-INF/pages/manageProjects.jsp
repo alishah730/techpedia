@@ -232,7 +232,7 @@
 				<div class="col-md-12">&nbsp;</div>
 					<div class="col-xs-12" ng-repeat="mentor in suggestedMentors">
 						<div class="col-md-2">
-							<img class="pitch-image" src="{{mentor.photo||'images/UserDefault.jpg'}}" width=90 height=100 />
+							<img src="{{mentor.photo||'images/UserDefault.jpg'}}" width=90 height=100 />
 						</div>
 						<div class="col-md-10">
 							<div class="col-md-12">{{mentor.fName}} {{mentor.mName}} {{mentor.lName}}</div>
