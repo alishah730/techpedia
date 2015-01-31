@@ -257,7 +257,7 @@ public class DataFetch {
 	public String addProjectRequest(Project project, String serviceURL) {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
-		if (project.getChallengId().equalsIgnoreCase("undefined"))
+		if ("undefined".equalsIgnoreCase(project.getChallengId()))
 			project.setChallengId(null);
 		String response = "";
 		try {
