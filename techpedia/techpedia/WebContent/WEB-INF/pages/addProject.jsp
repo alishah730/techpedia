@@ -101,7 +101,7 @@
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon" style="border-right: 1px solid #ccc">Keywords</span> <input
 															id="projectKeywords" name="projKeywordsString" type="text" class="form-control"
-															placeholder="Keywords"ng-model="addProject.projKeywordsString" required />
+															placeholder="Keywords" ng-model="addProject.projKeywordsString" required />
 													</div>
 												</div>
 
@@ -111,7 +111,7 @@
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon" style="border-right: 1px solid #ccc">Team Members</span> <input
 															 id="teamMembers" name="projTeamMembersString" type="text"
-															class="form-control" placeholder="Add Team Members" disabled
+															class="form-control" placeholder="Add Team Members" 
 															ng-model="addProject.projTeamMembersString" onclick="makeDisable()" /> <span class="input-group-addon"
 															style="border-left: 1px solid #ccc; width: 10px;" disabled> <a data-toggle="modal"
 															data-target="#searchTeamMemberModal" href="#">Search</a></span>
@@ -214,7 +214,7 @@
 										<a href="#" class="btn btn-primary continue-btn"
 											ng-disabled="addProjectInformation.$invalid">Continue</a>
 									</div>
-								</form>
+								<!-- </form> -->
 							</div>
 
 						</div>
@@ -222,8 +222,8 @@
 							ng-class="addProjectInformation.$invalid?'ui-state-disabled':'ui-state-default'">Detailed
 							Project Information</h3>
 						<div>
-							<form id="addDetailedProjectInformationForm" name="addDetailedProjectInformationForm"
-								method="post" novalidate>
+							<!-- <form id="addDetailedProjectInformationForm" name="addDetailedProjectInformationForm"
+								method="post" novalidate> -->
 								<div class="col-xs-12 col-md-12">
 									<div class="panel panel-default">
 										<div class="panel-heading">Project Description</div>

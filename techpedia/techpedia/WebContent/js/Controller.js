@@ -857,7 +857,7 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
-			if (data === 'Y') {
+			if (data.status == 'success') {
 				window.location = 'projectDetails' + $scope.chosenProject.projId;
 				$scope.message = [];
 				$scope.message.push("Mentor added");
@@ -893,7 +893,7 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
-			if (data === 'Y') {
+			if (data.status == 'success') {
 				$scope.message = [];
 				$scope.message.push("Document uploaded succesfully");
 			} else {
@@ -953,7 +953,8 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 			}
 		}).success(function(data, status, headers, config) {
 			$scope.message = [];
-			if (data === 'Y') {
+			console.log(data);
+			if (data.status == 'success') {
 				if (state === 'Y') {
 					$scope.message.push("Project initiated succesfully");
 				} else {
@@ -983,7 +984,7 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 			}
 		}).success(function(data, status, headers, config) {
 			$scope.message = [];
-			if (data === 'Y') {
+			if (data.status == 'success') {
 				if (state === 'Y') {
 					$scope.message.push("Project closed succesfully");
 				} else {
@@ -1136,7 +1137,7 @@ function ProjectDetail($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
-			if (data === 'Y') {
+			if (data.status == 'success') {
 
 				var index = $scope.projectMentorList.indexOf(mentor);
 				$scope.projectMentorList.splice(index, 1);
@@ -1235,22 +1236,24 @@ function ProjectDetail($scope, $http) {
 				data : $.param({
 					projectId : $scope.projectId,
 					commentId : comment.commentId,
-					registerId : $scope.registerId
+					registerId : $scope.registerId,
 				}),
 				headers : {
 					'Content-Type' : 'application/x-www-form-urlencoded'
 				}
 			}).success(function(data, status, headers, config) {
 				$scope.message = [];
-				if (data === 'N')
+				if (data.status == 'failure')
 					alert('Failed to delete comment');
 				else {
 					if (type === 'public') {
-						var index = $scope.publicComment.indexOf(comment);
-						$scope.teamComment.splice(index, 1);
+						var index = $scope.publicComment.indexOf(comment.projComment);
+						$scope.teamComments.splice(index, 1);
 					} else {
-						var index = $scope.teamComment.indexOf(comment);
-						$scope.teamComment.splice(index, 1);
+						var index = $scope.teamComment.indexOf(comment.projComment);
+						console.log(comment.projComment);
+						console.log($scope.teamComment);
+						$scope.teamComments.splice(index, 1);
 					}
 				}
 			}).error(function(data, status, headers, config) {

@@ -447,7 +447,7 @@ public class NavigationController {
 	
 		return response;
 	}
-	@RequestMapping(value = "/addProjectRequest")
+	@RequestMapping(value = "/addProjectRequest", method=RequestMethod.POST)
 	public @ResponseBody
 	String addProjectRequest(ModelMap model, @ModelAttribute Project project) throws Exception {
 		return dataFetch.addProjectRequest(project, "http://" + IP + ":8080/techpediaProjectManagementService/projectservice/createproject");
