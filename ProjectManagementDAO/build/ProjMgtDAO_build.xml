@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+
+<project name="ProjectManagement DAO" default="build" basedir="../">
+
+	<property name="name" value="ProjectManagementDAO" />
+	<property name="version" value="1.0" />
+
+	<property name="proj.dir" 	value="D:\gegdc\AC340221\Local_GitRepository\V2_Git\techpedia" />
+	<property name="proj.dir" 	value="D:\gegdc\SV89207\PGS_Workspace" />
+	<property name="src.dir" 	value="${basedir}/src" />
+	<property name="bin.dir" 	value="${basedir}/bin" />
+	<property name="lib.dir" 	value="${basedir}/lib" />
+	<property name="build.dir" 	value="${basedir}/build" />
+	
+	<property name="deploy.dir" value="${proj.dir}\techpediaProjectManagementService\WebContent\WEB-INF\lib"></property>	
+
+	<!-- The Classpath  -->
+	<path id="build.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	
+
+	<!-- Cleans up generated stuff -->
+	<target name="clean" description="Removes generated files.">
+		
+		<delete>
+			<fileset dir="${bin.dir}">
+		    		<include name="**/*.*"/>
+			</fileset>
+		</delete>
+		
+		<delete>
+			<fileset dir="${build.dir}">
+	    		<include name="**/*.jar"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<!-- Compiles the source code -->
+	<target name="compile" depends="clean" description="Compiles the class files">
+		<!-- <mkdir dir="${build.dir}" /> -->
+		<javac srcdir="${src.dir}" destdir="${basedir}/bin" debug="on" deprecation="on">
+			<classpath refid="build.classpath" />
+		</javac>
+	</target>
+
+	<!-- Build JAR file -->
+	<target name="build" depends="compile">
+		<jar destfile="${build.dir}/${name}.jar" basedir="${basedir}/bin" />
+	</target>
+	
+	<!-- Copy JAR file -->
+	<target name="deploy" depends="build">
+		<delete file="${deploy.dir}/${name}.jar"></delete>
+		<copy  file="build/${name}.jar" todir="${deploy.dir}"/>
+	</target>
+</project>

@@ -11,6 +11,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "USR_UNIVERSITY_MASTER")
 public class UsrUniversityMaster {
+
 	
 	@Id   //@GeneratedValue
 	@GeneratedValue

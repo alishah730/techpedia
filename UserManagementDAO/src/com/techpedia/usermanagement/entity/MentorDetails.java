@@ -7,6 +7,7 @@ import javax.persistence.Id;
 @Entity
 public class MentorDetails {
 	
+	
 	@Id
 	@Column (name = "RGSTR_ID")
 	private long rgstrId;

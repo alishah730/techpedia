@@ -14,14 +14,16 @@ import org.hibernate.Transaction;
 
 import com.techpedia.chiper.ChiperEncryptException;
 import com.techpedia.chiper.ChiperUtils;
+import com.techpedia.email.exception.EmailServiceException;
 import com.techpedia.logger.TechPediaLogger;
 import com.techpedia.usermanagement.dao.UserManagementDAOImpl;
-import com.techpedia.usermanagement.dataobject.CollegeUniversityListDO;
+import com.techpedia.usermanagement.dataobject.CollegeListDO;
 import com.techpedia.usermanagement.dataobject.Mentor1n2Details;
 import com.techpedia.usermanagement.dataobject.MentorsOfProject;
 import com.techpedia.usermanagement.dataobject.PopularMentorsDO;
 import com.techpedia.usermanagement.dataobject.SearchCriteriaDO;
 import com.techpedia.usermanagement.dataobject.SearchForMentorListDO;
+import com.techpedia.usermanagement.dataobject.UniversityListDO;
 import com.techpedia.usermanagement.dataobject.UpdateUserPhotoDO;
 import com.techpedia.usermanagement.dataobject.UserProfileDO;
 import com.techpedia.usermanagement.dataobject.UserRecentComments;
@@ -69,6 +71,7 @@ import com.techpedia.usermanagement.exception.UserRoleNotMappedWithFunctionIdsEx
 import com.techpedia.usermanagement.exception.UserTeamListFetchException;
 import com.techpedia.usermanagement.util.PasswordUtil;
 import com.techpedia.util.HibernateUtil;
+
 
 //import com.techpedia.usermanagement.util.Image2Base64;
 
@@ -144,7 +147,7 @@ public class UserManagementDAOHelper {
 							userprofile.getCollge(), userprofile.getAlumni(),
 							userprofile.getStudentID(),
 							userprofile.getCompletionYear(),
-							userprofile.getBranchIdOfStudent());
+							userprofile.getBranchIdOfStudent());					
 					ss.save(uStudent);
 
 				} else if (userprofile.getUserType()
@@ -161,6 +164,7 @@ public class UserManagementDAOHelper {
 							userprofile.getCntctInfoForNatnlInnovnClub(),
 							userprofile.getAffltUniversityOfCollege(),
 							userprofile.getTechpdaFactlyCoordtr());
+					        
 					ss.save(uCollege);
 
 					// UserMngtCollegeMaster userMngtCollegeMaster=new
@@ -220,6 +224,7 @@ public class UserManagementDAOHelper {
 
 				}
 				tx.commit();
+				//UserManagementEmailHelper.sendEmail(userprofile); //Sending mail
 				retval = true;
 			}
 
@@ -1390,6 +1395,14 @@ public class UserManagementDAOHelper {
 					"Error while fetching current password.");
 		}
 		log.info("UserManagementDAOImpl forgotPassword :END");
+		
+		// Sending the Current Password by taking the Email id of user.
+		/*try {
+			UserManagementEmailHelper.sendPassword(email, currentPassword);
+		} catch (EmailServiceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}*/
 		return currentPassword;
 	}
 
@@ -1485,14 +1498,15 @@ public class UserManagementDAOHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<CollegeUniversityListDO> getCollegesList(String cName) throws CollegesFetchException {
+	public static List<CollegeListDO> getCollegesList(String cName) throws CollegesFetchException {
 		Session ss = HibernateUtil.getSessionFactory().openSession();
-		List<CollegeUniversityListDO> ucollegeList = new ArrayList<CollegeUniversityListDO>();
+		List<CollegeListDO> ucollegeList = new ArrayList<CollegeListDO>();
 		try {
 			SQLQuery query = ss.createSQLQuery("select College_Name from USR_College_MASTER where College_Name like :cName ");
-			query.setParameter("cName", cName + "%");	
+			
+			query.setParameter("cName", cName+"%");	
 			query.addEntity(UsrCollegeMaster.class);
-			ucollegeList =(List<CollegeUniversityListDO>)query.list();			
+			ucollegeList =(List<CollegeListDO>)query.list();			
 
 		} catch (Exception e) {
 			log.error((new StringBuilder("Error while fetching the Records"))
@@ -1510,14 +1524,16 @@ public class UserManagementDAOHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<CollegeUniversityListDO> getUniversitiesList(String uName) throws UniversitiesFetchException {
+	public static List<UsrUniversityMaster> getUniversitiesList(String uName) throws UniversitiesFetchException {
 		Session ss = HibernateUtil.getSessionFactory().openSession();
-		List<CollegeUniversityListDO> universityList = new ArrayList<CollegeUniversityListDO>();
+		List<UsrUniversityMaster> universityList = new ArrayList<UsrUniversityMaster>();
 		try {
+			System.out.println("Uname "+uName);
 			SQLQuery query = ss.createSQLQuery("select University_Name from USR_UNIVERSITY_MASTER  where University_Name like :uName");			
-			query.setParameter("uName", uName + "%");	
+			query.setParameter("uName", uName+"%");	
+			System.out.println("query: "+query.getQueryString()+" Query1: "+query.getNamedParameters());
 			query.addEntity(UsrUniversityMaster.class);
-			universityList =(List<CollegeUniversityListDO>)query.list();		
+			universityList =(List<UsrUniversityMaster>)query.list();		
 
 		} catch (Exception e) {
 			log.error((new StringBuilder("Error while fetching the Records"))
