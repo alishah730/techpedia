@@ -6,6 +6,7 @@ public class ProjectDocument {
 	
 	private String docName;
 	private String docLink;
+	private long regstrId;
 	/**
 	 * @return the docName
 	 */
@@ -30,13 +31,17 @@ public class ProjectDocument {
 	public void setDocLink(String docLink) {
 		this.docLink = docLink;
 	}
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	
+	public long getRegstrId() {
+		return regstrId;
+	}
+	public void setRegstrId(long regstrId) {
+		this.regstrId = regstrId;
+	}
 	@Override
 	public String toString() {
-		return "ProjectDocPathTxn [docName=" + docName + ", docLink=" + docLink
-				+ "]";
+		return "ProjectDocument [docName=" + docName + ", docLink=" + docLink
+				+ ", regstrId=" + regstrId + "]";
 	}
 	
 }

@@ -1,10 +1,12 @@
 <%@page import="java.util.ArrayList"%>
-<html>
-<jsp:include page="template/dashboardHeader.jsp" />
+<html ng-app="techpedia">
+<jsp:include page="template/NewHeader.jsp" />
 <div class="clearfix"></div>
+<div class="container customFont borderRadius style">
+		<div class="row">
 <div class="page-container">
 	<div class="page-sidebar-wrapper">
-		<jsp:include page="template/dashboardMenu.jsp" />
+	
 	</div>
 
 	<div class="page-content-wrapper">
@@ -66,7 +68,7 @@
 				<div class="col-xs-12">
 					<br> <br>
 					<h5 class="heading1">Our goals are:</h5>
-					<hr />
+					<hr style="background-color:black;color:black"/>
 					<ol class="next" align="justify">
 						<li>Promotion of originality among technology students by making it impossible for them
 							to do what has been done before. This will be possible only when they can find out what has
@@ -102,10 +104,100 @@ BEGIN FOOTER -->
 		</div>
 	</div>
 </div>
+</div>
+</div>
 <!-- END FOOTER -->
+	<%-- <!-- FOOTER CONTENT BEGIN -->
+		<div id="copyright" class="container customFont" style="background-color:#D8D8D8;padding:5px;max-width:1130px;border-radius:5px;margin-top:20px;">
+		<div id="footer" ng-controller="FooterController" ng-init="InitLoad()">
+	<footer class="row" style="margin-left: 15%">
+		<p class="back-top floatright">
+			<a href="#top"><span></span></a>
+		</p>
+		<div class="col-xs-12 col-sm-6 col-md-4">
+			<h1 class="footer-title">Mentors</h1>
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img" ng-repeat="mentor in mentors">
+				<a style="cursor: pointer;" ng-click="viewMentor(mentor)"><img
+					src="{{mentor.photo||'images/UserDefault.jpg'}}"
+					alt="{{mentor.mentorFirstName}} {{mentor.mentorLastName}}"
+					title="{{mentor.mentorFirstName}} {{mentor.mentorLastName}}" width=60 height=60 /></a>
+			</div>
+		</div>
 
-<jsp:include page="template/loginModal.jsp" />
+		<div class="col-xs-12 col-sm-6 col-md-4">
+			<h1 class="footer-title">Entrepreneurs</h1>
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<img src="${entrepreneurs[0]}" width=60 height=60 />
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<img src="${entrepreneurs[1]}" width=60 height=60 />
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<img src="${entrepreneurs[2]}" width=60 height=60 />
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<img src="${entrepreneurs[3]}" width=60 height=60 />
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<img src="${entrepreneurs[4]}" width=60 height=60 />
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<img src="${entrepreneurs[5]}" width=60 height=60 />
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-6 col-md-4">
+			<h1 class="footer-title">Partners</h1>
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<a href="${partnersURL[0]}"><img src="${partners[0]}" width=60 height=60 /></a>
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<a href="${partnersURL[1]}"><img src="${partners[1]}" width=60 height=60 /></a>
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<a href="${partnersURL[2]}"><img src="${partners[2]}" width=60 height=60 /></a>
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<a href="${partnersURL[3]}"><img src="${partners[3]}" width=60 height=60 /></a>
+			</div>
+
+		</div>
+	</footer>
+
+</div>
+<div class="copyright">
+	<div class="row">
+		<div class="col-xs-12">
+			&copy;<span class="small"> Copyright 2013 Techpedia</span>
+		</div>
+	</div>
+</div>
+</div> --%>
+<jsp:include page="template/footer.jsp" />
 </body>
 <!-- END BODY -->
+<script src="js/jquery-ui.js"></script>
+<script src="js/angular.min.js"></script>
+<script src="js/Controller.js"></script>
+<script src="js/swfobject.js"></script>
+<script src="js/jquery.FileReader.min.js"></script>
+<!-- <script src="js/elasticslideshow.js"></script> -->
+<!-- <script src="js/jquery.cycle.js"></script> -->
+<!-- <script src="js/slidepanel.js"></script> -->
+<!-- <script src="js/responsivemenu.js"></script> -->
+<script src="js/jquery.isotope.min.js"></script>
+<script src="js/jquery.prettyPhoto.js"></script>
+<script src="js/custom.js"></script>
+<!-- <script src="js/bootstrap.min.js"></script> -->
+<script src="js/select2.min.js"></script>
+<script src="js/script.min.js"></script>
 </html>
-<jsp:include page="template/footer.jsp" />
+
+

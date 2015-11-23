@@ -31,6 +31,9 @@ public class ProjectTypeMaster {
 	public ProjectTypeMaster(String projTypeDesc) {
 		this.projTypeDesc = projTypeDesc;
 	}
+	
+	public ProjectTypeMaster( ) {		
+	}
 
 	/**
 	 * @return the projTypeId

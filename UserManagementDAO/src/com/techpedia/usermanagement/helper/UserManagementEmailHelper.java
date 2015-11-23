@@ -1,15 +1,12 @@
 package com.techpedia.usermanagement.helper;
 
-import java.util.Locale;
-import java.util.ResourceBundle;
-
 import com.techpedia.email.exception.EmailServiceException;
 import com.techpedia.email.util.TechPediaEmailFunction;
 import com.techpedia.usermanagement.dataobject.UserProfileDO;
 
 public class UserManagementEmailHelper {
 	
-	public static void sendEmail(UserProfileDO userprofileDO) throws EmailServiceException{
+	public static void sendEmailFromDAO(UserProfileDO userprofileDO) throws EmailServiceException{
 
 		
 		
@@ -34,7 +31,7 @@ public class UserManagementEmailHelper {
 		
 	}
 
-	public static void sendPassword(String email,String currentPassword) throws EmailServiceException {
+	public static void sendPasswordFromDAO(String email,String currentPassword) throws EmailServiceException {
 		
 		String subject = "Forgot Password";
 		StringBuffer messageBody = new StringBuffer();

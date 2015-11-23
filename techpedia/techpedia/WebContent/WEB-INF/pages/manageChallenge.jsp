@@ -1,9 +1,12 @@
 <html ng-app="techpedia">
-<jsp:include page="template/dashboardHeader.jsp" />
+<jsp:include page="template/NewHeader.jsp" />
 <div class="clearfix"></div>
+
+<div class="container customFont borderRadius style" >
+
 <div class="page-container">
 	<div class="page-sidebar-wrapper">
-		<jsp:include page="template/dashboardMenu.jsp" />
+		<%-- <jsp:include page="template/dashboardMenu.jsp" /> --%>
 	</div>
 	<div class="page-content-wrapper" ng-controller="ManageChallengesController" ng-init="initLoad()">
 		<div class="page-content">
@@ -56,26 +59,26 @@
 							</div>
 							<div class="panel-body">
 								<div class="col-md-2">
-									<img src="{{challenge.challengImgPath||'images/no_project.png'}}" width=50 height=65 />
+									<img src="{{challenge.challengImgPath||'images/AllChallenge.png'}}" width=50 height=65 />
 								</div>
 								<div class="col-md-8">
 									<p>{{challenge.challengAbstract}}</p>
 									<p class="sub-text-4"></p>
 								</div>
-								<div class="col-md-2">
-									<div class="col-md-8">
-										<div class="col-xs-12">
-											<a href="#" class="btn btn-info btn-sm" ng-click=viewChallenge(challenge)>View</a>
-										</div>
-										<div class="col-xs-12">&nbsp;</div>
-										<div class="col-xs-12">
-											<a href="#" class="btn btn-info btn-sm" ng-click="acceptChallenge(challenge)">Accept</a><br>
-											<br>
-										</div>
-										<!-- <div class="col-xs-12">&nbsp;</div> -->
-										<div class="col-xs-12">
-											<a href="#" data-toggle="modal" data-target="#uploadModal" class="btn btn-info btn-sm"
-												ng-click="currentChallenge(challenge)">Upload</a>
+								<div class="row-fluid pull-right" style="margin-top:30px">
+									
+										
+											<btn class="btn btn-info btn-sm" ng-click=viewChallenge(challenge)>View</btn>
+										
+										
+										
+											<btn class="btn btn-info btn-sm" ng-click="acceptChallenge(challenge)">Accept</btn>
+										
+										
+										
+										
+											<btn data-toggle="modal" data-target="#uploadModal" class="btn btn-info btn-sm"
+												ng-click="currentChallenge(challenge)">Upload</btn>
 										</div>
 									</div>
 								</div>
@@ -83,7 +86,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+		
 			<div class="clearfix"></div>
 			<!-- Upload Modal -->
 			<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog"
@@ -112,6 +115,7 @@
 			</div>
 		</div>
 	</div>
+</div>
 </div>
 <!-- END FOOTER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->

@@ -1,4 +1,4 @@
-<jsp:include page="template/header.jsp" />
+
 <!-- SUBHEADER
 ================================================== -->
 <div id="subheader">

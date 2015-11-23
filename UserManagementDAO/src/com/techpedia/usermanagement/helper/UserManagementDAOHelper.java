@@ -14,28 +14,29 @@ import org.hibernate.Transaction;
 
 import com.techpedia.chiper.ChiperEncryptException;
 import com.techpedia.chiper.ChiperUtils;
-import com.techpedia.email.exception.EmailServiceException;
 import com.techpedia.logger.TechPediaLogger;
 import com.techpedia.usermanagement.dao.UserManagementDAOImpl;
 import com.techpedia.usermanagement.dataobject.CollegeListDO;
 import com.techpedia.usermanagement.dataobject.Mentor1n2Details;
 import com.techpedia.usermanagement.dataobject.MentorsOfProject;
+import com.techpedia.usermanagement.dataobject.PasswordResetVo;
 import com.techpedia.usermanagement.dataobject.PopularMentorsDO;
 import com.techpedia.usermanagement.dataobject.SearchCriteriaDO;
 import com.techpedia.usermanagement.dataobject.SearchForMentorListDO;
+import com.techpedia.usermanagement.dataobject.SignInVo;
 import com.techpedia.usermanagement.dataobject.UniversityListDO;
 import com.techpedia.usermanagement.dataobject.UpdateUserPhotoDO;
 import com.techpedia.usermanagement.dataobject.UserProfileDO;
 import com.techpedia.usermanagement.dataobject.UserRecentComments;
 import com.techpedia.usermanagement.dataobject.UserTeamListDO;
 import com.techpedia.usermanagement.dataobject.UsrAccessDetails;
+import com.techpedia.usermanagement.entity.BranchMaster;
 import com.techpedia.usermanagement.entity.MentorDetails;
 import com.techpedia.usermanagement.entity.MentorsAssignedToProject;
 import com.techpedia.usermanagement.entity.ProjectTeamMaster;
 import com.techpedia.usermanagement.entity.ProjectTeamTxn;
 import com.techpedia.usermanagement.entity.UsrAssignAuthortnRolesToUsrs;
 import com.techpedia.usermanagement.entity.UsrAuthortnRoles;
-import com.techpedia.usermanagement.entity.UsrCollegeMaster;
 import com.techpedia.usermanagement.entity.UsrMngtAddress;
 import com.techpedia.usermanagement.entity.UsrMngtCollege;
 import com.techpedia.usermanagement.entity.UsrMngtContactInfo;
@@ -45,7 +46,6 @@ import com.techpedia.usermanagement.entity.UsrMngtMaster;
 import com.techpedia.usermanagement.entity.UsrMngtMentor;
 import com.techpedia.usermanagement.entity.UsrMngtPassword;
 import com.techpedia.usermanagement.entity.UsrMngtStudent;
-import com.techpedia.usermanagement.entity.UsrUniversityMaster;
 import com.techpedia.usermanagement.exception.CollegesFetchException;
 import com.techpedia.usermanagement.exception.CreateProfileException;
 import com.techpedia.usermanagement.exception.CurrentPasswordFetchException;
@@ -64,6 +64,7 @@ import com.techpedia.usermanagement.exception.ProjectNotFoundException;
 import com.techpedia.usermanagement.exception.UniversitiesFetchException;
 import com.techpedia.usermanagement.exception.UserExistException;
 import com.techpedia.usermanagement.exception.UserFunctionsNotDefinedException;
+import com.techpedia.usermanagement.exception.UserInactiveException;
 import com.techpedia.usermanagement.exception.UserNotFoundException;
 import com.techpedia.usermanagement.exception.UserRecentCommentsFetchException;
 import com.techpedia.usermanagement.exception.UserRoleNotDefinedException;
@@ -71,7 +72,6 @@ import com.techpedia.usermanagement.exception.UserRoleNotMappedWithFunctionIdsEx
 import com.techpedia.usermanagement.exception.UserTeamListFetchException;
 import com.techpedia.usermanagement.util.PasswordUtil;
 import com.techpedia.util.HibernateUtil;
-
 
 //import com.techpedia.usermanagement.util.Image2Base64;
 
@@ -126,7 +126,7 @@ public class UserManagementDAOHelper {
 						userprofile.getAddrLn2(), userprofile.getCity(),
 						userprofile.getDistrict(), userprofile.getState(),
 						userprofile.getCountry(), userprofile.getPincode());
-				System.out.println("Photo Insert " + userprofile.getPhoto());
+				// System.out.println("Photo Insert " + userprofile.getPhoto());
 				UsrMngtContactInfo uContactInfo = new UsrMngtContactInfo(
 						uMaster.getRgstrId(), userprofile.getMobile(),
 						userprofile.getHomePhoneNo(), userprofile.getPhoto());
@@ -144,27 +144,29 @@ public class UserManagementDAOHelper {
 					UsrMngtStudent uStudent = new UsrMngtStudent(
 							uMaster.getRgstrId(),
 							userprofile.getDegreeOfStudent(),
-							userprofile.getCollge(), userprofile.getAlumni(),
+							userprofile.getCollge(),
+							userprofile.getUniversity(),
+							// userprofile.getAlumni(),
 							userprofile.getStudentID(),
 							userprofile.getCompletionYear(),
-							userprofile.getBranchIdOfStudent());					
+							userprofile.getBranchIdOfStudent());
 					ss.save(uStudent);
 
 				} else if (userprofile.getUserType()
 						.equalsIgnoreCase("college")) {
-					System.out.println("LOGO " + userprofile.getLogo());
+					// System.out.println("LOGO " + userprofile.getLogo());
 					UsrMngtCollege uCollege = new UsrMngtCollege(
 							uMaster.getRgstrId(), userprofile.getWebpage(),
 							userprofile.getLogo(),
-							userprofile.getCntctPerNameofCollege(),
-							userprofile.getCollgeContactEmail(),
+							userprofile.getCollegeName(),
+							userprofile.getCollegeDesc(),
 							userprofile.getPrinicipalName(),
 							userprofile.getPrinicipalEmail(),
 							userprofile.getFacilitiesOffrdToStudents(),
 							userprofile.getCntctInfoForNatnlInnovnClub(),
 							userprofile.getAffltUniversityOfCollege(),
 							userprofile.getTechpdaFactlyCoordtr());
-					        
+
 					ss.save(uCollege);
 
 					// UserMngtCollegeMaster userMngtCollegeMaster=new
@@ -224,7 +226,8 @@ public class UserManagementDAOHelper {
 
 				}
 				tx.commit();
-				//UserManagementEmailHelper.sendEmail(userprofile); //Sending mail
+				// UserManagementEmailHelper.sendEmailFromDAO(userprofile);
+				// //Sending mail
 				retval = true;
 			}
 
@@ -333,8 +336,11 @@ public class UserManagementDAOHelper {
 
 					UsrMngtStudent uStudent = new UsrMngtStudent(
 							uMaster.getRgstrId(),
-							userprofile.getDegreeOfFaculty(),
-							userprofile.getCollge(), userprofile.getAlumni(),
+							userprofile.getDegreeOfStudent(), // Modified by
+																// Anil
+							userprofile.getCollge(),
+							userprofile.getUniversity(),// added by Anil
+							// userprofile.getAlumni(),
 							userprofile.getStudentID(),
 							userprofile.getCompletionYear(),
 							userprofile.getBranchIdOfStudent());
@@ -342,12 +348,11 @@ public class UserManagementDAOHelper {
 
 				} else if (userprofile.getUserType()
 						.equalsIgnoreCase("college")) {
-
 					UsrMngtCollege uCollege = new UsrMngtCollege(
 							userprofile.getRgstrId(), userprofile.getWebpage(),
 							userprofile.getLogo(),
-							userprofile.getCntctPerNameofCollege(),
-							userprofile.getCollgeContactEmail(),
+							userprofile.getCollegeName(),
+							userprofile.getCollegeDesc(),
 							userprofile.getPrinicipalName(),
 							userprofile.getPrinicipalEmail(),
 							userprofile.getFacilitiesOffrdToStudents(),
@@ -388,7 +393,8 @@ public class UserManagementDAOHelper {
 							userprofile.getWebpage(),
 							userprofile.getIntOnGrassrtInnovators(),
 							userprofile.getPopularity());
-					System.out.println("Branch id="+userprofile.getBranchIdOfMentor());
+					System.out.println("Branch id="
+							+ userprofile.getBranchIdOfMentor());
 					ss.update("7", uMentor);
 
 				} else if (userprofile.getUserType().equalsIgnoreCase(
@@ -567,21 +573,38 @@ public class UserManagementDAOHelper {
 					uprofileDo.setUniversity(uStudent.getUniversity());
 					uprofileDo.setStudentID(uStudent.getEnrollmentNo());
 					uprofileDo.setCompletionYear(uStudent.getYearOfPass());
-					uprofileDo.setBranchIdOfStudent(uStudent.getBranchId());
+
+					if (uStudent != null && !"null".equals(uStudent)
+							&& uStudent.getBranchId() != null) {
+						BranchMaster bMaster = (BranchMaster) ss.get(
+								BranchMaster.class, uStudent.getBranchId());
+
+						if (bMaster != null
+								&& bMaster.getProBrancDesc() != null) {
+							uprofileDo.setBranchIdOfStudent(uStudent
+									.getBranchId());
+							uprofileDo.setProjectBranchDescOfStudent(bMaster
+									.getProBrancDesc());
+						}
+					}
+					// uprofileDo.setBranchIdOfStudent(uStudent.getBranchId());
 
 				} else if (uprofileDo.getUserType().equals("college")) {
 					UsrMngtCollege ucollege = (UsrMngtCollege) ss.get(
 							UsrMngtCollege.class, RegisterID);
 					uprofileDo.setWebpage(ucollege.getWebpgLnk());
 					uprofileDo.setLogo(ucollege.getLogo());
-					uprofileDo.setCntctPerNameofCollege(ucollege
-							.getCntctPerNameofCollege()); /*
-														 * name of the person
-														 * from the
-														 * usr_mngt_master
-														 */
-					uprofileDo.setCollgeContactEmail(ucollege
-							.getCntctPerEmailId());
+					/*
+					 * uprofileDo.setCntctPerNameofCollege(ucollege
+					 * .getCntctPerNameofCollege()); name of the person from the
+					 * usr_mngt_master
+					 * 
+					 * uprofileDo.setCollgeContactEmail(ucollege
+					 * .getCntctPerEmailId());
+					 */
+
+					uprofileDo.setCollegeName(ucollege.getCollegeName());
+					uprofileDo.setCollegeDesc(ucollege.getCollegeDescription());
 					uprofileDo.setPrinicipalName(ucollege.getPrincipalName());
 					uprofileDo
 							.setPrinicipalEmail(ucollege.getPrincipalMailId());
@@ -593,10 +616,13 @@ public class UserManagementDAOHelper {
 							.getAffltUniversity());
 					uprofileDo.setTechpdaFactlyCoordtr(ucollege
 							.getTechpdaFactlyCoordtr());
-					
+
 				} else if (uprofileDo.getUserType().equals("mentor")) {
 					UsrMngtMentor umentor = (UsrMngtMentor) ss.get(
 							UsrMngtMentor.class, RegisterID);
+					uprofileDo.setDegreeOfMentor(umentor.getDegree()); // Added
+																		// by
+																		// Anil
 					uprofileDo.setDesignationOfMentor(umentor.getDesignation());
 					uprofileDo.setInstitutionalAssctnInfo(umentor
 							.getInstitutionalAssctnInfo());
@@ -609,21 +635,66 @@ public class UserManagementDAOHelper {
 							.getExpectationFromMentor());
 					uprofileDo.setCommitmentUBringIn(umentor
 							.getCommitmentUBringIn());
+					uprofileDo.setWebpage(umentor.getWebLink());
 					uprofileDo.setIntOnGrassrtInnovators(umentor
 							.getIntOnGrassrtInnovators());
-					uprofileDo.setExpectationFromMentor(umentor.getExpectationFromMentor());
 					uprofileDo.setPopularity(umentor.getPopularity());
-					uprofileDo.setSpecializationOfFaculty(""+umentor.getBranchId());
-					System.out.println("Popularity "+umentor.getPopularity());
-					System.out.println("ExpectationFromMentor "+umentor.getExpectationFromMentor());
-					System.out.println("getBranchId "+umentor.getBranchId());
-					
+
+					if (umentor != null && !"null".equals(umentor)
+							&& umentor.getBranchId() != null) {
+						BranchMaster bMaster = (BranchMaster) ss.get(
+								BranchMaster.class, umentor.getBranchId());
+
+						if (bMaster != null
+								&& bMaster.getProBrancDesc() != null) {
+							uprofileDo.setBranchIdOfMentor(umentor
+									.getBranchId());
+							uprofileDo.setProjectBranchDescOfMentor(bMaster
+									.getProBrancDesc());
+						}
+					}
+
+					// uprofileDo.setBranchIdOfMentor(umentor.getBranchId()); //
+					// Modified
+					// by
+					// Anil
+					// System.out.println("Popularity " +
+					// umentor.getPopularity());
+					// System.out.println("ExpectationFromMentor "+
+					// umentor.getExpectationFromMentor());
+					// System.out.println("getBranchId " +
+					// umentor.getBranchId());
 
 				} else if (uprofileDo.getUserType().equals("faculty")) {
 					UsrMngtFaculty ufaculty = (UsrMngtFaculty) ss.get(
 							UsrMngtFaculty.class, RegisterID);
-					uprofileDo.setSpecializationOfFaculty(""+ufaculty
-							.getBranchId());
+
+					if (ufaculty != null && !"null".equals(ufaculty)
+							&& ufaculty.getSpecification() != null) {
+						BranchMaster bMaster = (BranchMaster) ss
+								.get(BranchMaster.class,
+										ufaculty.getSpecification());
+						if (bMaster != null
+								&& bMaster.getProBrancDesc() != null) {
+							uprofileDo.setSpecializationOfFaculty(ufaculty
+									.getSpecification());
+							uprofileDo.setProjectBranchDescOfFaculty(bMaster
+									.getProBrancDesc());
+
+						}
+					}
+
+					/*
+					 * BranchMaster bMaster = (BranchMaster) ss.get(
+					 * BranchMaster.class,ufaculty.getSpecification());
+					 * 
+					 * if (bMaster!=null && bMaster.getBranchId() != null) {
+					 * uprofileDo
+					 * .setSpecializationOfFaculty(bMaster.getProBrancDesc()); }
+					 */
+
+					// uprofileDo.setSpecializationOfFaculty(ufaculty.getSpecification());
+					// // Modified by Anil
 					uprofileDo.setAlumni(ufaculty.getAlumni());
 					uprofileDo.setMemshipInAssocns(ufaculty
 							.getMemshipInAssocns());
@@ -675,8 +746,9 @@ public class UserManagementDAOHelper {
 		return uprofileDo;
 
 	}
-
-	public static boolean authenticateHelper(String userid, String pwd)
+	
+	
+/*	public static boolean authenticateHelper(String userid, String pwd)
 			throws UserNotFoundException, LoginException,
 			PasswordMismatchException, PasswordExpiryException,
 			PasswordResetException {
@@ -703,10 +775,41 @@ public class UserManagementDAOHelper {
 		}
 
 		return authenticateFlag;
+	}*/
+
+	public static boolean authenticateHelper(String emailId, String pwd)
+			throws UserNotFoundException, LoginException,
+			PasswordMismatchException, PasswordExpiryException,
+			PasswordResetException {
+
+		PasswordUtil pwdUtil = new PasswordUtil();
+		boolean authenticateFlag = false;
+		try {
+			String currentPwd = pwdUtil.getCurrentPassword(emailId);
+			log.info("Current Password " + currentPwd);
+			if (!currentPwd.equals(pwd)) {
+				log.error("Entered Wrong Password");
+				throw new PasswordMismatchException("UM-Ex007",
+						"PasswordMismatchException", "Entered Wrong Password");
+			} else {
+				authenticateFlag = true;
+			}
+
+		} catch (PasswordMismatchException e) {
+			throw e;
+		}catch (UserNotFoundException e) {
+			log.error("User Not Found Exception"+ e.getMessage());
+			throw new UserNotFoundException("UM-Ex006","UserNotFoundException","Entered Email ID does not exist in Techpedia database");
+		} catch (Exception e) {
+			log.error("Password Mismatch Exception" + e.getMessage());
+			throw new PasswordMismatchException("UM-Ex007",	"PasswordMismatchException", e.getMessage());
+		}
+
+		return authenticateFlag;
 	}
 
-	public static boolean passwordResetHelper(String userId, String oldPwd,
-			String newPwd) throws PasswordResetException, UserNotFoundException {
+	public static boolean passwordResetHelper(PasswordResetVo pwdResetVo)
+			throws PasswordResetException, UserNotFoundException {
 		boolean flag = false;
 		Transaction tx = null;
 		Session ss = HibernateUtil.getSessionFactory().openSession();
@@ -714,24 +817,26 @@ public class UserManagementDAOHelper {
 		UsrMngtPassword pwdObj = null;
 		String currentPassword = null;
 		try {
-			log.error("user id:" + userId + "oldPwd :" + oldPwd + "newPwd:"
-					+ newPwd);
-			currentPassword = getCurrentPassword(userId);
+			log.error("user id:" + pwdResetVo.getUserName() + "oldPwd :"
+					+ pwdResetVo.getOldpassword() + "newPwd:"
+					+ pwdResetVo.getNewpassword());
+			currentPassword = getCurrentPassword(pwdResetVo.getUserName());
 
-			if (!currentPassword.equals(oldPwd)) {
+			if (!currentPassword.equals(pwdResetVo.getOldpassword())) {
 				log.error("The current password entered was wrong");
 				throw new PasswordResetException("UM-Ex005",
 						"PasswordResetException",
 						"The current password entered was wrong");
 
 			}
-			if (oldPwd.equals(newPwd)) {
+			if (pwdResetVo.getOldpassword().equals(pwdResetVo.getNewpassword())) {
 				log.error("old password and new passwords are same");
 				throw new PasswordResetException("UM-Ex005",
 						"PasswordResetException",
 						"old password and new passwords are same");
 
-			} else if (userId.equals(newPwd)) {
+			} else if (pwdResetVo.getUserName().equals(
+					pwdResetVo.getNewpassword())) {
 				log.error("new password and user id are same");
 				throw new PasswordResetException("UM-Ex005",
 						"PasswordResetException",
@@ -742,7 +847,7 @@ public class UserManagementDAOHelper {
 				log.info("Password Reset : Start");
 				Query queryPassword = ss
 						.createQuery("from UsrMngtPassword where USR_ID = :userid order by CREATED_DATE desc");
-				queryPassword.setParameter("userid", userId);
+				queryPassword.setParameter("userid", pwdResetVo.getUserName());
 				queryPassword.setMaxResults(5);
 				@SuppressWarnings("unchecked")
 				List<UsrMngtPassword> passwords = queryPassword.list();
@@ -751,7 +856,7 @@ public class UserManagementDAOHelper {
 					pwdObj = (UsrMngtPassword) passwords.get(i);
 					String lastPassword = ChiperUtils.decrypt2(pwdObj
 							.getUsrPasswd());
-					if (lastPassword.equals(newPwd)) {
+					if (lastPassword.equals(pwdResetVo.getNewpassword())) {
 						log.error("New password entered is one of the last 5 passwords");
 						throw new PasswordResetException("UM-Ex005",
 								"PasswordResetException",
@@ -760,17 +865,19 @@ public class UserManagementDAOHelper {
 
 				}
 
-				String encryPassword = ChiperUtils.encrypt2(newPwd);
+				String encryPassword = ChiperUtils.encrypt2(pwdResetVo
+						.getNewpassword());
 				if (passwords.size() >= 5) {
 
 					Date lastcreateddate = (Date) ss
 							.createSQLQuery(
 									"select min(CREATED_DATE) from usr_mngt_passwd where USR_ID=:userid")
-							.setParameter("userid", userId).uniqueResult();
+							.setParameter("userid", pwdResetVo.getUserName())
+							.uniqueResult();
 
 					Query query = ss
 							.createQuery("update UsrMngtPassword u set u.usrPasswd = :newpwd, u.createdDate= :createddate where u.usrId = :userid and u.createdDate=:lastCreated");
-					query.setParameter("userid", userId);
+					query.setParameter("userid", pwdResetVo.getUserName());
 					query.setParameter("newpwd", encryPassword);
 					query.setParameter("createddate", createdDate);
 					query.setParameter("lastCreated",
@@ -780,8 +887,8 @@ public class UserManagementDAOHelper {
 				} else {
 
 					UsrMngtPassword uPassword = new UsrMngtPassword(
-							pwdObj.getRgstrId(), userId, encryPassword,
-							createdDate);
+							pwdObj.getRgstrId(), pwdResetVo.getUserName(),
+							encryPassword, createdDate);
 					ss.save(uPassword);
 				}
 				tx.commit();
@@ -881,25 +988,40 @@ public class UserManagementDAOHelper {
 
 		return uprofileDo;
 	}
-
-	public static UserProfileDO signInHelper(String userId, String pwd)
+    
+/*	public static UserProfileDO signInHelper(SignInVo signInVo)
 			throws UserNotFoundException, LoginException,
 			PasswordMismatchException, PasswordExpiryException,
-			PasswordResetException, ProfileFetchException {
-
-		if (!authenticateHelper(userId, pwd)) {
+			PasswordResetException, ProfileFetchException,
+			UserInactiveException {
+		List result = null;
+		String res;
+		if (!authenticateHelper(signInVo.getUsername(), signInVo.getPassword())) {
 			log.error("Password Mismatch Exception");
 			throw new PasswordMismatchException("UM-Ex007",
 					"PasswordMismatchException", "Entered the Wrong Password");
 		}
-		UserProfileDO uprofileDo = null;
+
 		Session ss = HibernateUtil.getSessionFactory().openSession();
+		SQLQuery userActiveQuery = ss
+				.createSQLQuery("select IS_ACTIVE from techpedia.usr_mngt_master where usr_id=:userId");
+		userActiveQuery.setParameter("userId", signInVo.getUsername());
+		result = userActiveQuery.list();
+		res = result.get(0).toString();
+		if (!res.equalsIgnoreCase("y")) {
+			log.error("User is inactive: " + signInVo.getUsername());
+			throw new UserInactiveException("UM-Ex025",
+					"UserInactiveException",
+					"User is inactive for given user Id");
+		}
+
+		UserProfileDO uprofileDo = null;
 		long rgstrId = 0;
 		try {
 
 			Query query = ss
 					.createQuery("from UsrMngtPassword where USR_ID = :userid order by CREATED_DATE desc");
-			query.setParameter("userid", userId);
+			query.setParameter("userid", signInVo.getUsername());
 			query.setMaxResults(1);
 			UsrMngtPassword record = (UsrMngtPassword) query.uniqueResult();
 			if (record == null) {
@@ -908,9 +1030,74 @@ public class UserManagementDAOHelper {
 						"UserNotFoundException",
 						"Entered User Id is not Existed in the database");
 			}
+
 			rgstrId = record.getRgstrId();
 			System.out.println("rgstrId :" + rgstrId);
 			uprofileDo = getUserProfileHelper(rgstrId);
+
+			// uprofileDo.setUsrAccessDetails(getUsrRolePermissions(rgstrId));
+		} catch (UserNotFoundException e) {
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error((new StringBuilder("Error while fetching the profile :"))
+					.append(e.getMessage()).toString());
+			throw new ProfileFetchException("UM-EX004",
+					"ProfileFetchException", e.getMessage());
+		} finally {
+			ss.close();
+		}
+
+		return uprofileDo;
+
+	}*/
+	
+	public static UserProfileDO signInHelper(SignInVo signInVo)
+			throws UserNotFoundException, LoginException,
+			PasswordMismatchException, PasswordExpiryException,
+			PasswordResetException, ProfileFetchException,
+			UserInactiveException {
+		List result = null;
+		String res;
+		if (!authenticateHelper(signInVo.getEmailId(), signInVo.getPassword())) {
+			log.error("Password Mismatch Exception");
+			throw new PasswordMismatchException("UM-Ex007",
+					"PasswordMismatchException", "Entered the Wrong Password");
+		}
+
+		Session ss = HibernateUtil.getSessionFactory().openSession();
+		SQLQuery userActiveQuery = ss
+				.createSQLQuery("select IS_ACTIVE from techpedia.usr_mngt_master where EMAIL_ID=:emailId");
+		userActiveQuery.setParameter("emailId", signInVo.getEmailId());
+		result = userActiveQuery.list();
+		res = result.get(0).toString();
+		if (!res.equalsIgnoreCase("y")) {
+			log.error("User is inactive: " + signInVo.getEmailId());
+			throw new UserInactiveException("UM-Ex025",
+					"UserInactiveException",
+					"User is inactive for given email id");
+		}
+
+		UserProfileDO uprofileDo = null;
+		long rgstrId = 0;
+		try {
+
+			//Query query = ss.createQuery("from UsrMngtPassword where USR_ID = :userid order by CREATED_DATE desc");
+			Query query = ss.createQuery("from UsrMngtPassword where USR_ID in(select userId from UsrMngtMaster where EMAIL_ID=:emailId) order by CREATED_DATE desc");			
+			query.setParameter("emailId", signInVo.getEmailId());
+			query.setMaxResults(1);
+			UsrMngtPassword record = (UsrMngtPassword) query.uniqueResult();
+			if (record == null) {
+				log.error("Entered Email id is not Existed in the database");
+				throw new UserNotFoundException("UM-Ex-006",
+						"UserNotFoundException",
+						"Entered Email ID does not exist in Techpedia database");
+			}
+
+			rgstrId = record.getRgstrId();
+			System.out.println("rgstrId :" + rgstrId);
+			uprofileDo = getUserProfileHelper(rgstrId);
+
 			// uprofileDo.setUsrAccessDetails(getUsrRolePermissions(rgstrId));
 		} catch (UserNotFoundException e) {
 			throw e;
@@ -1284,8 +1471,9 @@ public class UserManagementDAOHelper {
 		List<PopularMentorsDO> popularMentorList = null;
 		PopularMentorsDO popularMentor = null;
 		Query query1 = null;
-		Query query2 = null;
+		// Query query2 = null;
 		Session ss = HibernateUtil.getSessionFactory().openSession();
+		// UserProfileDO uprofileDo = new UserProfileDO();
 
 		try {
 			Query query = ss
@@ -1316,17 +1504,29 @@ public class UserManagementDAOHelper {
 					@SuppressWarnings("unchecked")
 					List<Object[]> masterrows = query1.list();
 
-					query2 = ss
-							.createSQLQuery("select PHOTO from  techpedia.usr_mngt_contact_info where RGSTR_ID = :rgstrId");
-					query2.setParameter("rgstrId", row[0].toString());
-					Object photo = query2.uniqueResult();
-					System.out.println("photo : " + photo);
-					if (photo != null) {
-						if (photo != null) {
-							popularMentor.setMentorImage(photo.toString());
-						}
+					UsrMngtContactInfo uContact = (UsrMngtContactInfo) ss.get(
+							UsrMngtContactInfo.class,
+							new Long(row[0].toString()));
 
+					// System.out.println("Mentor Photo :"+uContact.getPhoto()
+					// );
+
+					if (uContact.getPhoto() != null) {
+						popularMentor.setMentorImage(uContact.getPhoto()
+								.toString());
 					}
+
+					/*
+					 * query2 = ss .createSQLQuery(
+					 * "select PHOTO from  techpedia.usr_mngt_contact_info where RGSTR_ID = :rgstrId"
+					 * ); query2.setParameter("rgstrId", row[0].toString());
+					 * Object photo = query2.uniqueResult();
+					 * System.out.println("photo : " + photo); //if (photo !=
+					 * null) { if (photo != null) {
+					 * popularMentor.setMentorImage(photo.toString()); }
+					 * System.out.println("photo image : " +
+					 * popularMentor.getMentorImage()); //}
+					 */
 
 					if (masterrows != null && !masterrows.isEmpty()) {
 						for (Object[] masterrow : masterrows) {
@@ -1395,34 +1595,51 @@ public class UserManagementDAOHelper {
 					"Error while fetching current password.");
 		}
 		log.info("UserManagementDAOImpl forgotPassword :END");
-		
+
 		// Sending the Current Password by taking the Email id of user.
-		/*try {
-			UserManagementEmailHelper.sendPassword(email, currentPassword);
-		} catch (EmailServiceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
+		/*
+		 * try { UserManagementEmailHelper.sendPasswordFromDAO(email,
+		 * currentPassword); } catch (EmailServiceException e) { // TODO
+		 * Auto-generated catch block e.printStackTrace(); }
+		 */
+
 		return currentPassword;
 	}
 
 	@SuppressWarnings("unchecked")
 	public static ArrayList<SearchForMentorListDO> getSearchListOfMentors(
-			Long projId) throws MentorSearchException {
+			Long projId, Long registerID) throws MentorSearchException {
 		log.info("UserManagementDAOImpl getSearchListOfMentors :START");
 
 		ArrayList<SearchForMentorListDO> mentorsList = new ArrayList<SearchForMentorListDO>();
 		Session ss = HibernateUtil.getSessionFactory().openSession();
 
-		String qryStr = "select umm.RGSTR_ID, LNAME,MNAME,FNAME, PHOTO,POPULARITY,DEGREE,DESIGNATION,PRO_EXPERIENCE,BRANCH_ID,INSTITUTIONAL_ASSCTN_INFO, "
-				+ "INT_ON_GRASSRT_INNOVATORS,COMMITMENT_U_BRING_IN from usr_mngt_mentor as umm, "
-				+ "usr_mngt_contact_info as umci,	usr_mngt_master as master, tb_tech001_mast_projects_brnch as tmpb where umm.BRANCH_ID"
-				+ " in (select PROJ_BRANCH_ID from tb_tech001_mast_projects_brnch where tmpb.PROJ_ID = :PROJ_ID) "
-				+ "and umm.rgstr_id = master.rgstr_id and umm.rgstr_id = umci.rgstr_id order by BRANCH_ID;";
+		/*
+		 * String qryStr =
+		 * "select umm.RGSTR_ID, LNAME,MNAME,FNAME, PHOTO,POPULARITY,DEGREE,DESIGNATION,PRO_EXPERIENCE,BRANCH_ID,INSTITUTIONAL_ASSCTN_INFO, "
+		 * +
+		 * "INT_ON_GRASSRT_INNOVATORS,COMMITMENT_U_BRING_IN from usr_mngt_mentor as umm, "
+		 * +
+		 * "usr_mngt_contact_info as umci,	usr_mngt_master as master, tb_tech001_mast_projects_brnch as tmpb where umm.BRANCH_ID"
+		 * +
+		 * " in (select PROJ_BRANCH_ID from tb_tech001_mast_projects_brnch where tmpb.PROJ_ID = :PROJ_ID)  "
+		 * +
+		 * "and umm.rgstr_id = master.rgstr_id and umm.rgstr_id = umci.rgstr_id order by BRANCH_ID;"
+		 * ;
+		 */
+
+		String qryStr = "select umm.RGSTR_ID, master.LNAME,master.MNAME,master.FNAME,umci.PHOTO,umm.POPULARITY,umm.DEGREE,umm.DESIGNATION,umm.PRO_EXPERIENCE,umm.BRANCH_ID,umm.INSTITUTIONAL_ASSCTN_INFO, "
+				+ "umm.INT_ON_GRASSRT_INNOVATORS,umm.COMMITMENT_U_BRING_IN from usr_mngt_mentor as umm, "
+				+ "usr_mngt_contact_info as umci,usr_mngt_master as master where umm.BRANCH_ID"
+				+ " in (select PROJ_BRANCH_ID from tb_tech001_mast_projects_brnch where PROJ_ID = :PROJ_ID)"
+				+ "and umm.rgstr_id = master.rgstr_id and umm.rgstr_id = umci.rgstr_id order by umm.BRANCH_ID;"; // modified
+																													// by
+		// Anil
 
 		try {
 			SQLQuery qry = ss.createSQLQuery(qryStr);
 			qry.setParameter("PROJ_ID", projId);
+			// qry.setParameter("registerID", registerID);
 			// qry.setFirstResult(1);
 			// qry.setMaxResults(100);
 			qry.addEntity(MentorDetails.class);
@@ -1498,15 +1715,18 @@ public class UserManagementDAOHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<CollegeListDO> getCollegesList(String cName) throws CollegesFetchException {
+	public static List<CollegeListDO> getCollegesList(String cName)
+			throws CollegesFetchException {
+		log.info("UserManagementDAOImpl getCollegesList :START");
 		Session ss = HibernateUtil.getSessionFactory().openSession();
 		List<CollegeListDO> ucollegeList = new ArrayList<CollegeListDO>();
 		try {
-			SQLQuery query = ss.createSQLQuery("select College_Name from USR_College_MASTER where College_Name like :cName ");
-			
-			query.setParameter("cName", cName+"%");	
-			query.addEntity(UsrCollegeMaster.class);
-			ucollegeList =(List<CollegeListDO>)query.list();			
+			SQLQuery query = ss
+					.createSQLQuery("select College_Name from USR_College_MASTER where College_Name like :cName ");
+
+			query.setParameter("cName", "%" + cName + "%");
+			// query.addEntity(UsrCollegeMaster.class);
+			ucollegeList = (List<CollegeListDO>) query.list();
 
 		} catch (Exception e) {
 			log.error((new StringBuilder("Error while fetching the Records"))
@@ -1524,16 +1744,21 @@ public class UserManagementDAOHelper {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static List<UsrUniversityMaster> getUniversitiesList(String uName) throws UniversitiesFetchException {
+	public static List<UniversityListDO> getUniversitiesList(String uName)
+			throws UniversitiesFetchException {
+		log.info("UserManagementDAOImpl getUniversitiesList :START");
 		Session ss = HibernateUtil.getSessionFactory().openSession();
-		List<UsrUniversityMaster> universityList = new ArrayList<UsrUniversityMaster>();
+		List<UniversityListDO> universityList = new ArrayList<UniversityListDO>();
 		try {
-			System.out.println("Uname "+uName);
-			SQLQuery query = ss.createSQLQuery("select University_Name from USR_UNIVERSITY_MASTER  where University_Name like :uName");			
-			query.setParameter("uName", uName+"%");	
-			System.out.println("query: "+query.getQueryString()+" Query1: "+query.getNamedParameters());
-			query.addEntity(UsrUniversityMaster.class);
-			universityList =(List<UsrUniversityMaster>)query.list();		
+			System.out.println("Uname " + uName);
+			SQLQuery query = ss
+					.createSQLQuery("select University_Name from USR_UNIVERSITY_MASTER  where University_Name like :uName");
+			query.setParameter("uName", "%" + uName + "%");
+			System.out.println("query: " + query.getQueryString() + " Query1: "
+					+ query.getNamedParameters());
+
+			// query.list()
+			universityList = (List<UniversityListDO>) query.list();
 
 		} catch (Exception e) {
 			log.error((new StringBuilder("Error while fetching the Records"))
@@ -1548,4 +1773,221 @@ public class UserManagementDAOHelper {
 
 		return universityList;
 	}
+
+	public static boolean validateAdmin(Long registerID)
+			throws UserNotFoundException {
+		log.info("UserManagementDAOImpl validateAdmin :START");
+		List result = null;
+		String user = "";
+		boolean flag = false;
+		try {
+			Session ss = HibernateUtil.getSessionFactory().openSession();
+			SQLQuery query = ss
+					.createSQLQuery("select type from techpedia.usr_mngt_master where rgstr_ID = :registerID");
+			query.setParameter("registerID", registerID);
+			result = query.list();
+			user = result.get(0).toString();
+			if ("Admin".equalsIgnoreCase(user)) {
+				flag = true;
+				log.debug("Admin User");
+			}
+		} catch (Exception e) {
+			log.error((new StringBuilder("Error while fetching the Records"))
+					.append(e.getMessage()).toString());
+			throw new UserNotFoundException("UM-EX023",
+					"UserNotFoundException", e.getMessage());
+		}
+		return flag;
+	}
+
+	public static boolean updateAddFacultyProfileHelper(
+			UserProfileDO userprofile) throws ProfileNotFoundException,
+			ProfileUpdateException, ChiperEncryptException {
+		log.info("UserManagementDAOImpl updateAddFacultyProfileHelper :START");
+		boolean retval = false;
+		String isActive = "Y";
+		String cVerification = "1";
+		Date activated_date = new Date();
+		String createdDate = getCurrentTimeStamp();
+		// String encryPassword
+		// =ChiperUtils.encrypt2(userprofile.getPassword());
+		Session ss = HibernateUtil.getSessionFactory().openSession();
+		Transaction tx = null;
+		UsrMngtMaster uMaster = null;
+		try {
+			tx = ss.beginTransaction();
+
+			uMaster = (UsrMngtMaster) ss.get(UsrMngtMaster.class,
+					userprofile.getRgstrId());
+			if (uMaster == null) {
+				log.error("Record NOt found Exception for the Given Register Id "
+						+ userprofile.getRgstrId());
+				throw new ProfileNotFoundException("UM-EX002",
+						"ProfileNotFoundException",
+						"Profile Not found for the given Register Id");
+			} else {
+				uMaster.setpFname(userprofile.getFirstName());
+				uMaster.setmName(userprofile.getMidName());
+				uMaster.setlName(userprofile.getLastName());
+				uMaster.setdOb(userprofile.getDob());
+				uMaster.setiSactive(isActive);
+				uMaster.setcVerify(cVerification);
+				uMaster.setType(userprofile.getUserType());
+				uMaster.setUserId(userprofile.getUserName());
+				uMaster.setFbId(userprofile.getFaceBookId());
+				uMaster.setRgstrDate(createdDate);
+				uMaster.setActivatedDate(activated_date);
+				uMaster.setEmail(userprofile.getEmail());
+
+				UsrMngtAddress uAddress = new UsrMngtAddress(
+						userprofile.getRgstrId(), userprofile.getAddrLn1(),
+						userprofile.getAddrLn2(), userprofile.getCity(),
+						userprofile.getDistrict(), userprofile.getState(),
+						userprofile.getCountry(), userprofile.getPincode());
+
+				// UsrMngtContactInfo uContactInfo = new
+				// UsrMngtContactInfo(userprofile.getRgstrId(),
+				// userprofile.getMobile(), userprofile.getHomePhoneNo(),
+				// userprofile.getPhoto());
+				/*
+				 * int rstrId=(int)userprofile.getRgstrId(); UsrMngtPassword
+				 * uPassword = (UsrMngtPassword)
+				 * ss.get(UsrMngtPassword.class,rstrId);
+				 * System.out.println("User Name: "+userprofile.getUserName());
+				 * uPassword.setUsrId(userprofile.getUserName());
+				 * uPassword.setCreatedDate(createdDate);
+				 */
+				ss.update("0", uMaster);
+				ss.update("1", uAddress);
+				// ss.update("2", uContactInfo);
+				// ss.update("3", uPassword);
+
+				Query pwdQuery = ss
+						.createSQLQuery("UPDATE techpedia.usr_mngt_passwd  SET USR_ID=:username WHERE RGSTR_ID=:rgstrId");
+				pwdQuery.setParameter("username", userprofile.getUserName());
+				pwdQuery.setParameter("rgstrId", userprofile.getRgstrId());
+				pwdQuery.executeUpdate();
+
+				Query query = ss
+						.createSQLQuery("update techpedia.usr_mngt_contact_info set MOBILE_NO = :mobile,HOME_PHONE_NO = :homeNumber where RGSTR_ID = :rgstrId");
+				query.setParameter("homeNumber", userprofile.getHomePhoneNo());
+				query.setParameter("mobile", userprofile.getMobile());
+				query.setParameter("rgstrId", userprofile.getRgstrId());
+				query.executeUpdate();
+
+				if (userprofile.getUserType().equalsIgnoreCase("Student")) {
+
+					UsrMngtStudent uStudent = new UsrMngtStudent(
+							uMaster.getRgstrId(),
+							userprofile.getDegreeOfStudent(), // Modified by
+																// Anil
+							userprofile.getCollge(),
+							userprofile.getUniversity(),// added by Anil
+							// userprofile.getAlumni(),
+							userprofile.getStudentID(),
+							userprofile.getCompletionYear(),
+							userprofile.getBranchIdOfStudent());
+					ss.update("4", uStudent);
+
+				} else if (userprofile.getUserType()
+						.equalsIgnoreCase("college")) {
+					UsrMngtCollege uCollege = new UsrMngtCollege(
+							userprofile.getRgstrId(), userprofile.getWebpage(),
+							userprofile.getLogo(),
+							userprofile.getCollegeName(),
+							userprofile.getCollegeDesc(),
+							userprofile.getPrinicipalName(),
+							userprofile.getPrinicipalEmail(),
+							userprofile.getFacilitiesOffrdToStudents(),
+							userprofile.getCntctInfoForNatnlInnovnClub(),
+							userprofile.getAffltUniversityOfCollege(),
+							userprofile.getTechpdaFactlyCoordtr());
+					ss.update("5", uCollege);
+
+				} else if (userprofile.getUserType()
+						.equalsIgnoreCase("faculty")) {
+
+					UsrMngtFaculty uFaculty = new UsrMngtFaculty(
+							userprofile.getRgstrId(),
+							userprofile.getDegreeOfFaculty(),
+							userprofile.getCollgeOfFaculty(),
+							userprofile.getSpecializationOfFaculty(),
+							userprofile.getUniversityOfFaculty(),
+							userprofile.getAlumni(),
+							userprofile.getMemshipInAssocns(),
+							userprofile.getPsnlWebpgLink(),
+							userprofile.getProffesionalExpOfFaculty(),
+							userprofile.getAffltUniversityOfFaculty(),
+							userprofile.getBranchIdOfFaculty());
+					ss.update("6", uFaculty);
+
+				} else if (userprofile.getUserType().equalsIgnoreCase("mentor")) {
+					UsrMngtMentor uMentor = new UsrMngtMentor(
+							userprofile.getRgstrId(),
+							userprofile.getDegreeOfMentor(),
+							userprofile.getDesignationOfMentor(),
+							userprofile.getBranchIdOfMentor(),
+							userprofile.getInstitutionalAssctnInfo(),
+							userprofile.getProfessionalExperience(),
+							userprofile.getTimeUspaceForMentoringPerMnth(),
+							userprofile.getMentorProfile(),
+							userprofile.getExpectationFromMentor(),
+							userprofile.getCommitmentUBringIn(),
+							userprofile.getWebpage(),
+							userprofile.getIntOnGrassrtInnovators(),
+							userprofile.getPopularity());
+					System.out.println("Branch id="
+							+ userprofile.getBranchIdOfMentor());
+					ss.update("7", uMentor);
+
+				} else if (userprofile.getUserType().equalsIgnoreCase(
+						"industry")) {
+
+					UsrMngtIndustry uIndustry = new UsrMngtIndustry(
+							userprofile.getRgstrId(), userprofile.getFax(),
+							userprofile.getContactNameOfIndustry(),
+							userprofile.getContactEmailOfIndustry(),
+							userprofile.getOperatnSectr(),
+							userprofile.getKindOfSprtUProvideInnovtr(),
+							userprofile.getPrdRng(),
+							userprofile.getAssociateIndustry(),
+							userprofile.getTechngyExprtizOffrToOthers(),
+							userprofile.getSolnReqrdForTechnlgicalChlngs(),
+							userprofile.getIntrstToPoseInnovtnChlngAwrds());
+					ss.update("8", uIndustry);
+
+				}
+				tx.commit();
+				retval = true;
+			}
+
+		} catch (ProfileNotFoundException e) {
+			e.printStackTrace();
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+			log.error((new StringBuilder(
+					"Error while updating the transaction :")).append(
+					e.getMessage()).toString());
+			try {
+				tx.rollback();
+			} catch (Exception ee) {
+				ee.printStackTrace();
+				log.error((new StringBuilder(
+						"Error while doing rollback to the failed transaction :"))
+						.append(e.getMessage()).toString());
+			}
+			throw new ProfileUpdateException("UM-EX003",
+					"ProfileUpdateException", e.getMessage());
+
+		}
+
+		finally {
+			tx = null;
+			ss.close();
+		}
+		log.info("UserManagementDAOImpl updateAddFacultyProfileHelper :END");
+		return retval;
+	}
+
 }

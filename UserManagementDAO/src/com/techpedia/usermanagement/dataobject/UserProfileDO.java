@@ -37,12 +37,13 @@ public class UserProfileDO {
 	private String studentID;
 	private String completionYear;
 	private String university;
-	private int branchIdOfStudent;
+	private String branchIdOfStudent;
+	private String projectBranchDescOfStudent;
 
 	//USR_MNGT_MENTOR
 	private String degreeOfMentor;
 	private String designationOfMentor;
-	private int branchIdOfMentor;
+	private String branchIdOfMentor;
 	private String institutionalAssctnInfo;
 	private String professionalExperience;
 	private String timeUspaceForMentoringPerMnth;
@@ -51,6 +52,8 @@ public class UserProfileDO {
 	private String commitmentUBringIn;
 	private String intOnGrassrtInnovators;
 	private int popularity;
+	private String projectBranchDescOfMentor;
+	
 	
 	//USR_MNGT_COLLEGE
 	private String webpage;
@@ -88,8 +91,12 @@ public class UserProfileDO {
 	private String psnlWebpgLink;
 	private String proffesionalExpOfFaculty;
 	private String affltUniversityOfFaculty;
-	private int branchIdOfFaculty;
+	private String branchIdOfFaculty;
+	private String projectBranchDescOfFaculty;
 	
+
+
+
 	//USR_MNGT_PASSWD
 	private String password;
 	
@@ -97,6 +104,13 @@ public class UserProfileDO {
 	
 	private String collegeName;
 	private String collegeDesc;
+	
+	
+	//TB_TECH001_MAST_BRANCH
+	private String branchId;
+	private String projectBranchDesc;
+	
+	
 	
 	//Authorization
 	private UsrAccessDetails usrAccessDetails;
@@ -501,19 +515,7 @@ public class UserProfileDO {
 
 	
 
-	/**
-	 * @return the branchIdOfMentor
-	 */
-	public int getBranchIdOfMentor() {
-		return branchIdOfMentor;
-	}
 
-	/**
-	 * @param branchIdOfMentor the branchIdOfMentor to set
-	 */
-	public void setBranchIdOfMentor(int branchIdOfMentor) {
-		this.branchIdOfMentor = branchIdOfMentor;
-	}
 
 	/**
 	 * @return the institutionalAssctnInfo
@@ -994,7 +996,13 @@ public class UserProfileDO {
 		this.psnlWebpgLink = psnlWebpgLink;
 	}
 
-	
+	public String getBranchIdOfMentor() {
+		return branchIdOfMentor;
+	}
+
+	public void setBranchIdOfMentor(String branchIdOfMentor) {
+		this.branchIdOfMentor = branchIdOfMentor;
+	}
 
 	/**
 	 * @return the proffesionalExpOfFaculty
@@ -1094,38 +1102,64 @@ public class UserProfileDO {
 	public void setPopularity(int popularity) {
 		this.popularity = popularity;
 	}
-
-	/**
-	 * @return the branchIdOfStudent
-	 */
-	public int getBranchIdOfStudent() {
-		return branchIdOfStudent;
-	}
-
-	/**
-	 * @param branchIdOfStudent the branchIdOfStudent to set
-	 */
-	public void setBranchIdOfStudent(int branchIdOfStudent) {
-		this.branchIdOfStudent = branchIdOfStudent;
-	}
-
-	/**
-	 * @return the branchIdOfFaculty
-	 */
-	public int getBranchIdOfFaculty() {
+	public String getBranchIdOfFaculty() {
 		return branchIdOfFaculty;
 	}
 
-	/**
-	 * @param branchIdOfFaculty the branchIdOfFaculty to set
-	 */
-	public void setBranchIdOfFaculty(int branchIdOfFaculty) {
+	public void setBranchIdOfFaculty(String branchIdOfFaculty) {
 		this.branchIdOfFaculty = branchIdOfFaculty;
+	}	
+
+	public String getBranchIdOfStudent() {
+		return branchIdOfStudent;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
+	public void setBranchIdOfStudent(String branchIdOfStudent) {
+		this.branchIdOfStudent = branchIdOfStudent;
+	}
+
+	public String getProjectBranchDescOfStudent() {
+		return projectBranchDescOfStudent;
+	}
+
+	public void setProjectBranchDescOfStudent(String projectBranchDescOfStudent) {
+		this.projectBranchDescOfStudent = projectBranchDescOfStudent;
+	}
+
+	public String getProjectBranchDescOfMentor() {
+		return projectBranchDescOfMentor;
+	}
+
+	public void setProjectBranchDescOfMentor(String projectBranchDescOfMentor) {
+		this.projectBranchDescOfMentor = projectBranchDescOfMentor;
+	}
+
+	public String getProjectBranchDescOfFaculty() {
+		return projectBranchDescOfFaculty;
+	}
+
+	public void setProjectBranchDescOfFaculty(String projectBranchDescOfFaculty) {
+		this.projectBranchDescOfFaculty = projectBranchDescOfFaculty;
+	}
+
+	
+	public String getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(String branchId) {
+		this.branchId = branchId;
+	}
+
+	public String getProjectBranchDesc() {
+		return projectBranchDesc;
+	}
+
+	public void setProjectBranchDesc(String projectBranchDesc) {
+		this.projectBranchDesc = projectBranchDesc;
+	}
+
+	
 	@Override
 	public String toString() {
 		return "UserProfileDO [rgstrId=" + rgstrId + ", firstName=" + firstName
@@ -1141,6 +1175,7 @@ public class UserProfileDO {
 				+ ", studentID=" + studentID + ", completionYear="
 				+ completionYear + ", university=" + university
 				+ ", branchIdOfStudent=" + branchIdOfStudent
+				+ ", projectBranchDescOfStudent=" + projectBranchDescOfStudent
 				+ ", degreeOfMentor=" + degreeOfMentor
 				+ ", designationOfMentor=" + designationOfMentor
 				+ ", branchIdOfMentor=" + branchIdOfMentor
@@ -1152,6 +1187,7 @@ public class UserProfileDO {
 				+ expectationFromMentor + ", commitmentUBringIn="
 				+ commitmentUBringIn + ", intOnGrassrtInnovators="
 				+ intOnGrassrtInnovators + ", popularity=" + popularity
+				+ ", projectBranchDescOfMentor=" + projectBranchDescOfMentor
 				+ ", webpage=" + webpage + ", logo=" + logo
 				+ ", cntctPerNameofCollege=" + cntctPerNameofCollege
 				+ ", collgeContactEmail=" + collgeContactEmail
@@ -1179,9 +1215,12 @@ public class UserProfileDO {
 				+ ", psnlWebpgLink=" + psnlWebpgLink
 				+ ", proffesionalExpOfFaculty=" + proffesionalExpOfFaculty
 				+ ", affltUniversityOfFaculty=" + affltUniversityOfFaculty
-				+ ", branchIdOfFaculty=" + branchIdOfFaculty + ", password="
-				+ password + ", collegeName=" + collegeName + ", collegeDesc="
-				+ collegeDesc + ", usrAccessDetails=" + usrAccessDetails + "]";
+				+ ", branchIdOfFaculty=" + branchIdOfFaculty
+				+ ", projectBranchDescOfFaculty=" + projectBranchDescOfFaculty
+				+ ", password=" + password + ", collegeName=" + collegeName
+				+ ", collegeDesc=" + collegeDesc + ", branchId=" + branchId
+				+ ", projectBranchDesc=" + projectBranchDesc
+				+ ", usrAccessDetails=" + usrAccessDetails + "]";
 	}
 
 		

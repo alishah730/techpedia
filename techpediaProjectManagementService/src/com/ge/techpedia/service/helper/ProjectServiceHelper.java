@@ -7,7 +7,9 @@ import com.ge.techpedia.service.response.ProjectServiceResponse;
 import com.google.gson.Gson;
 import com.techpedia.email.exception.EmailServiceException;
 import com.techpedia.projectmanagement.bean.AddCommVO;
+import com.techpedia.projectmanagement.bean.AddNewFacultyResponseVO;
 import com.techpedia.projectmanagement.bean.Branch;
+import com.techpedia.projectmanagement.bean.CreateProjectResponseVO;
 import com.techpedia.projectmanagement.bean.DeleteCommVO;
 import com.techpedia.projectmanagement.bean.DeleteDocVO;
 import com.techpedia.projectmanagement.bean.DisplayTeamCommVO;
@@ -23,6 +25,7 @@ import com.techpedia.projectmanagement.bean.Project;
 import com.techpedia.projectmanagement.bean.ProjectDocument;
 import com.techpedia.projectmanagement.bean.ProjectTeamComment;
 import com.techpedia.projectmanagement.bean.ProjectTeamDetailVO;
+import com.techpedia.projectmanagement.bean.ProjectType;
 import com.techpedia.projectmanagement.bean.SearchByKeyVO;
 import com.techpedia.projectmanagement.bean.Team;
 import com.techpedia.projectmanagement.bean.TeamMember;
@@ -50,6 +53,7 @@ import com.techpedia.projectmanagement.exception.GetDetailOfTeamException;
 import com.techpedia.projectmanagement.exception.GetPopularityException;
 import com.techpedia.projectmanagement.exception.GetProjectDetailsException;
 import com.techpedia.projectmanagement.exception.GetProjectFollowersException;
+import com.techpedia.projectmanagement.exception.GetProjectTypeException;
 import com.techpedia.projectmanagement.exception.OtherCommentsNotFoundException;
 import com.techpedia.projectmanagement.exception.ProjectByLoggedInUserException;
 import com.techpedia.projectmanagement.exception.RemoveCommentException;
@@ -79,15 +83,16 @@ public class ProjectServiceHelper {
 	 * @param project
 	 * @return result flag
 	 */
-	public static String createProject(Project project) throws CreateProjectException{
+	public static String createProject(Project project) throws CreateProjectException, EmailServiceException{
 
 		//log.debug("ProjectServiceHelper.createProject:Start");
 		response = new ProjectServiceResponse();
-		String returnVal = null;		
+		CreateProjectResponseVO createProjectResponseVO;		
 		try {
-			returnVal = getProjectDao().createProject(project);
+			createProjectResponseVO = getProjectDao().createProject(project);
 			
-			if(returnVal == "Y"){				
+			if(createProjectResponseVO.getStatus() == "Y"){	
+				ProjectManagementEMailHelper.sendEmail(project, createProjectResponseVO);
 				gson = new Gson();
 				response.setStatus(ProjectManagementServiceConstant.SUCCESS);
 				response.setDescription(ProjectManagementServiceConstant.PROJECT_CREATE_SUCCESS);
@@ -188,11 +193,12 @@ public class ProjectServiceHelper {
 	 * @return result flag
 	 */
 	public static String addNewFaculty(FacultyVO facultyVO){
-		String result = null;
+		AddNewFacultyResponseVO addNewFacultyResponseVO = null;
 		response = new ProjectServiceResponse();
 		try {
-			result = getProjectDao().addNewFaculty(facultyVO);
-			if(result == "Y"){				
+			addNewFacultyResponseVO = getProjectDao().addNewFaculty(facultyVO);
+			if(addNewFacultyResponseVO.getRgstrId() != ""){
+				FacultyEMailHelper.sendEmail(facultyVO, addNewFacultyResponseVO);
 				gson = new Gson();
 				response.setStatus(ProjectManagementServiceConstant.SUCCESS);
 				response.setDescription(ProjectManagementServiceConstant.FACULTY_CREATE_SUCCESS);
@@ -204,6 +210,8 @@ public class ProjectServiceHelper {
 				return gson.toJson(response);
 			}
 		} catch (AddNewFacultyException e) {
+			e.printStackTrace();
+		} catch (EmailServiceException e) {
 			e.printStackTrace();
 		}
 		return ProjectManagementServiceConstant.EMPTY_STRING;
@@ -849,6 +857,20 @@ public class ProjectServiceHelper {
 		} catch (FacultyClosedProjectException e) {			
 			throw e;
 		}		
+	}
+	
+	public static String getProjectType() throws GetProjectTypeException{
+		ArrayList<ProjectType> projectTypes = null;
+		try {
+			projectTypes = getProjectDao().getProjectType();
+			if(projectTypes != null){
+				gson = new Gson();
+				return gson.toJson(projectTypes);
+			}
+		} catch (GetProjectTypeException e) {			
+			throw e;
+		}
+		return ProjectManagementServiceConstant.EMPTY_STRING;
 	}
 	
 	/**

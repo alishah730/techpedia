@@ -1,8 +1,9 @@
 <html>
-<jsp:include page="template/dashboardHeader.jsp" />
+<jsp:include page="template/NewHeader.jsp" />
 <div class="clearfix"></div>
+<div class="container customFont borderRadius style" >
 <div class="page-container">
-	<div class="page-sidebar-wrapper"><jsp:include page="template/dashboardMenu.jsp" />
+	
 	</div>
 	<div class="page-content-wrapper">
 		<div class="page-content">
@@ -17,7 +18,7 @@
 						<br> <br> <br> <br>
 						<p align="center" class="next">
 							<b> The page you are trying to access is restricted to registered users of Techpedia.<br>
-								Please login using the top-right login button or click here to <a href="register"><b>Register</b></a>
+								Please login using the top-right Account button. <!-- or click here to <a href="register"><b>Register</b> --></a>
 						</p>
 						<br> <br> <br> <br>
 					</div>
@@ -27,6 +28,7 @@
 		</div>
 	</div>
 </div>
+
 <!-- END FOOTER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
@@ -37,7 +39,7 @@
 
 
 <!-- dialog box for login -->
-<jsp:include page="template/loginModal.jsp" />
+
 </body>
 <!-- END BODY -->
 </html>

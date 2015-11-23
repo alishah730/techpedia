@@ -3,11 +3,14 @@ package com.techpedia.usermanagement.dao;
 import java.util.List;
 
 import com.techpedia.chiper.ChiperEncryptException;
-import com.techpedia.usermanagement.dataobject.CollegeUniversityListDO;
+import com.techpedia.usermanagement.dataobject.CollegeListDO;
 import com.techpedia.usermanagement.dataobject.Mentor1n2Details;
+import com.techpedia.usermanagement.dataobject.PasswordResetVo;
 import com.techpedia.usermanagement.dataobject.PopularMentorsDO;
 import com.techpedia.usermanagement.dataobject.SearchCriteriaDO;
 import com.techpedia.usermanagement.dataobject.SearchForMentorListDO;
+import com.techpedia.usermanagement.dataobject.SignInVo;
+import com.techpedia.usermanagement.dataobject.UniversityListDO;
 import com.techpedia.usermanagement.dataobject.UpdateUserPhotoDO;
 import com.techpedia.usermanagement.dataobject.UserProfileDO;
 import com.techpedia.usermanagement.dataobject.UserRecentComments;
@@ -31,6 +34,7 @@ import com.techpedia.usermanagement.exception.ProjectNotFoundException;
 import com.techpedia.usermanagement.exception.UniversitiesFetchException;
 import com.techpedia.usermanagement.exception.UserExistException;
 import com.techpedia.usermanagement.exception.UserFunctionsNotDefinedException;
+import com.techpedia.usermanagement.exception.UserInactiveException;
 import com.techpedia.usermanagement.exception.UserNotFoundException;
 import com.techpedia.usermanagement.exception.UserRecentCommentsFetchException;
 import com.techpedia.usermanagement.exception.UserRoleNotDefinedException;
@@ -48,7 +52,7 @@ public class UserManagementDAOImpl implements UserManagementDAO{
 
 	}
 
-	public boolean updateProfile(UserProfileDO userprofile) throws ProfileNotFoundException, ProfileUpdateException,ChiperEncryptException {
+	public boolean updateProfile(UserProfileDO userprofile) throws ProfileNotFoundException, ProfileUpdateException,ChiperEncryptException,EmailExistException {
 
 		return UserManagementDAOHelper.updateProfileHelper(userprofile);
 	}
@@ -69,17 +73,17 @@ public class UserManagementDAOImpl implements UserManagementDAO{
 
 	}
 
-	public boolean passwordReset(String userId, String oldPwd,String newPwd) throws PasswordResetException, UserNotFoundException {
-		return UserManagementDAOHelper.passwordResetHelper(userId, oldPwd, newPwd);
+	public boolean passwordReset(PasswordResetVo pwdResetVo) throws PasswordResetException, UserNotFoundException {
+		return UserManagementDAOHelper.passwordResetHelper(pwdResetVo);
 	}
 
 	public boolean authenticate(String userid, String pwd) throws UserNotFoundException, LoginException, PasswordMismatchException, PasswordExpiryException, PasswordResetException {
 		return UserManagementDAOHelper.authenticateHelper(userid, pwd);
 	}
 
-	public UserProfileDO singIn(String userid, String pwd) throws UserNotFoundException, LoginException, PasswordMismatchException, PasswordExpiryException, PasswordResetException, ProfileFetchException {
+	public UserProfileDO singIn(SignInVo signInVo) throws UserNotFoundException, LoginException, PasswordMismatchException, PasswordExpiryException, PasswordResetException, ProfileFetchException, UserInactiveException {
 
-		return UserManagementDAOHelper.signInHelper(userid, pwd);
+		return UserManagementDAOHelper.signInHelper(signInVo);
 	}
 
 	public boolean updatePhoto(UpdateUserPhotoDO updateUserPhotoDO) throws ProfileNotFoundException, ProfileUpdateException {
@@ -118,9 +122,9 @@ public class UserManagementDAOImpl implements UserManagementDAO{
 		return UserManagementDAOHelper.forgotPassword(email);
 	}
 	
-	public List<SearchForMentorListDO> searchForMentors(Long i) throws MentorSearchException
+	public List<SearchForMentorListDO> searchForMentors(Long i,Long id) throws MentorSearchException
 	{
-		return UserManagementDAOHelper.getSearchListOfMentors(i);
+		return UserManagementDAOHelper.getSearchListOfMentors(i,id);
 	}
 	
 	public List<Mentor1n2Details> getMentorsOfProject(Long projId) throws ProjectNotFoundException
@@ -129,17 +133,30 @@ public class UserManagementDAOImpl implements UserManagementDAO{
 	}
 	
 	
-	public List<CollegeUniversityListDO> getCollegesList(String cName) throws CollegesFetchException {
+	public List<CollegeListDO> getCollegesList(String cName) throws CollegesFetchException {
 
 		return UserManagementDAOHelper.getCollegesList(cName);
 	}
 
 	
-	public List<CollegeUniversityListDO> getUniversitiesList(String uName)
+	public List<UniversityListDO> getUniversitiesList(String uName)
 			throws UniversitiesFetchException {
 
 		return UserManagementDAOHelper.getUniversitiesList(uName);
 	}
+
+	@Override
+	public boolean validateAdmin(Long RegisterID)
+			throws UserNotFoundException, ProfileFetchException {
+		
+		return UserManagementDAOHelper.validateAdmin(RegisterID);
+	}
+	
+	public boolean updateAddFacultyProfileHelper(UserProfileDO userprofile) throws ProfileNotFoundException, ProfileUpdateException,ChiperEncryptException,EmailExistException {
+
+		return UserManagementDAOHelper.updateAddFacultyProfileHelper(userprofile);
+	}	
+	
 
 
 }

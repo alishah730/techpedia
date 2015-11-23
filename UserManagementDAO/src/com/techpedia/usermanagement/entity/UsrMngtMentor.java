@@ -20,8 +20,9 @@ public class UsrMngtMentor {
 	private String designation;
 	 
 	@Column(name = "BRANCH_ID")
-	private int branchId;
-	 
+	private String branchId;	 
+
+
 	@Column(name = "INSTITUTIONAL_ASSCTN_INFO")
 	private String institutionalAssctnInfo;
 	 
@@ -92,17 +93,11 @@ public class UsrMngtMentor {
 		this.designation = designation;
 	}
 
-	/**
-	 * @return the branchId
-	 */
-	public int getBranchId() {
+	public String getBranchId() {
 		return branchId;
 	}
 
-	/**
-	 * @param branchId the branchId to set
-	 */
-	public void setBranchId(int branchId) {
+	public void setBranchId(String branchId) {
 		this.branchId = branchId;
 	}
 
@@ -234,7 +229,7 @@ public class UsrMngtMentor {
 	}
 
 	public UsrMngtMentor(long rgstrId, String degree, String designation,
-			int branchId, String institutionalAssctnInfo, String proExperience,
+			String branchId, String institutionalAssctnInfo, String proExperience,
 			String timeUspaceForMentoringPerMnth, String mentorProfile,
 			String expectationFromMentor, String commitmentUBringIn,
 			String webLink, String intOnGrassrtInnovators, int popularity) {

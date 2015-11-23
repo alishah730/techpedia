@@ -1,10 +1,11 @@
 <%@page import="java.util.ArrayList"%>
 <html ng-app="techpedia">
-<jsp:include page="template/dashboardHeader.jsp" />
+<jsp:include page="template/NewHeader.jsp" />
 <div class="clearfix"></div>
+<div class="container customFont borderRadius style" >
 <div class="page-container">
 	<div class="page-sidebar-wrapper">
-		<jsp:include page="template/dashboardMenu.jsp" />
+		<%-- <jsp:include page="template/dashboardMenu.jsp" /> --%>
 	</div>
 	<div class="page-content-wrapper" ng-controller="MentorDetailsController" ng-init="initLoad()">
 		<div class="page-content">
@@ -23,12 +24,12 @@
 						<li><a href="mentors">Mentors</a> &raquo;</li>
 						<li>Mentors Details</li>
 						<li class="right"><a href="mentors">View all Mentors</a></li>
-						<li class="pull-right">
+						<!-- <li class="pull-right">
 							<div id="dashboard-report-range" class="dashboard-date-range tooltips"
 								data-placement="bottom" data-original-title="Change dashboard date range">
 								<i class="icon-calendar"></i> <span></span> <i class="fa fa-angle-down"></i>
 							</div>
-						</li>
+						</li> -->
 						<%
 							} else {
 						%><li><a href="./">Home</a> &raquo;</li>
@@ -78,20 +79,20 @@
 
 							<tr>
 								<td>Degree</td>
-								<td>{{mentor.mentorProfile}}</td>
+								<td>{{mentor.degreeOfMentor}}</td>
 							</tr>
 							<tr>
 								<td>Experience</td>
 								<td>{{mentor.professionalExperience}}</td>
 							</tr>
 							<tr>
-								<td>Alumni</td>
+								<td>Association</td>
 								<td>{{mentor.institutionalAssctnInfo}}</td>
 							</tr>
 
 							<tr>
-								<td>Expectations</td>
-								<td>{{mentor.expectationFromMentor}}</td>
+								<td>Designation</td>
+								<td>{{mentor.designationOfMentor}}</td>
 							</tr>
 						</table>
 					</div>
@@ -104,7 +105,10 @@
 				<div class="col-md-5">
 
 					<div>
-						<br /> <br /> <br /> <br /> <img class="mentorpic"
+						<br /> <br /> <br /> <br /> 
+						<img  ng-show="(mentor.photo=='data:undefined;base64,undefined')||(mentor.photo=='Photo path')" src="images/profile_icon.png" class="mentorpic img-responsive" alt="" style="width:320px; height:320px"/>
+									
+						<img class="mentorpic img-responsive" ng-hide="(mentor.photo=='data:undefined;base64,undefined')||(mentor.photo=='Photo path')" 
 							src="{{mentor.photo||'images/UserDefault.jpg'}}" width=320 height=320 /> <br />
 					</div>
 					<br />
@@ -121,8 +125,8 @@
 						</div> -->
 						<div class="progress">
 							<div class="progress-bar progress-bar-success progress-bar-striped" role="progressbar"
-								aria-valuenow="{{popularity}}" aria-valuemin="0" aria-valuemax="100" style="width:"{{popularity}}"%">
-								<span class="sr-only">{{popularity}}%</span>
+								aria-valuenow="{{mentor.popularity}}" aria-valuemin="0" aria-valuemax="100" style="width:{{mentor.popularity}}%">
+								<span class="sr-only">{{mentor.popularity}}%</span>
 							</div>
 						</div>
 					</div>
@@ -227,6 +231,8 @@ BEGIN FOOTER -->
 			</div>
 
 		</div>
+	</div>
+	</div>
 	</div>
 	</body>
 </html>

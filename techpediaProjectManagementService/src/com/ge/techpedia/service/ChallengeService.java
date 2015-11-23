@@ -21,6 +21,7 @@ import com.techpedia.projectmanagement.exception.DownloadChallengeDocException;
 import com.techpedia.projectmanagement.exception.GetAllChallengeException;
 import com.techpedia.projectmanagement.exception.GetChallengeDetailException;
 import com.techpedia.projectmanagement.exception.GetChallengeException;
+import com.techpedia.projectmanagement.exception.GetChallengeTypeException;
 import com.techpedia.projectmanagement.exception.SearchChallengeException;
 import com.techpedia.projectmanagement.exception.SuggestedChallengeNotFoundException;
 import com.techpedia.projectmanagement.exception.UploadChallengeDocException;
@@ -150,6 +151,14 @@ public class ChallengeService {
 	@Produces({"application/json"})
 	public Response deleteChallengeDocument(DeleteChallDocVO deleteChallDocVO) throws DeleteDocumentException{		
 		return Response.ok().status(200).entity(ChallengeServiceHelper.deleteChallengeDocument(deleteChallDocVO)).type("application/json").build();
-	}	
+	}
+	
+	@POST
+	@Path("getchallengetype")
+	@Consumes("application/json")
+	@Produces({"application/json"})
+	public Response getChallengeType() throws GetChallengeTypeException{		
+		return Response.ok().status(200).entity(ChallengeServiceHelper.getChallengeType()).type("application/json").build();
+	}
 
 }

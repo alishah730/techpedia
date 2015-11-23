@@ -1,8 +1,17 @@
 package com.techpedia.controller;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+
 import javax.servlet.http.HttpSession;
+
 
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -16,14 +25,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+
+
+
 import com.techpedia.bean.AddNewFaculty;
 import com.techpedia.bean.Challenge;
-import com.techpedia.bean.ChangePassword;
-import com.techpedia.bean.Login;
+import com.techpedia.bean.PasswordResetVo;
 import com.techpedia.bean.Project;
+import com.techpedia.bean.SignInVo;
 import com.techpedia.bean.UMServiceResponse;
 import com.techpedia.bean.UserProfileVO;
 import com.techpedia.service.DataFetch;
+import com.techpedia.util.TechpediaConstants;
 
 @Controller
 public class NavigationController {
@@ -32,23 +45,27 @@ public class NavigationController {
 	String username, password;
 	String url = "http://localhost:8080/techpedia";
 	private static final Logger logger = Logger.getLogger(NavigationController.class);
+	public String userName;
+	public String regid;
 
 	/*
 	 * @Resource(name = "config") private Properties prop;
 	 */
 
-	String IP = "3.235.228.22";
+	String IP = "128.199.156.151";
 
 	/*
 	 * @PostConstruct public void initLoad() throws IOException { // IP =
 	 * prop.getProperty("ip"); }
 	 */
-
+	
 	@RequestMapping(value = "/ajax/facultyInitiateProject")
 	@ResponseBody
 	public String facultyInitiateProject(ModelMap model, @RequestParam String projectId, @RequestParam String facultyId, @RequestParam String approvalStatus) throws Exception {
 		String jsonRequest = "{\"projId\":" + projectId + ",\"projGuideId\":" + facultyId + ",\"approvalStatus\":\"" + approvalStatus + "\"}";
+		System.out.println("---faculty initiate project--json Request-"+jsonRequest);
 		String response = dataFetch.fetchJson("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/facultyinitiatedproject", jsonRequest);
+		System.out.println("---faculty initiate project--json response-"+response);
 		return response;
 	}
 
@@ -74,11 +91,30 @@ public class NavigationController {
 		}
 	}
 
+	@RequestMapping(value = "/ajax/changeFacImage")
+	@ResponseBody
+	public String changeFacImage(ModelMap model, @RequestParam String photoByteArray) throws Exception {
+		
+		
+		String jsonRequest = "{\"registerID\": \"" + regid + "\",\"photoByteStream\":\"" + photoByteArray + "\"}";
+		System.out.println("fac Change Imafe"+jsonRequest);
+		String jsonResponse = dataFetch.fetchJson("http://" + IP + ":8080/UserManagementService/usermanagementservice/updatePhoto", jsonRequest);
+		if (jsonResponse.contains("success"))
+			return "Y";
+		else {
+			ObjectMapper mapper = new ObjectMapper();
+			UMServiceResponse serviceResponse = mapper.readValue(jsonResponse, UMServiceResponse.class);
+			return serviceResponse.getExceptionMessage();
+		}
+	}
+	
+	
 	@RequestMapping(value = "/ajax/forgotPassword")
 	@ResponseBody
 	public String forgotPassword(ModelMap model, @RequestParam String token) throws Exception {
 		System.err.println("forgotPassword: token:" + token);
 		String response = dataFetch.fetchJson("http://" + IP + ":8080/UserManagementService/usermanagementservice/forgotPassword?email=" + token, "");
+		System.out.println(response);
 		return response;
 	}
 
@@ -107,8 +143,9 @@ public class NavigationController {
 
 	@RequestMapping(value = "/ajax/pitchProjectSearch")
 	@ResponseBody
-	public String pitchProjectSearch(ModelMap model, @RequestParam String projectId) throws Exception {
-		String response = dataFetch.fetchJson("http://" + IP + ":8080/UserManagementService/usermanagementservice/searchForMentors?projId=" + projectId, "");
+	public String pitchProjectSearch(ModelMap model, @RequestParam String projectId, @RequestParam String registerId) throws Exception {
+		String response = dataFetch.fetchJson("http://" + IP + ":8080/UserManagementService/usermanagementservice/searchForMentors?projId=" + projectId +"&registerID=" +registerId, "");
+		System.out.println("----pitch project Response---"+response);
 		return response;
 	}
 
@@ -123,15 +160,51 @@ public class NavigationController {
 	@ResponseBody
 	public String deleteProjectDocument(ModelMap model, @RequestParam String projectId, @RequestParam String registerId, @RequestParam String documentName) throws Exception {
 		String jsonRequest = "{\"regstrId\":" + registerId + ",\"projId\":" + projectId + ",\"docName\":\"" + documentName + "\"}";
+		
 		String response = dataFetch.fetchJson("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/deleteprojectdocument", jsonRequest);
+		
 		return response;
 	}
 
+	
+	/*@RequestMapping(value = "/ajax/activateProfile")
+	@ResponseBody
+	public String activateProfile(ModelMap model, @RequestParam String userID) throws Exception {
+	
+		
+		String response = dataFetch.activateProfile("http://" + IP + ":8080/UserManagementService/usermanagementservice/activateProfile?userID="+userID,userID);
+		
+		return "activateProfile";
+	}
+	*/
+	@RequestMapping(value = "/activateProfile")
+	
+	public String activateUserProfile(ModelMap model, @RequestParam String userID) throws Exception {
+	
+				//model = dataFetch.fetchFooter(model, url);
+		System.out.println("abcbcbc"+userID);
+		model.addAttribute("result","Activated succesfully");
+		String response = dataFetch.activateProfile("http://" + IP + ":8080/UserManagementService/usermanagementservice/activateProfile?userID="+userID,userID);
+		if (response.contains("success"))
+		{
+			model.addAttribute("result","Congratulations!! Your Profile has been Activated succesfully");
+			
+		}
+		else 
+		{
+			model.addAttribute("result","Failed to activate , please visit after sometime!!");
+		}
+		return "activateProfile";
+	}
+	
+	
+	
 	@RequestMapping(value = "/ajax/getProjectDocuments")
 	@ResponseBody
 	public String getProjectDocuments(ModelMap model, @RequestParam String projectId, @RequestParam String registerId) throws Exception {
 		String jsonRequest = "{\"projId\":" + projectId + ",\"regstrId\":" + registerId + "}";
 		String response = dataFetch.fetchJson("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/downloadprojectdocument", jsonRequest);
+		System.out.println("getProjectDocuments----" + response );
 		return response;
 	}
 
@@ -186,6 +259,7 @@ public class NavigationController {
 	String submitProject(ModelMap model, @RequestParam String projectId, @RequestParam String status) throws Exception {
 		String jsonRequest = "{\"projId\":" + projectId + ",\"status\":" + status + "}";
 		String jsonResponse = dataFetch.submitProject("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/submitproject", jsonRequest);
+		System.out.println("submit---"+ jsonResponse);
 		return jsonResponse;
 	}
 
@@ -203,18 +277,16 @@ public class NavigationController {
 	@RequestMapping(value = "/ajax/addTeamMember", method = RequestMethod.POST)
 	public @ResponseBody
 	String addTeamMember(ModelMap model, @RequestParam String registerId, @RequestParam String projectId, @RequestParam String teamId) throws Exception {
-		String json = "{\"projId\":" + projectId + ",\"regstrId\":" + registerId + ",\"teamId\":" + teamId + "}";
-		System.err.println("addTeamMember: request: " + json);
-		String jsonResponse = dataFetch.addTeamMember("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/addteammembers", json);
-		return jsonResponse;
+		String json = "[{\"projId\":" + projectId + ",\"regstrId\":" + registerId + ",\"teamId\":" + teamId + "}]";
+        String jsonResponse = dataFetch.addTeamMember("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/addteammembers", json);
+        return jsonResponse;
 	}
 
 	@RequestMapping(value = "/ajax/removeTeamMember", method = RequestMethod.POST)
 	public @ResponseBody
 	String removeTeamMember(ModelMap model, @RequestParam String registerId, @RequestParam String projectId, @RequestParam String teamId) throws Exception {
-		String json = "{\"projId\":" + projectId + ",\"regstrId\":" + registerId + ",\"teamId\":" + teamId + "}";
-		System.err.println("addTeamMember: request: " + json);
-		String jsonResponse = dataFetch.removeTeamMember("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/removeteammembers", json);
+		String json = "[{\"projId\":" + projectId + ",\"regstrId\":" + registerId + ",\"teamId\":" + teamId + "}]";
+	    String jsonResponse = dataFetch.removeTeamMember("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/removeteammembers", json);
 		return jsonResponse;
 	}
 
@@ -231,9 +303,9 @@ public class NavigationController {
 	@RequestMapping(value = "/teamDetails{id}")
 	public String teamDetails(ModelMap model, @PathVariable int id, HttpServletRequest request) throws Exception {
 		model = dataFetch.fetchFooter(model, url);
-		id = 167;
 		HttpSession session = request.getSession();
 		session.setAttribute("teamId", String.valueOf(id));
+		
 		return "teamDetails";
 	}
 
@@ -243,6 +315,17 @@ public class NavigationController {
 		HttpSession session = request.getSession();
 		String teamId = (String) session.getAttribute("teamId");
 		String response = dataFetch.fetchteamDetails("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getdetailofteam", teamId, model);
+		System.out.println("---response of team Details---"+response);
+		return response;
+	}
+	
+	@RequestMapping(value = "/ajax/teamDetailsLoadfordownload")
+	public @ResponseBody
+	String teamDetailsLoadfordownload(ModelMap model, @RequestParam String teamId, HttpServletRequest request) throws Exception {
+		//HttpSession session = request.getSession();
+		//String teamId = (String) session.getAttribute("teamId");
+		String response = dataFetch.fetchteamDetails("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getdetailofteam", teamId, model);
+		System.out.println("---response of team DetailsteamDetailsLoadfordownload---"+response);
 		return response;
 	}
 
@@ -261,6 +344,7 @@ public class NavigationController {
 		HttpSession session = request.getSession();
 		String registerId = String.valueOf((Long) session.getAttribute("id"));
 		String jsonResponse = dataFetch.getProjectListForOneUser("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getprojectsbyLoggedinuser", registerId);
+		System.out.println("pitch -----:"+ jsonResponse );
 		return jsonResponse;
 	}
 
@@ -308,7 +392,6 @@ public class NavigationController {
 	public @ResponseBody
 	String getTeamComments(ModelMap model, @RequestParam String projectId, @RequestParam String set) throws Exception {
 		String jsonRequest = "{\"projId\":\"" + projectId + "\",\"iterationCount\":\"" + set + "\"}";
-		System.err.println("getTeamComments: request: " + jsonRequest);
 		String jsonResponse = dataFetch.getTeamComments("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/displayteamcomments", jsonRequest);
 		return jsonResponse;
 	}
@@ -317,7 +400,6 @@ public class NavigationController {
 	public @ResponseBody
 	String getPublicComments(ModelMap model, @RequestParam String projectId, @RequestParam String set) throws Exception {
 		String jsonRequest = "{\"projId\":\"" + projectId + "\",\"iterationCount\":\"" + set + "\"}";
-		System.err.println("getPublicComments: request: " + jsonRequest);
 		String jsonResponse = dataFetch.getPublicComments("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/displayothercomments", jsonRequest);
 		return jsonResponse;
 	}
@@ -326,7 +408,6 @@ public class NavigationController {
 	public @ResponseBody
 	String postComment(ModelMap model, @RequestParam String projectId, @RequestParam String registerId, @RequestParam String comment) throws Exception {
 		String jsonRequest = "{\"projId\":" + projectId + ",\"regstrId\":" + registerId + ",\"projComment\":\"" + comment + "\"}";
-		System.err.println("PostTeamComments: request: " + jsonRequest);
 		String jsonResponse = dataFetch.postComment("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/addcomment", jsonRequest);
 		return jsonResponse;
 	}
@@ -335,8 +416,8 @@ public class NavigationController {
 	public @ResponseBody
 	String deleteComment(ModelMap model, @RequestParam String projectId, @RequestParam String commentId, @RequestParam String registerId) throws Exception {
 		String jsonRequest = "{\"projectId\":" + projectId + ",\"commentId\":" + commentId + ",\"rgstrId\":" + registerId + "}";
-		System.err.println("deleteComment: request: " + jsonRequest);
-		String jsonResponse = dataFetch.deleteComment("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/deletecomment", jsonRequest);
+		System.out.println("delete comment request:---" + jsonRequest);
+	    String jsonResponse = dataFetch.deleteComment("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/deletecomment", jsonRequest);
 		return jsonResponse;
 	}
 
@@ -344,7 +425,6 @@ public class NavigationController {
 	public @ResponseBody
 	String searchProjectByKeyword(ModelMap model, @RequestParam String term, @RequestParam String set) throws Exception {
 		String jsonRequest = "{\"term\":\"" + term + "\",\"iterationCount\":\"" + set + "\"}";
-		System.err.println("PostTeamComments: request: " + jsonRequest);
 		String jsonResponse = dataFetch.searchProjectByKeyword("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/searchprojectbykeyword", jsonRequest);
 		return jsonResponse;
 	}
@@ -353,8 +433,7 @@ public class NavigationController {
 	public @ResponseBody
 	String searchChallengeByTitle(ModelMap model, @RequestParam String term, @RequestParam String set) throws Exception {
 		String jsonRequest = "{\"term\":\"" + term + "\",\"iterationCount\":\"" + set + "\"}";
-		System.err.println("searchChallengeByTitle: request: " + jsonRequest);
-		String jsonResponse = dataFetch.searchChallengeByTitle("http://" + IP + ":8080/techpediaProjectManagementService/challengeservice/searchchallengebytitle", jsonRequest);
+	    String jsonResponse = dataFetch.searchChallengeByTitle("http://" + IP + ":8080/techpediaProjectManagementService/challengeservice/searchchallengebytitle", jsonRequest);
 		return jsonResponse;
 	}
 
@@ -393,10 +472,13 @@ public class NavigationController {
 
 	@RequestMapping(value = "/changePassword")
 	@ResponseBody
-	public String changePassword(ModelMap model, HttpServletRequest request, HttpServletResponse response, @ModelAttribute ChangePassword changePassword) throws Exception {
+	public String changePassword(ModelMap model, HttpServletRequest request, HttpServletResponse response, @ModelAttribute PasswordResetVo changePassword) throws Exception {
 		HttpSession session = request.getSession(false);
+
 		String username = (String) session.getAttribute("username");
-		changePassword.setUsername(username);
+		changePassword.setUserName(username);
+	
+		
 		System.err.println(changePassword.toString());
 
 		if (username != null) {
@@ -415,6 +497,42 @@ public class NavigationController {
 		}
 		return "faliure";
 	}
+	
+	
+	
+	
+	@RequestMapping(value = "/setPasswordFac")
+	@ResponseBody
+	public String setPasswordFac(ModelMap model, HttpServletRequest request, HttpServletResponse response, @ModelAttribute PasswordResetVo changePassword) throws Exception {
+		
+		
+		
+	     changePassword.setUserName(userName);
+		changePassword.setOldpassword("welcome12#");
+		System.err.println(changePassword.toString());
+
+		if (userName != null) {
+			String jsonResponse = dataFetch.setPasswordFac("http://" + IP + ":8080/UserManagementService/usermanagementservice/passwordReset", changePassword);
+			System.err.println("SET FACULTY PWD RESPONSE - " + jsonResponse);
+			if (jsonResponse.contains("success")) {
+				return "success";
+			} else {
+				ObjectMapper mapper = new ObjectMapper();
+				UMServiceResponse serviceResponse = mapper.readValue(jsonResponse, UMServiceResponse.class);
+				return serviceResponse.getExceptionDetails();
+			}
+		} else {
+			System.err.println("SET FACULTY PASSWORD - USERNAME NULL");
+			response.sendRedirect("loginagain");
+		}
+		return "faliure";
+	}
+	
+	
+	
+	
+	
+	
 
 	@RequestMapping(value = "/getSuggestedFaculty", method = RequestMethod.GET)
 	@ResponseBody
@@ -436,9 +554,25 @@ public class NavigationController {
 	@RequestMapping(value = "/getSuggestedBranches", method = RequestMethod.GET)
 	@ResponseBody
 	public String getSuggestedBranches(ModelMap model, @RequestParam String q) throws Exception {
-		String response = dataFetch.getSuggestedBranches("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getsuggestedbranches", q);
+	String response = dataFetch.getSuggestedBranches("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getsuggestedbranches", q);
 		return response;
 	}
+	
+	
+	@RequestMapping(value = "/getUniversityList", method = RequestMethod.GET)
+	public @ResponseBody String getUniversityList(ModelMap model, @RequestParam("q") String queryParam) throws Exception {
+		String response = dataFetch.getUniversityList("http://" + IP + ":8080/UserManagementService/usermanagementservice/getUniversityList?uName="+queryParam, TechpediaConstants.BLANK_STRING);
+		logger.info("response :"+response);
+		return response;
+	}
+	
+	@RequestMapping(value = "/getSuggestedCollegeList", method = RequestMethod.GET)
+	public @ResponseBody String getCollegeList(ModelMap model, @RequestParam("q") String queryParam) throws Exception {
+		String response = dataFetch.getCollegeList("http://" + IP + ":8080/UserManagementService/usermanagementservice/getCollegeList?cName="+queryParam, TechpediaConstants.BLANK_STRING);
+		logger.info("response : " + response);
+		return response;
+	}
+	
 	@RequestMapping(value = "/getsuggestedchallenges", method = RequestMethod.GET)
 	@ResponseBody
 	public String getsuggestedchallenges(ModelMap model, @RequestParam String q) throws Exception {
@@ -447,19 +581,47 @@ public class NavigationController {
 	
 		return response;
 	}
+/*	@RequestMapping(value = "/addProjectRequest", method=RequestMethod.POST)
+	public @ResponseBody
+	String addProjectRequest(ModelMap model, @ModelAttribute Project project,HttpServletRequest request) throws Exception {
+		HttpSession session = request.getSession(true);
+		long rgstrId = (Long) session.getAttribute("id");
+		return dataFetch.addProjectRequest(project, "http://" + IP + ":8080/techpediaProjectManagementService/projectservice/createproject",rgstrId);
+	}*/
+	
 	@RequestMapping(value = "/addProjectRequest", method=RequestMethod.POST)
 	public @ResponseBody
-	String addProjectRequest(ModelMap model, @ModelAttribute Project project) throws Exception {
-		return dataFetch.addProjectRequest(project, "http://" + IP + ":8080/techpediaProjectManagementService/projectservice/createproject");
+	String addProjectRequest(ModelMap model, @ModelAttribute Project project,HttpServletRequest request) throws Exception {
+	HttpSession session = request.getSession();
+	String registerID = (String) String.valueOf(session.getAttribute("id"));
+	System.out.println("-ffsdfsd--------------"+request);
+	System.out.println("project---" + project);
+	return dataFetch.addProjectRequest(project, "http://" + IP + ":8080/techpediaProjectManagementService/projectservice/createproject",registerID);
 	}
 
+	
+	@RequestMapping(value = "/editProjectRequest", method=RequestMethod.POST)
+	public @ResponseBody
+	String editProjectRequest(ModelMap model, @ModelAttribute Project edit,HttpServletRequest request) throws Exception {
+		
+	HttpSession session = request.getSession();
+	String registerID = (String) String.valueOf(session.getAttribute("id"));
+	long editprojId=Long.parseLong((String) session.getAttribute("editProjectId"));
+	edit.setProjId(editprojId);
+	
+	System.out.println("-to check only request--------------"+edit);
+	return dataFetch.editProjectRequest(edit, "http://" + IP + ":8080/techpediaProjectManagementService/projectservice/updateproject",registerID);
+	}
+	
+	
+	
 	@RequestMapping(value = "/acceptChallengeRequest")
 	public @ResponseBody
-	String acceptChallengeRequest(ModelMap model, @ModelAttribute Project project) throws Exception {
-		return dataFetch.addProjectRequest(project, "http://" + IP + ":8080/techpediaProjectManagementService/challengeservice/acceptchallenge");
-		
-	}
-
+	String acceptChallengeRequest(ModelMap model, @ModelAttribute Project project,HttpServletRequest request) throws Exception {
+		HttpSession session = request.getSession();
+		String registerID = (String) String.valueOf(session.getAttribute("id"));
+		return dataFetch.addProjectRequest(project, "http://" + IP + ":8080/techpediaProjectManagementService/projectservice/createproject",registerID);
+		}
 	@RequestMapping(value = "/")
 	public String index(ModelMap model, HttpServletRequest request) throws Exception {
 		logger.debug("Inside Index");
@@ -472,6 +634,20 @@ public class NavigationController {
 		model = dataFetch.fetchFooter(model, url);
 		return "editProfile";
 	}
+
+	
+	
+	@RequestMapping(value = "/newFaculty")
+	public String newFaculty(ModelMap model, HttpServletRequest request, @RequestParam String regID,@RequestParam String usrName ) throws Exception {
+		regid=regID;
+		userName=usrName;
+		System.out.println("sdfsd"+userName);
+		model = dataFetch.fetchFooter(model, url);
+		return "newFaculty";
+	}
+	
+	
+	
 
 	@RequestMapping(value = "/editProject")
 	public String editProject(ModelMap model, HttpServletRequest request, @RequestParam String id) throws Exception {
@@ -486,7 +662,10 @@ public class NavigationController {
 	public String editProjectLoad(ModelMap model, HttpServletRequest request) throws Exception {
 		HttpSession session = request.getSession();
 		String id = (String) session.getAttribute("editProjectId");
+		
+		
 		String jsonResponse = dataFetch.fetchJson("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getprojectdetails", id);
+		System.out.println("--edit Project ID--"+jsonResponse);
 		return jsonResponse;
 	}
 
@@ -498,7 +677,15 @@ public class NavigationController {
 		String response = dataFetch.fetchEditProfile("http://" + IP + ":8080/UserManagementService/usermanagementservice/getUserDetails", model, registerID);
 		return response;
 	}
-
+	
+	@RequestMapping(value = "/newFacultyLoad")
+	@ResponseBody
+	public String newFacultyLoad(ModelMap model, HttpServletRequest request) throws Exception {
+		
+		
+		String response = dataFetch.fetchEditProfile("http://" + IP + ":8080/UserManagementService/usermanagementservice/getUserDetails", model, regid);
+		return response;
+	}
 	@RequestMapping(value = "/editProfileRequest")
 	public @ResponseBody
 	String editProfileRequest(ModelMap model, HttpServletRequest request, @ModelAttribute UserProfileVO editProfile) throws Exception {
@@ -512,7 +699,9 @@ public class NavigationController {
 		 * .getWebpage().split(",")[0].toString()); } else {
 		 * editProfile.setWebpage(""); } editProfile.setPhoto("");
 		 */
-
+		
+		/*long regId = Long.parseLong(regid);
+         editProfile.setRgstrId(regId);*/
 		HttpSession session = request.getSession(true);
 		Long rgstrId = (Long) session.getAttribute("id");
 		editProfile.setRgstrId(rgstrId);
@@ -526,11 +715,54 @@ public class NavigationController {
 			return serviceResponse.getExceptionMessage();
 		}
 	}
+	
+	
+	@RequestMapping(value = "/newFacultyRequest")
+	public @ResponseBody
+	String newFacultyRequest(ModelMap model, HttpServletRequest request, @ModelAttribute UserProfileVO editProfile) throws Exception {
+		
+		 /** String userType = editProfile.getUserType();
+		 * if(userType.equalsIgnoreCase("college")) {
+		 * editProfile.setWebpage(editProfile
+		 * .getWebpage().split(",")[0].toString()); } else if
+		 * (userType.equalsIgnoreCase("mentor")) {
+		 * editProfile.setWebpage(editProfile
+		 * .getWebpage().split(",")[0].toString()); } else {
+		 * editProfile.setWebpage(""); } editProfile.setPhoto("");*/
+		 
+		
+		long regId = Long.parseLong(regid);
+        editProfile.setRgstrId(regId);
+		/*HttpSession session = request.getSession(true);
+		Long rgstrId = (Long) session.getAttribute("id");
+		editProfile.setRgstrId(rgstrId);*/
+        System.err.println(editProfile);
+		String jsonResponse = dataFetch.newFacultyRequest(editProfile, "http://" + IP + ":8080/UserManagementService/usermanagementservice/updateAddFacultyProfileHelper");
+		logger.info("NEW FACULTY PROFILE RESPONSE : " + jsonResponse);
+		if (jsonResponse.contains("success")) {
+			return "success";
+		} else {
+			ObjectMapper mapper = new ObjectMapper();
+			UMServiceResponse serviceResponse = mapper.readValue(jsonResponse, UMServiceResponse.class);
+			return serviceResponse.getExceptionMessage();
+		}
+	}
+	
+	
+	
+	
+	
+	@RequestMapping(value = "/IEError")
+	public String IEError(ModelMap model, HttpServletRequest request) throws Exception {
+		model = dataFetch.fetchFooter(model, url);
 
+return "IEError";
+	} 
 	@RequestMapping(value = "/ajax/login", method = RequestMethod.POST)
 	@ResponseBody
-	public String signIn(@ModelAttribute Login login, HttpServletRequest request) throws Exception {
+	public String signIn(@ModelAttribute SignInVo login, HttpServletRequest request) throws Exception {
 		String response = dataFetch.signIn("http://" + IP + ":8080/UserManagementService/usermanagementservice/signIn", login);
+		System.err.println("Ajax Login request: " + login);
 		System.err.println("Ajax Login Response: " + response);
 		if (!response.contains("exception")) {
 			HttpSession session = request.getSession(true);
@@ -554,9 +786,11 @@ public class NavigationController {
 			}
 			return "success";
 		} else {
-			logger.debug("login failed");
+			ObjectMapper mapper = new ObjectMapper();
+			UMServiceResponse serviceResponse = mapper.readValue(response, UMServiceResponse.class);
+			return serviceResponse.getExceptionDetails();
 		}
-		return "faliure";
+		
 	}
 
 	@RequestMapping(value = "/getId")
@@ -612,6 +846,83 @@ public class NavigationController {
 		model = dataFetch.fetchFooter(model, url);
 		return "loginagain";
 	}
+	@RequestMapping(value = "ajax/DownloadFileLink",method = RequestMethod.POST)
+	@ResponseBody
+	public String DownloadFileLink( HttpServletRequest request,@RequestParam String documentLink) throws Exception {
+		HttpSession session = request.getSession();
+		session.setAttribute("docLink", documentLink);
+		//session.setAttribute("docLink", "C:/Users/826862/Desktop/edit proj1.png");
+		
+		System.out.println("documentLink" + documentLink);
+		return "success";
+	}
+	@RequestMapping(value = "/DownloadFile" )
+		public void doDownload(HttpServletRequest request,
+				HttpServletResponse response) throws IOException {
+		//System.out.println("documentLink" +documentLink);
+		/**
+		 * Size of a byte buffer to read/write file
+		 */
+		 int BUFFER_SIZE = 4096;
+				
+		/**
+		 * Path of the file to be downloaded, relative to application's directory
+		 */
+		 HttpSession session = request.getSession();
+		//session.setAttribute("filePath", filepath1);
+		 //String filePath ="C:/Users/826862/Desktop/download.jsp";
+		 String filePath =(String) session.getAttribute("docLink");
+
+		 System.out.println("payth" + filePath);
+		
+		/**
+		 * Method for handling file download request from client
+		 */
+			// get absolute path of the application
+			ServletContext context = request.getServletContext();
+			String appPath = context.getServerInfo();
+		
+			System.out.println("appPath = " + appPath);
+
+			// construct the complete absolute path of the file
+			String fullPath =  filePath;		
+			File downloadFile = new File(fullPath);
+			FileInputStream inputStream = new FileInputStream(downloadFile);
+			
+			// get MIME type of the file
+			String mimeType = context.getMimeType(fullPath);
+			if (mimeType == null) {
+				// set to binary type if MIME mapping not found
+				mimeType = "application/octet-stream";
+			}
+			System.out.println("MIME type: " + mimeType);
+
+			// set content attributes for the response
+			response.setContentType(mimeType);
+			response.setContentLength((int) downloadFile.length());
+
+			// set headers for the response
+			String headerKey = "Content-Disposition";
+			String headerValue = String.format("attachment; filename=\"%s\"",
+					downloadFile.getName());
+			response.setHeader(headerKey, headerValue);
+
+			// get output stream of the response
+			OutputStream outStream = response.getOutputStream();
+
+			byte[] buffer = new byte[BUFFER_SIZE];
+			int bytesRead = -1;
+
+			// write bytes read from the input stream into the output stream
+			while ((bytesRead = inputStream.read(buffer)) != -1) {
+				outStream.write(buffer, 0, bytesRead);
+			}
+
+			inputStream.close();
+			outStream.close();
+
+		}
+	
 
 	@RequestMapping(value = "/forgotPassword")
 	public String forgotPassword(ModelMap model, HttpServletRequest request) throws Exception {
@@ -631,7 +942,10 @@ public class NavigationController {
 	@RequestMapping(value = "ajax/searchTeamMembers")
 	@ResponseBody
 	public String ajaxSearchTeamMembers(ModelMap model, HttpServletRequest request, @ModelAttribute UserProfileVO search) throws Exception {
+		
+		
 		String response = dataFetch.fetchSuggestedTeamMembers("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getsuggestedteammembers", search);
+		//System.out.println("fsdfgd bcfbf gdfgdo --"+response);
 		return response;
 	}
 
@@ -639,6 +953,8 @@ public class NavigationController {
 	@ResponseBody
 	public String searchTeamMembersOld(ModelMap model, HttpServletRequest request, @ModelAttribute UserProfileVO search) throws Exception {
 		String response = dataFetch.fetchSuggestedTeamMembersOld("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getsuggestedteammembers", search);
+		
+		//System.out.println("fsdfgd bcfbf gdfgdo   --"+response);
 		return response;
 	}
 
@@ -658,6 +974,7 @@ public class NavigationController {
 	@ResponseBody
 	public String projectsFetch(ModelMap model, @RequestParam("set") String set) throws Exception {
 		String response = dataFetch.fetchProjects("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getallproject", model, set);
+		System.err.println("response"+response);
 		return response;
 	}
 
@@ -783,7 +1100,7 @@ public class NavigationController {
 		} else {
 			ObjectMapper mapper = new ObjectMapper();
 			UMServiceResponse serviceResponse = mapper.readValue(jsonResponse, UMServiceResponse.class);
-			return serviceResponse.getExceptionMessage();
+			return serviceResponse.getExceptionDetails();
 		}
 	}
 
@@ -792,10 +1109,17 @@ public class NavigationController {
 		HttpSession session = request.getSession();
 		session.setAttribute("projectId", id);
 		model = dataFetch.fetchFooter(model, url);
-		model = dataFetch.fetchProjectDetail("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getprojectdetails", model, id);
 		return "detail";
 	}
-
+	@RequestMapping(value = "/projectDetailsLoad")
+	public @ResponseBody
+	String projectDetailsLoad(ModelMap model, HttpServletRequest request) throws Exception {
+		HttpSession session = request.getSession();
+		String projectId = (String) session.getAttribute("projectId");
+		String jsonResponse = dataFetch.fetchProjectDetail("http://" + IP + ":8080/techpediaProjectManagementService/projectservice/getprojectdetails", projectId);
+		System.out.println("details" + jsonResponse);
+		return jsonResponse;
+	}
 	@RequestMapping(value = "/test")
 	public String test(ModelMap model) throws Exception {
 		return "test";

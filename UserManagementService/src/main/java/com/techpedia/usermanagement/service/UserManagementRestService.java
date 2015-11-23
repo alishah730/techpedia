@@ -7,7 +7,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
+import com.techpedia.usermanagement.dataobject.PasswordResetVo;
 import com.techpedia.usermanagement.dataobject.SearchCriteriaDO;
+import com.techpedia.usermanagement.dataobject.SignInVo;
 import com.techpedia.usermanagement.dataobject.UpdateUserPhotoDO;
 import com.techpedia.usermanagement.dataobject.UserProfileDO;
 import com.techpedia.usermanagement.exception.CollegesFetchException;
@@ -64,9 +66,9 @@ public class UserManagementRestService {
 	@Path("/signIn")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response signIn(@QueryParam("userName") String userID,@QueryParam("password") String password) throws UserManagementServiceException {
+	public Response signIn(SignInVo signInVO) throws UserManagementServiceException {
 		
-		return Response.ok().status(200).entity(UserManagementRestServiceHelper.signIn(userID,password)).type("application/json").build();
+		return Response.ok().status(200).entity(UserManagementRestServiceHelper.signIn(signInVO)).type("application/json").build();
 
 	}
 	
@@ -84,9 +86,9 @@ public class UserManagementRestService {
 	@Path("/passwordReset")
 	@Consumes("application/json")
 	 @Produces("application/json")
-	public Response passwordReset(@QueryParam("userName") String userid, @QueryParam("oldpassword") String oldpwd,@QueryParam("newpassword") String newpwd) throws UserManagementServiceException {
+	public Response passwordReset(PasswordResetVo pwdResetVo) throws UserManagementServiceException {
 
-		return Response.ok().status(200).entity(UserManagementRestServiceHelper.passwordReset(userid,oldpwd,newpwd)).type("application/json").build();
+		return Response.ok().status(200).entity(UserManagementRestServiceHelper.passwordReset(pwdResetVo)).type("application/json").build();
 
 	}
 	
@@ -184,9 +186,9 @@ public class UserManagementRestService {
 	@Path("/searchForMentors")
 	@Consumes("application/json")
 	 @Produces("application/json")
-	public Response searchForMentors(@QueryParam("projId") String projId) throws UserManagementServiceException {
+	public Response searchForMentors(@QueryParam("projId") String projId,@QueryParam("registerID") String registerID) throws UserManagementServiceException {
 
-		return Response.ok().status(200).entity(UserManagementRestServiceHelper.searchForMentors(projId)).type("application/json").build();
+		return Response.ok().status(200).entity(UserManagementRestServiceHelper.searchForMentors(projId,registerID)).type("application/json").build();
 
 	}
 
@@ -220,5 +222,27 @@ public class UserManagementRestService {
 		return Response.ok().status(200).entity(UserManagementRestServiceHelper.getUniversitiesList(uName)).type("application/json").build();
 
 	}
+	
+	@POST
+	@Path("/validateAdmin")
+	@Consumes("application/json")
+	 @Produces("application/json")
+	public Response validateAdmin(@QueryParam("registerID") String registerID) throws UserManagementServiceException {
+
+		return Response.ok().status(200).entity(UserManagementRestServiceHelper.validateAdmin(registerID)).type("application/json").build();
+
+	}
+	
+	@POST
+	@Path("/updateAddFacultyProfileHelper")
+	@Consumes("application/json")
+	 @Produces("application/json")
+	public Response updateAddFacultyProfileHelper(UserProfileDO userprofileDO) throws UserManagementServiceException {
+
+		return Response.ok().status(200).entity(UserManagementRestServiceHelper.updateAddFacultyProfileHelper(userprofileDO)).type("application/json").build();
+
+	}
+	
+	
 
 }

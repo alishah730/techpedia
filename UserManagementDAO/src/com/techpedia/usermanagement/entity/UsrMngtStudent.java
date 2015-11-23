@@ -29,7 +29,7 @@ public class UsrMngtStudent {
 	private String yearOfPass;
 
 	@Column(name = "BRANCH_ID")
-	private int branchId;
+	private String branchId;
 	/**
 	 * 
 	 */
@@ -122,23 +122,19 @@ public class UsrMngtStudent {
 		this.yearOfPass = yearOfPass;
 	}
 
-	/**
-	 * @return the branchId
-	 */
-	public int getBranchId() {
+	
+
+	public String getBranchId() {
 		return branchId;
 	}
 
-	/**
-	 * @param branchId the branchId to set
-	 */
-	public void setBranchId(int branchId) {
+	public void setBranchId(String branchId) {
 		this.branchId = branchId;
 	}
 
 	public UsrMngtStudent(long rgstrId, String degree, String college,
 			String university, String enrollmentNo, String yearOfPass,
-			int branchId) {
+			String branchId) {
 		super();
 		this.rgstrId = rgstrId;
 		this.degree = degree;

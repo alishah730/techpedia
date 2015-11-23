@@ -5,19 +5,19 @@
 <hibernate-configuration>
     <session-factory>
         <!-- Database connection settings -->
-        <property name="connection.driver_class">com.mysql.jdbc.Driver</property>
-        <property name="connection.url">jdbc:mysql://localhost:3306/techpedia</property>
-        <property name="connection.username">root</property>
-        <property name="connection.password">root</property><!-- dev mysql password -->
-		<!-- <property name="connection.password">techpedia14</property> --> <!-- production mysql password -->
+       
+		<property name="hibernate.connection.datasource">java:jboss/datasources/techpediaDataSource</property>
 		
-        <!-- JDBC connection pool (use the built-in) -->
-        <property name="connection.pool_size">100</property>
-
         <!-- SQL dialect -->
         <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
 		<property name="hibernate.connection.autocommit">false</property> 
-
+		
+		<!-- <property name="hibernate.c3p0.min_size">5</property>
+		<property name="hibernate.c3p0.max_size">20</property>
+		<property name="hibernate.c3p0.timeout">300</property>
+		<property name="hibernate.c3p0.max_statements">50</property>
+		<property name="hibernate.c3p0.idle_test_period">3000</property>	
+ -->
         <!-- Echo all executed SQL to stdout -->
         <property name="show_sql">true</property>
 
@@ -41,6 +41,10 @@
 		   <mapping class="com.techpedia.usermanagement.entity.UsrAuthortnRoles"/>
 		   <mapping class="com.techpedia.usermanagement.entity.MentorDetails"/>
 		   <mapping class="com.techpedia.usermanagement.entity.MentorsAssignedToProject"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrCollegeMaster"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrUniversityMaster"/>
+		   <mapping class="com.techpedia.usermanagement.entity.BranchMaster"/>
+		   
 		   
 		   
 		 <!-- user management entities end -->

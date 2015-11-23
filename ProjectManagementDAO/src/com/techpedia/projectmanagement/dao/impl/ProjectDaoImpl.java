@@ -10,7 +10,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import org.hibernate.Criteria;
 import org.hibernate.ObjectNotFoundException;
@@ -28,7 +30,9 @@ import org.hibernate.criterion.Subqueries;
 import sun.misc.BASE64Decoder;
 
 import com.techpedia.projectmanagement.bean.AddCommVO;
+import com.techpedia.projectmanagement.bean.AddNewFacultyResponseVO;
 import com.techpedia.projectmanagement.bean.Branch;
+import com.techpedia.projectmanagement.bean.CreateProjectResponseVO;
 import com.techpedia.projectmanagement.bean.DeleteCommVO;
 import com.techpedia.projectmanagement.bean.DeleteDocVO;
 import com.techpedia.projectmanagement.bean.DisplayTeamCommVO;
@@ -44,6 +48,7 @@ import com.techpedia.projectmanagement.bean.Project;
 import com.techpedia.projectmanagement.bean.ProjectDocument;
 import com.techpedia.projectmanagement.bean.ProjectTeamComment;
 import com.techpedia.projectmanagement.bean.ProjectTeamDetailVO;
+import com.techpedia.projectmanagement.bean.ProjectType;
 import com.techpedia.projectmanagement.bean.ProjectXLSVO;
 import com.techpedia.projectmanagement.bean.SearchByKeyVO;
 import com.techpedia.projectmanagement.bean.Team;
@@ -62,9 +67,13 @@ import com.techpedia.projectmanagement.entity.ProjectKeywordMaster;
 import com.techpedia.projectmanagement.entity.ProjectMaster;
 import com.techpedia.projectmanagement.entity.ProjectTeamMaster;
 import com.techpedia.projectmanagement.entity.ProjectTeamTxn;
+import com.techpedia.projectmanagement.entity.ProjectTypeMaster;
+import com.techpedia.projectmanagement.entity.UsrMngtAddress;
+import com.techpedia.projectmanagement.entity.UsrMngtContactInfo;
 import com.techpedia.projectmanagement.entity.UsrMngtFaculty;
 import com.techpedia.projectmanagement.entity.UsrMngtMaster;
 import com.techpedia.projectmanagement.entity.UsrMngtMentor;
+import com.techpedia.projectmanagement.entity.UsrMngtPassword;
 import com.techpedia.projectmanagement.exception.AddCommentException;
 import com.techpedia.projectmanagement.exception.AddNewFacultyException;
 import com.techpedia.projectmanagement.exception.AddNewMentorException;
@@ -85,6 +94,7 @@ import com.techpedia.projectmanagement.exception.GetDetailOfTeamException;
 import com.techpedia.projectmanagement.exception.GetPopularityException;
 import com.techpedia.projectmanagement.exception.GetProjectDetailsException;
 import com.techpedia.projectmanagement.exception.GetProjectFollowersException;
+import com.techpedia.projectmanagement.exception.GetProjectTypeException;
 import com.techpedia.projectmanagement.exception.OtherCommentsNotFoundException;
 import com.techpedia.projectmanagement.exception.ProjectByLoggedInUserException;
 import com.techpedia.projectmanagement.exception.RemoveCommentException;
@@ -116,13 +126,14 @@ public class ProjectDaoImpl implements ProjectDao {
 	 * @see com.techpedia.projectmanagement.dao.ProjectManagementDAO#createProject(com.techpedia.projectmanagement.dataobject.ProjectDO)
 	 */
 	@Override
-	public String createProject(Project project) throws CreateProjectException{
+	public CreateProjectResponseVO createProject(Project project) throws CreateProjectException{
 		
 		//log.debug("ProjectDaoImpl.createProject :Start");
 		Transaction tx = null;
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		String returnVal = "N";
 		int tranCount = 0;
+		CreateProjectResponseVO createProjectResponseVO = new CreateProjectResponseVO();
 	
 		/*Parameters for Table: `TB_TECH001_MAST_PROJECTS_DETAIL`*/
 		long projId = 0;
@@ -154,6 +165,7 @@ public class ProjectDaoImpl implements ProjectDao {
 		String projIsFacApprove = project.getProjIsFacApprove();
 		String projAdminComments = project.getProjAdminComments();
 		long projectFaculty = project.getProjFaculty();
+		String projIsForChallenge = project.getProjIsForChallenge();
 		/*Parameters for Table: `TB_TECH001_MAST_PROJECTS_TEAM`*/
 		String projTeamDesc = project.getProjTeamDesc();
 		/*Parameters for Table: `TB_TECH001_MAST_PROJECTS_BRNCH`*/
@@ -186,7 +198,7 @@ public class ProjectDaoImpl implements ProjectDao {
 					projCollegeRgstrIdUsr, userRgstrNo, projectYear, projectDuration, projectCollegeState, projectStartDate, 
 					projectEndDate, projMentor1Id, projMentor2Id, projectTeamId, projGuideId, projStatusId, projToFloat, 
 					projectEstimationCost, projCommentsPublish, projGrade, projTeamLeaderId, projAwardWon, projAwardDesc, 
-					projIsMentorAvail, projIsFacApprove, projAdminComments,"N", "ACTIVE", projectFaculty);
+					projIsMentorAvail, projIsFacApprove, projAdminComments,projIsForChallenge, "ACTIVE", projectFaculty);
 			
 			sr = session.save(projectMaster);
 			projId = Long.parseLong(sr.toString());
@@ -241,6 +253,12 @@ public class ProjectDaoImpl implements ProjectDao {
 			}
 			tx.commit();
 			returnVal = "Y";
+			UsrMngtMaster teamLeader = (UsrMngtMaster) session.get(UsrMngtMaster.class, projTeamLeaderId);
+			UsrMngtMaster faculty = (UsrMngtMaster) session.get(UsrMngtMaster.class, projectFaculty);
+			createProjectResponseVO.setStatus(returnVal);
+			createProjectResponseVO.setFacultyEMailId(faculty.getEmail());
+			createProjectResponseVO.setTeamTeaderEMailId(teamLeader.getEmail());
+			
 		} catch (Exception e) {
 			//log.debug("Unable to add project to DB : " + e);
 			try {
@@ -258,7 +276,7 @@ public class ProjectDaoImpl implements ProjectDao {
 				session.close();
 		}
 		//log.debug("ProjectDaoImpl.createProject :End");
-		return returnVal;
+		return createProjectResponseVO;
 	}
 	
 	/* 
@@ -322,7 +340,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			suggestedBranchs = (ArrayList<Branch>) criteria.list();
 		} catch (Exception e) {
 			//log.error("Error while retrieving the Suggested keywords :" + e.getMessage());
-			throw new SuggestedBranchNotFoundException("Error while retriving the Suggested Branchs : "+ e.getMessage());
+			throw new SuggestedBranchNotFoundException("Error while retrieving the Suggested Branches : "+ e.getMessage());
 		}finally{
 			if(session!=null)
 				session.close();
@@ -345,7 +363,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	 * @see com.techpedia.projectmanagement.dao.ProjectDao#addNewFaculty(com.techpedia.projectmanagement.bean.FacultyVO)
 	 */
 	@Override
-	public String addNewFaculty(FacultyVO facultyVO)
+	public AddNewFacultyResponseVO addNewFaculty(FacultyVO facultyVO)
 			throws AddNewFacultyException {
 		
 		//log.debug("ProjectDaoImpl.addNewFaculty :Start");
@@ -368,9 +386,9 @@ public class ProjectDaoImpl implements ProjectDao {
         int hour = now.get(Calendar.HOUR);
         int minute = now.get(Calendar.MINUTE);
         int second = now.get(Calendar.SECOND);
-
+        String userID = eMail+day+month+year+hour+minute+second;
 		long regId = 0;
-		String returnVal = "N";
+		AddNewFacultyResponseVO addNewFacultyResponseVO = new AddNewFacultyResponseVO();
 		
 		try {
 			
@@ -381,25 +399,44 @@ public class ProjectDaoImpl implements ProjectDao {
 			usrMngtMaster.setmName(mName);
 			usrMngtMaster.setlName(lName);
 			usrMngtMaster.setEmail(eMail);
-			usrMngtMaster.setUserId(eMail+day+month+year+hour+minute+second);
+			usrMngtMaster.setUserId(userID);
+			usrMngtMaster.setiSactive("Y");
 			usrMngtMaster.setType("faculty");
-			
 			Serializable sr = session.save(usrMngtMaster);
 			regId = (long) sr;
 			//log.debug("UsrMngtMaster added is :" + regId);
 			
-			/*Start Adding into USR_MNGT_STUDENT here*/
+			/*Start Adding into USR_MNGT_FACULTY here*/
 			usrMngtFaculty = new UsrMngtFaculty();
 			usrMngtFaculty.setRgstrId(regId);
 			usrMngtFaculty.setCollege(college);
 			usrMngtFaculty.setSpecification(dept);
 			usrMngtFaculty.setBranchId(branchId);
-			
 			sr = session.save(usrMngtFaculty);
+			
+			/*Start Adding into usr_mngt_passwd here*/
+			UsrMngtPassword usrMngtPassword = new UsrMngtPassword();
+			usrMngtPassword.setRgstrId(regId);
+			usrMngtPassword.setUsrId(userID);
+			/*Encrypted default password*/
+			usrMngtPassword.setUsrPasswd("8hn5IPI7anUg4pUr2+WC4cq59hsbH1cH812QGmD5vPk2UKw01Bvx3sV+WRfGBguO");
+			session.save(usrMngtPassword);
+			
+			/*Start Adding into usr_mngt_contact_info here*/
+			UsrMngtContactInfo usrMngtContactInfo = new UsrMngtContactInfo();
+			usrMngtContactInfo.setRgstrId(regId);
+			session.save(usrMngtContactInfo);
+			
+			/*Start Adding into usr_mngt_addr here*/
+			UsrMngtAddress usrMngtAddress = new UsrMngtAddress();
+			usrMngtAddress.setRgstrId(regId);
+			session.save(usrMngtAddress);
+
 			//log.debug("UsrMngtStudent added is :" + sr.toString());
 			
 			tx.commit();
-			returnVal = sr.toString();
+			addNewFacultyResponseVO.setRgstrId(String.valueOf(regId));
+			addNewFacultyResponseVO.setUserID(userID);
 		} catch (Exception e) {
 			//log.debug("Unable to add Faculty to DB : " + e);
 			try {
@@ -417,7 +454,7 @@ public class ProjectDaoImpl implements ProjectDao {
 				session.close();
 		}
 		//log.debug("ProjectDaoImpl.addNewFaculty :End");
-		return returnVal;
+		return addNewFacultyResponseVO;
 	}
 	
 	/**
@@ -492,9 +529,8 @@ public class ProjectDaoImpl implements ProjectDao {
 			
 			Criteria projKeywordsCriteria = session.createCriteria(ProjectKeywordMaster.class);
 			projKeywordsCriteria.add(Restrictions.eq("projId", projId));
-			projKeywordsCriteria.setProjection(Projections.property("projKeyword"));
-			ArrayList<String> projKeywords = (ArrayList<String>) projKeywordsCriteria.list();
-			project.setProjKeywords(projKeywords);
+			projKeywordsCriteria.setProjection(Projections.property("projKeyword"));			
+			project.setProjKeywords((ArrayList<String>) projKeywordsCriteria.list());
 			
 			DetachedCriteria dcProjTeamTxn = DetachedCriteria.forClass(ProjectTeamTxn.class);
 			dcProjTeamTxn.add(Restrictions.eq("projId", projId));
@@ -511,7 +547,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			
 			Criteria proFacultyCriteria = session.createCriteria(UsrMngtMaster.class);
 			proFacultyCriteria.add(Restrictions.eq("rgstrId", projectMaster.getProjFacRgstrId()));
-			if(usrMngtMasterCriteria.list().size() > 0){
+			if(proFacultyCriteria.list().size() > 0){
 				ArrayList<UsrMngtMaster> usrMngtMasters = (ArrayList<UsrMngtMaster>) proFacultyCriteria.list();
 				project.setProjFacultyName(usrMngtMasters.get(0).getpFname()+" "+usrMngtMasters.get(0).getmName()+" "+usrMngtMasters.get(0).getlName());
 			}
@@ -529,15 +565,21 @@ public class ProjectDaoImpl implements ProjectDao {
 			project.setProjFaculty(projectMaster.getProjFacRgstrId());
 			project.setUserRgstrNo(projectMaster.getUserRgstrNo());
 			project.setProjEstimationCost(projectMaster.getProjEstimatedCost());
+			/*New columns added*/
+			project.setProjStatusId(projectMaster.getProjStatusId());
+			project.setProjIsFacApprove(projectMaster.getProjIsFacApprove());
+			project.setProjIsMentorAvail(projectMaster.getProjIsMentorAvail());
 			//project.setProjImage(projectMaster.getProjImage);
 			
-			Criteria proChallCriteria = session.createCriteria(ChallengeTeamTxn.class);
-			proChallCriteria.add(Restrictions.eq("projId", projectMaster.getProjId()));
-			proChallCriteria.setProjection(Projections.property("challengId"));
-			ArrayList<Long> challengeId = (ArrayList<Long>) proChallCriteria.list();
-			if(challengeId.size()>0)
-				project.setChallengId(challengeId.get(0));
-			
+			/*Only for project created against a challenge*/
+			if(project.getProjIsForChallenge() == "Y"){
+				Criteria proChallCriteria = session.createCriteria(ChallengeTeamTxn.class);
+				proChallCriteria.add(Restrictions.eq("projId", projectMaster.getProjId()));
+				proChallCriteria.setProjection(Projections.property("challengId"));
+				ArrayList<Long> challengeId = (ArrayList<Long>) proChallCriteria.list();
+				if(challengeId.size()>0)
+					project.setChallengId(challengeId.get(0));
+			}
 		} catch (Exception e) {
 			//log.debug("Error while deleting project : "+ e.getMessage());
 			throw new GetProjectDetailsException("Error while getting project : "+ e.getMessage());
@@ -864,11 +906,13 @@ public class ProjectDaoImpl implements ProjectDao {
 	        	ProjectMaster projectMaster = (ProjectMaster) session.get(ProjectMaster.class, projId);		  	        	
 				
 				if (projectMaster.getProjMentor1Id() == 0){						
-					projectMaster.setProjMentor1Id(mentorRgstrId);		
+					projectMaster.setProjMentor1Id(mentorRgstrId);	
+					projectMaster.setProjIsMentorAvail("Y");
 					returnVal = "Y";
 				}
 				else if(projectMaster.getProjMentor2Id() == 0){						
-					projectMaster.setProjMentor2Id(mentorRgstrId);	
+					projectMaster.setProjMentor2Id(mentorRgstrId);
+					projectMaster.setProjIsMentorAvail("Y");
 					returnVal = "Y";
 				}					
 				else 					  
@@ -918,10 +962,13 @@ public class ProjectDaoImpl implements ProjectDao {
 	    	  }
 	    	  else if(projMentor2Id == mentorRgstrId){						
 						projectMaster.setProjMentor2Id(0);
-	    	  }					
-			else 
+	    	  }			
+	    	  else 
 				return returnVal; 	
-	    	  
+	    	
+	    	  if(projectMaster.getProjMentor1Id() == 0 && projectMaster.getProjMentor2Id() == 0){
+	    		  projectMaster.setProjIsMentorAvail("N");
+	    	  }
 	    	session.update(projectMaster);						
 			tx.commit();
 			returnVal = "Y";
@@ -1445,23 +1492,25 @@ public class ProjectDaoImpl implements ProjectDao {
 		ProjectDocument projectDocument;
 		ArrayList<ProjectDocPathTxn> projectDocPathTxns = new ArrayList<ProjectDocPathTxn>();
 		long projId = downloadDocVO.getProjId();
-		long regstrId = downloadDocVO.getRegstrId();
+		//long regstrId = downloadDocVO.getRegstrId();		
+		Set<Long> projTeamMems = new HashSet<Long>();
+		projTeamMems = ProjectDaoHelper.getProjectTeamMembers(projId);
 		ResourceBundle rbundle = ResourceBundle.getBundle("uploadDownload");
 		String SERVER_UPLOAD_FOLDER_LOCATION = rbundle.getString("SERVER_UPLOAD_PROJECT_FOLDER_LOCATION");
 		Session session = HibernateUtil.getSessionFactory().openSession();	
 		try {							
 			Criteria criteria = session.createCriteria(ProjectDocPathTxn.class);
-			criteria.add(Restrictions.eq("regstrId", regstrId));
+			criteria.add(Restrictions.in("regstrId", projTeamMems));
 	        criteria.add(Restrictions.eq("projId", projId));
 			criteria.addOrder(Order.asc("projDocId"));				
 	        projectDocPathTxns = (ArrayList<ProjectDocPathTxn>) criteria.list();
 			for(ProjectDocPathTxn docPathTxn:projectDocPathTxns){
 				projectDocument = new ProjectDocument();
 				String docPath = docPathTxn.getProjPath();
-				String docName = docPath.substring(docPath.lastIndexOf("/"), docPath.length());
+				String docName = docPath.substring(docPath.lastIndexOf("/")+1, docPath.length());
 				projectDocument.setDocName(docName);
-				projectDocument.setDocLink(SERVER_UPLOAD_FOLDER_LOCATION+docPath);
-				
+				projectDocument.setDocLink(SERVER_UPLOAD_FOLDER_LOCATION+"/"+docPath);
+				projectDocument.setRegstrId(docPathTxn.getRegstrId());
 				projectDocuments.add(projectDocument);
 			}
 			if(projectDocPathTxns.size()==0)
@@ -1496,9 +1545,11 @@ public class ProjectDaoImpl implements ProjectDao {
 				
 				Session session = HibernateUtil.getSessionFactory().openSession();
 				try {
+					
 					DetachedCriteria dc = DetachedCriteria.forClass(ProjectTeamTxn.class);
 					dc.add(Restrictions.eq("regstrId", Long.valueOf(rgstrId)));
 					dc.setProjection(Projections.property("projId"));				
+					
 					Criteria criteria =session.createCriteria(ProjectMaster.class);				
 					criteria.add(Restrictions.disjunction()
 					          .add(Restrictions.eq("projMentor1Id", Long.valueOf(rgstrId)))
@@ -1515,6 +1566,17 @@ public class ProjectDaoImpl implements ProjectDao {
 						project.setProjId(projectMaster.getProjId());
 						project.setProjTitle(projectMaster.getProjTitle());
 						project.setProjDescription(projectMaster.getProjDescription());
+						project.setProjTeamLeaderId(projectMaster.getProjTeamLeaderId());
+						/*New columns added*/
+						project.setProjStatusId(projectMaster.getProjStatusId());
+						project.setProjIsFacApprove(projectMaster.getProjIsFacApprove());
+						project.setProjIsMentorAvail(projectMaster.getProjIsMentorAvail());
+						
+						project.setProjMentor1Id(projectMaster.getProjMentor1Id());
+						project.setProjMentor2Id(projectMaster.getProjMentor2Id());
+						project.setProjIsForChallenge(projectMaster.getProjIsForChallenge());
+						project.setProjFaculty(projectMaster.getProjFacRgstrId());
+						
 						projects.add(project);
 					}
 					if(projects.size()==0)
@@ -1564,10 +1626,10 @@ public class ProjectDaoImpl implements ProjectDao {
 			          .add(Restrictions.eq("projPath", docPath)));
 			projectDocPathTxn = (ProjectDocPathTxn) criteria.uniqueResult();
 			session.delete(projectDocPathTxn);
-			returnVal = FileUploadDownload.deleteFile(SERVER_UPLOAD_FOLDER_LOCATION+docPath);
+			returnVal = FileUploadDownload.deleteFile(SERVER_UPLOAD_FOLDER_LOCATION+"/"+docPath);
 			tx.commit();					
 			if(returnVal=="N")
-				throw new DeleteDocumentException("No documents uploaded by given user for given project");		
+				throw new DeleteDocumentException("Unable to delete document");		
 			} catch (Exception e) {
 				//log.error("Error while retriving the all followed projects : " + e.getMessage());
 				throw new DeleteDocumentException("Error while deleting project documents : "+ e.getMessage());
@@ -1596,7 +1658,7 @@ public class ProjectDaoImpl implements ProjectDao {
 					ProjectMaster projectMaster = (ProjectMaster) session.get(ProjectMaster.class, projId);
 					projectMaster.setProjId(projId);
 					if(projId != 0 || projGuideId != 0){
-							if(approvalStatus == "Y") {
+							if(approvalStatus.toUpperCase() == "Y" || approvalStatus.equalsIgnoreCase("Y")) {
 									projectMaster.setProjStatusId(2);
 									projectMaster.setProjIsFacApprove("Y");									
 							}
@@ -1639,7 +1701,7 @@ public class ProjectDaoImpl implements ProjectDao {
 					projectMaster.setProjId(projId);
 					if(projId != 0 || projGuideId != 0){
 						/*close*/	
-						if(approvalStatus == "Y") {								
+						if(approvalStatus.toUpperCase() == "Y" || approvalStatus.equalsIgnoreCase("Y")) {								
 							projectMaster.setProjStatusId(4);
 							projectMaster.setProjIsFacApprove("Y");									
 						}
@@ -1663,5 +1725,34 @@ public class ProjectDaoImpl implements ProjectDao {
 				}
 				//log.debug("ProjectDaoImpl.facultyClosedProject :End");
 				return returnVal;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ArrayList<ProjectType> getProjectType() throws GetProjectTypeException {
+		
+		//log.debug("ProjectDaoImpl.getProjectType :Start");
+		ProjectType projectType = null;
+		ArrayList<ProjectType> projectTypes = new ArrayList<ProjectType>();
+		Session session = HibernateUtil.getSessionFactory().openSession();		
+		try{
+			Criteria criteria = session.createCriteria(ProjectTypeMaster.class);
+			criteria.addOrder(Order.asc("projTypeId"));
+			ArrayList<ProjectTypeMaster> projectTypeMasters = (ArrayList<ProjectTypeMaster>) criteria.list();
+			for(ProjectTypeMaster projectTypeMaster:projectTypeMasters){
+				projectType = new ProjectType();
+				projectType.setProjTypeId(projectTypeMaster.getProjTypeId());
+				projectType.setProjTypeDesc(projectTypeMaster.getProjTypeDesc());			
+				projectTypes.add(projectType);
+			}
+			}catch (Exception e) {
+				//log.debug("Error while deleting project : "+ e.getMessage());
+				throw new GetProjectTypeException("Error while getting project types : "+ e.getMessage());
+			}finally{
+				if(session!=null)
+					session.close();
+			}
+		//log.debug("ProjectDaoImpl.getProjectType :End");
+		return projectTypes;
 	}
 }

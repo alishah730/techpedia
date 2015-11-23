@@ -6,7 +6,9 @@ package com.techpedia.projectmanagement.dao;
 import java.util.ArrayList;
 
 import com.techpedia.projectmanagement.bean.AddCommVO;
+import com.techpedia.projectmanagement.bean.AddNewFacultyResponseVO;
 import com.techpedia.projectmanagement.bean.Branch;
+import com.techpedia.projectmanagement.bean.CreateProjectResponseVO;
 import com.techpedia.projectmanagement.bean.DeleteCommVO;
 import com.techpedia.projectmanagement.bean.DeleteDocVO;
 import com.techpedia.projectmanagement.bean.DisplayTeamCommVO;
@@ -22,6 +24,7 @@ import com.techpedia.projectmanagement.bean.Project;
 import com.techpedia.projectmanagement.bean.ProjectDocument;
 import com.techpedia.projectmanagement.bean.ProjectTeamComment;
 import com.techpedia.projectmanagement.bean.ProjectTeamDetailVO;
+import com.techpedia.projectmanagement.bean.ProjectType;
 import com.techpedia.projectmanagement.bean.SearchByKeyVO;
 import com.techpedia.projectmanagement.bean.Team;
 import com.techpedia.projectmanagement.bean.TeamMember;
@@ -47,6 +50,7 @@ import com.techpedia.projectmanagement.exception.GetDetailOfTeamException;
 import com.techpedia.projectmanagement.exception.GetPopularityException;
 import com.techpedia.projectmanagement.exception.GetProjectDetailsException;
 import com.techpedia.projectmanagement.exception.GetProjectFollowersException;
+import com.techpedia.projectmanagement.exception.GetProjectTypeException;
 import com.techpedia.projectmanagement.exception.OtherCommentsNotFoundException;
 import com.techpedia.projectmanagement.exception.ProjectByLoggedInUserException;
 import com.techpedia.projectmanagement.exception.RemoveCommentException;
@@ -69,7 +73,7 @@ import com.techpedia.projectmanagement.exception.UploadProjDocException;
  */
 public interface ProjectDao {
 	
-	public abstract String createProject(Project project) throws CreateProjectException;
+	public abstract CreateProjectResponseVO createProject(Project project) throws CreateProjectException;
 
 	public abstract ArrayList<String> getSuggestedkeywords(ArrayList<Integer> branchIds) throws SuggestedkeywordsNotFoundException;
 	
@@ -79,7 +83,7 @@ public interface ProjectDao {
 	
 	public abstract ArrayList<Faculty> getSuggestedFaculty(String userId) throws SuggestedFacultyNotFoundException;
 	
-	public abstract String addNewFaculty(FacultyVO facultyVO) throws AddNewFacultyException;
+	public abstract AddNewFacultyResponseVO addNewFaculty(FacultyVO facultyVO) throws AddNewFacultyException;
 	
 	public abstract String deleteProject(long projId) throws DeleteProjectException;
 	
@@ -138,5 +142,7 @@ public interface ProjectDao {
 	public abstract String facultyInitiatedProject(FacInitProjVO facInitProjVO) throws FacultyInitiatedProjectException;
 	
 	public abstract String facultyClosedProject(FacInitProjVO facInitProjVO) throws FacultyClosedProjectException;
+	
+	public abstract ArrayList<ProjectType> getProjectType() throws GetProjectTypeException;
 
 }

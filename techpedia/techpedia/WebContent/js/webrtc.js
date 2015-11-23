@@ -138,32 +138,5 @@ $('#hidden-photo-input').on("change", function(e) {
 		debugMode : false
 	});
 
-	$('#hidden-logo-input').on("change", function(e) {
-		var reader = new FileReader();
-		var file = e.target.files[0], imageType = /image.*/;
 
-
-		$('#logoByte64Size').val(file.size / 1000);
-		reader.readAsDataURL(file);
-		reader.onloadend = function() {
-			var photo = $('.logo')[0];
-			photo.src = reader.result;
-			$('#logoByte64').val(reader.result);
-			/*var canvas = $('.canvas')[0];
-			canvas.width = 160;
-			canvas.height = 120;
-			var ctx = canvas.getContext('2d');
-	*/
-			var img = new Image();
-			img.src = $('.logo')[0].src;
-			img.onload = function() {
-				var ptrn = ctx.createPattern(img, 'no-repeat');
-				ctx.fillStyle = ptrn;
-				/*ctx.fillRect(0, 0, canvas.width, canvas.height);*/
-
-			};
-
-	
-		};
-	});
 });

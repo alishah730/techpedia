@@ -14,6 +14,28 @@ techpedia.filter('anyInvalidDirtyFields', function() {
 	
 });
 
+
+techpedia.filter('truncate',function() {
+    return function (value, wordwise, max, tail) {
+        if (!value) return '';
+
+        max = parseInt(max, 10);
+        if (!max) return value;
+        if (value.length == max) return value;
+
+        value = value.substr(0, max);
+        if (wordwise) {
+            var lastspace = value.lastIndexOf(' ');
+            if (lastspace != -1) {
+                value = value.substr(0, lastspace);
+            }
+        }
+
+        return value + (tail || ' …');
+    };
+});
+
+
 techpedia.directive('datepicker-angular', function() {
 	return {
 		require : 'ngModel',
@@ -107,7 +129,7 @@ techpedia.controller('EditProjectController', function($scope, $http) {
 		$scope.edit.studentID = '';
 		$scope.edit.collge = '';
 		$scope.edit.state = '';
-
+ 
 		$http({
 			method : 'POST',
 			url : 'getId',
@@ -126,7 +148,7 @@ techpedia.controller('EditProjectController', function($scope, $http) {
 					'Content-Type' : 'application/x-www-form-urlencoded'
 				}
 			}).success(function(data, status, headers, config) {
-				$scope.edit.university = data.university;
+			    $scope.edit.university = data.university;
 				$scope.edit.studentID = data.studentID;
 				$scope.edit.collge = data.collge;
 				$scope.edit.state = data.state;
@@ -202,13 +224,37 @@ techpedia.controller('EditProjectController', function($scope, $http) {
 			console.log(JSON.stringify(dataArray));
 			$("#projectBranches").select2("data", dataArray);
 			$("#projectBranches").select2("readonly", true);
-
+			
+           
+          var projteamid=data.projTeamId;
+         
 			$scope.edit = data;
+			$http({
+				method : 'POST',
+				url : 'ajax/getTeamsListForOneUser',
+				data : $.param({}),
+				headers : {
+					'Content-Type' : 'application/x-www-form-urlencoded'
+				}
+			}).success(function(data, status, headers, config) {
+				$scope.teams = data;
+				  for (var i=0;i<=data.length;i++) {
+				        if ( data[i].teamID ==$scope.edit.projTeamId) {
+				        	$scope.edit.projTeamDesc=data[i].teamName;
+				        }}
+				
+			})
+		
 		}).error(function(data, status, headers, config) {
 			$scope.message = [];
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
 	};
+	
+	
+	
+	
+	
 });
 
 techpedia.controller('FooterController', function($scope, $http) {
@@ -227,7 +273,9 @@ techpedia.controller('FooterController', function($scope, $http) {
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
 	};
-
+	$scope.$watch('file', function() {
+		$scope.mentor.photo = "data:" + $scope.file.filetype + ";base64," + $scope.file.base64;
+	}, true);
 	$scope.viewMentor = function(mentor) {
 		window.location = 'mentorDetails' + mentor.mentorId;
 	};
@@ -285,6 +333,11 @@ techpedia.controller('IndexController', function($scope, $http) {
 	$scope.viewProject = function(project) {
 		window.location = 'projectDetails' + project.projId;
 	};
+	
+	
+	
+	
+	
 });
 
 techpedia.controller('LoginModalController', function($scope, $http) {
@@ -303,12 +356,14 @@ techpedia.controller('LoginModalController', function($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
-			if (data === 'Y') {
+			if (data.status === 'success') {
 				$scope.message = [];
-				$scope.message.push("Request sent. Check your email");
+				$scope.message.push("Password has been Successfully sent  to your registered Email ID");
 			} else {
+				$('#forgotPassword').val('');
 				$scope.message = [];
 				$scope.message.push("Failed to send request, try later");
+				
 			}
 		}).error(function(data, status, headers, config) {
 			$scope.message = [];
@@ -393,7 +448,7 @@ techpedia.controller('ChallengeDetailsController', function($scope, $http) {
 	};
 
 	$scope.acceptChallenge = function(challenge) {
-		window.location = window.location = /*'acceptChallenge?challengeId=' + challenge.challengId+'&&challengeTitle='+challenge.challengTitle;*/'acceptChallenge?challengeId=' + challenge.challengId;
+		window.location = window.location = 'acceptChallenge?challengeId=' + challenge.challengId+'&&challengeTitle='+challenge.challengTitle;/*'acceptChalle />nge?challengeId=' + challenge.challengId;*/
 	};
 
 	$scope.deleteDocument = function(document) {
@@ -409,7 +464,7 @@ techpedia.controller('ChallengeDetailsController', function($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
-			if (data === 'Y') {
+			if (data.status === 'success') {
 				$scope.message = [];
 				var index = $scope.challengeDocumentList.indexOf(document);
 				$scope.challengeDocumentList.splice(index, 1);
@@ -425,8 +480,22 @@ techpedia.controller('ChallengeDetailsController', function($scope, $http) {
 		});
 	};
 
-	$scope.downloadDocument = function(document) {
-		window.location = document.docLink;
+	$scope.downloadDocumentLink= function(document) {
+		//window.location = document.docLink;
+		$http({
+			method : 'POST',
+			url : 'ajax/DownloadFileLink',
+			data : $.param({
+				documentLink : document.docLink
+			}),
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded'
+			}
+			
+		}).success(function(data, status, headers, config) {
+			window.location = 'DownloadFile';
+			
+		})
 	};
 });
 
@@ -441,7 +510,7 @@ techpedia.controller('MentorDetailsController', function($scope, $http) {
 			}
 		}).success(function(data, status, headers, config) {
 			$scope.mentor = data;
-
+console.log(data);
 			$http({
 				method : 'POST',
 				url : 'ajax/getPopularity',
@@ -474,6 +543,7 @@ techpedia.controller('TeamsController', function($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
+		
 			$scope.registerId = data;
 			if ($scope.registerId > 0) {
 				$http({
@@ -551,6 +621,7 @@ techpedia.controller('TeamDetailsController', function($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
+		
 			$scope.searchResults = data;
 		}).error(function(data, status, headers, config) {
 			$scope.message = [];
@@ -571,10 +642,10 @@ techpedia.controller('TeamDetailsController', function($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
-			// alert(data);
-			if (data === 'Y') {
+			 //alert(data);
+			if (data.status == 'success') {
 				$scope.message = [];
-				$scope.message.push("Team member added");
+				$scope.message.push("Team member added,Please refresh the page to see the new team member");
 			} else {
 				$scope.message = [];
 				$scope.message.push("Some error occured in adding team member");
@@ -600,7 +671,7 @@ techpedia.controller('TeamDetailsController', function($scope, $http) {
 				}
 			}).success(function(data, status, headers, config) {
 				// alert(data);
-				if (data === 'Y') {
+				if (data.status == 'success') {
 					$scope.message = [];
 					$scope.message.push("Team member removed");
 				} else {
@@ -653,7 +724,7 @@ techpedia.controller('ManageChallengesController', function($scope, $http) {
 	};
 
 	$scope.acceptChallenge = function(challenge) {
-		window.location = window.location = /*'acceptChallenge?challengeId=' + challenge.challengId+'&&challengeTitle='+challenge.challengTitle;*/'acceptChallenge?challengeId=' + challenge.challengId;
+		window.location = window.location =  'acceptChallenge?challengeId=' + challenge.challengId+'&&challengeTitle='+challenge.challengTitle;
 
 	};
 
@@ -675,7 +746,7 @@ techpedia.controller('ManageChallengesController', function($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
-			if (data === 'Y') {
+			if (data.status == 'success'){
 				$scope.message = [];
 				$scope.message.push("Document uploaded succesfully");
 			} else {
@@ -692,6 +763,35 @@ techpedia.controller('ManageChallengesController', function($scope, $http) {
 		$scope.chosenChallenge = challenge;
 	};
 });
+
+
+
+/*$scope.activateProfile = function() {
+	$http({
+		method : 'POST',
+		url : 'ajax/activateProfile',
+		data : $.param({
+			registerId : $scope.registerId,
+		
+		}),
+		headers : {
+			'Content-Type' : 'application/x-www-form-urlencoded'
+		}
+	}).success(function(data, status, headers, config) {
+		if (data.status == 'success'){
+			$scope.message = [];
+			$scope.message.push("Profile Activated succesfully");
+		} else {
+			$scope.message = [];
+			$scope.message.push("Failed to Activate  Profile, Please try later");
+		}
+	}).error(function(data, status, headers, config) {
+		$scope.message = [];
+		$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+	});
+};
+*/
+
 
 techpedia.controller('DashboardController', function($scope, $http) {
 	$scope.initLoad = function() {
@@ -814,10 +914,13 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
+			alert("Do you want to submit the project?");
 			$scope.message = [];
-			if (data === 'Y') {
+			if (data.status == 'success') {
+				location.reload();
 				$scope.message.push("Project submitted succesfully");
 			} else {
+				location.reload();
 				$scope.message.push("Some problem occured while submitting the project. Please try again later.");
 			}
 		}).error(function(data, status, headers, config) {
@@ -827,17 +930,19 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 	};
 
 	$scope.pitchProject = function(project) {
-		$scope.chosenProject = project;
+      $scope.chosenProject = project;
 		$http({
-			method : 'POST',
+		   method : 'POST',
 			url : 'ajax/pitchProjectSearch',
 			data : $.param({
-				projectId : project.projId
+				projectId : project.projId,
+				registerId: $scope.registerId
 			}),
 			headers : {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
+			
 			$scope.suggestedMentors = data;
 		}).error(function(data, status, headers, config) {
 			$scope.message = [];
@@ -863,7 +968,7 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 				$scope.message.push("Mentor added");
 			} else {
 				$scope.message = [];
-				$scope.message.push("Failed to add mentor");
+				$scope.message.push("More than two mentor can not be added for a single project");
 			}
 		}).error(function(data, status, headers, config) {
 			$scope.message = [];
@@ -876,10 +981,17 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 	};
 
 	$scope.currentProject = function(project) {
+		
 		$scope.chosenProject = project;
 	};
+	$scope.datarefresh = function(){
+		$scope.message = "";
+		
+		location.reload();
+	}
 
 	$scope.uploadProjectDocument = function() {
+		$scope.message = "";
 		$http({
 			method : 'POST',
 			url : 'ajax/uploadProjectDocument',
@@ -892,6 +1004,7 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 			headers : {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
+		
 		}).success(function(data, status, headers, config) {
 			if (data.status == 'success') {
 				$scope.message = [];
@@ -904,6 +1017,7 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 			$scope.message = [];
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
+		
 	};
 
 	$scope.deleteProject = function(project) {
@@ -939,7 +1053,7 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 	};
 
 	$scope.initiateProject = function(state) {
-		// alert($scope.registerId + $scope.chosenProject.projId + " " + state);
+	
 		$http({
 			method : 'POST',
 			url : 'ajax/facultyInitiateProject',
@@ -953,11 +1067,12 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 			}
 		}).success(function(data, status, headers, config) {
 			$scope.message = [];
-			console.log(data);
-			if (data.status == 'success') {
-				if (state === 'Y') {
-					$scope.message.push("Project initiated succesfully");
-				} else {
+			//console.log(data);
+			if (data.status ==='success') {
+				
+				if (state === 'Y') {location.reload();
+					$scope.message.push("Project initiated succesfully.");
+				} else {location.reload();
 					$scope.message.push("Project initiation rejected by you");
 				}
 			} else {
@@ -985,9 +1100,9 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 		}).success(function(data, status, headers, config) {
 			$scope.message = [];
 			if (data.status == 'success') {
-				if (state === 'Y') {
+				if (state === 'Y') {location.reload();
 					$scope.message.push("Project closed succesfully");
-				} else {
+				} else {location.reload();
 					$scope.message.push("Closing of project rejected by you");
 				}
 			} else {
@@ -1001,7 +1116,97 @@ techpedia.controller('ManageProjectsController', function($scope, $http) {
 });
 
 function ProjectDetail($scope, $http) {
+	$scope.count = 0;
+	$scope.downloadDocumentLink= function(document) {
+		//window.location = document.docLink;
+		$http({
+			method : 'POST',
+			url : 'ajax/DownloadFileLink',
+			data : $.param({
+				documentLink : document.docLink
+			}),
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded'
+			}
+			
+		}).success(function(data, status, headers, config) {
+			window.location = 'DownloadFile';
+			
+		})
+	};
+/*	$scope.downloadDocument = function(document) {
+		$http({
+			data : $.param({
+				documentLink : document.docLink
+			}),
+			
+		})
+		window.location = 'DownloadFile';
+		
+	};*/
+	$http({
+		method : 'POST',
+		url : 'getId',
+		data : $.param({}),
+		headers : {
+			'Content-Type' : 'application/x-www-form-urlencoded'
+		}
+	}).success(function(data, status, headers, config) {
+		$scope.registerId = data;
+		})
 	$scope.InitLoad = function() {
+		$http({
+			method : 'POST',
+			url : 'projectDetailsLoad',
+			data : $.param({}),
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded'
+			}
+		}).success(function(data, status, headers, config) {
+			$scope.projectdetails = data;
+			
+			$http({
+				method : 'POST',
+				url : 'ajax/teamDetailsLoadfordownload',
+				data : $.param({
+					
+					teamId :data.projTeamId
+				}),
+				headers : {
+					'Content-Type' : 'application/x-www-form-urlencoded'
+				}
+			}).success(function(data, status, headers, config) {
+				$scope.members = data;
+				 for (var i=0;i<=data.length;i++) {
+				
+				        if ( data[i].teamMemRegstrId == $scope.registerId) {
+				        	 $scope.teamMember= true;
+				        }}
+			}).error(function(data, status, headers, config) {
+				$scope.message = [];
+				$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+			});
+		
+			
+			/*var dataArray = [];
+			for (var i = 0; i < data.projTeamMemberList.length; i++) {
+				var projTeamMemberListid = data.projKeywords[i];
+				 if ( data.projKeywords[i].teamID ==$scope.edit.projTeamId) {
+			        	$scope.edit.projTeamDesc=data[i].teamName;
+			        }
+				var json = {};
+				json.id = keyword;
+				json.text = keyword;
+				dataArray.push(json);
+			}
+			console.log(JSON.stringify(dataArray));
+			$("#projectKeywords").select2("data", dataArray);
+			*/
+			
+		}).error(function(data, status, headers, config) {
+			$scope.message = [];
+			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+		});
 		$http({
 			method : 'POST',
 			url : 'projectId',
@@ -1018,7 +1223,7 @@ function ProjectDetail($scope, $http) {
 				url : 'ajax/getTeamComments',
 				data : $.param({
 					projectId : $scope.projectId,
-					set : 0,
+					set : 0
 				}),
 				headers : {
 					'Content-Type' : 'application/x-www-form-urlencoded'
@@ -1040,7 +1245,11 @@ function ProjectDetail($scope, $http) {
 					'Content-Type' : 'application/x-www-form-urlencoded'
 				}
 			}).success(function(data, status, headers, config) {
-				$scope.projectMentorList = data;
+				
+					$scope.projectMentorList = data;
+				
+		
+				
 			}).error(function(data, status, headers, config) {
 				$scope.message = [];
 				$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
@@ -1051,7 +1260,7 @@ function ProjectDetail($scope, $http) {
 				url : 'ajax/getPublicComments',
 				data : $.param({
 					projectId : $scope.projectId,
-					set : 0,
+					set : 0
 				}),
 				headers : {
 					'Content-Type' : 'application/x-www-form-urlencoded'
@@ -1087,7 +1296,8 @@ function ProjectDetail($scope, $http) {
 					}
 				}).success(function(data, status, headers, config) {
 					$scope.projectDocumentList = data;
-				}).error(function(data, status, headers, config) {
+				
+                   }).error(function(data, status, headers, config) {
 					$scope.message = [];
 					$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 				});
@@ -1105,10 +1315,10 @@ function ProjectDetail($scope, $http) {
 					}
 				}).success(function(data, status, headers, config) {
 					$scope.message = [];
-					if (data === 'N')
-						$scope.doesFollow = false;
-					else
+					if (data.status == 'success')
 						$scope.doesFollow = true;
+					else
+						$scope.doesFollow = false;
 
 				}).error(function(data, status, headers, config) {
 					$scope.message = [];
@@ -1124,8 +1334,67 @@ function ProjectDetail($scope, $http) {
 		});
 
 	};
+	$scope.viewMorePublicComments = function(comment,setNumber) {
+		
+		$scope.messagepubliccomments = [];
+		$http({
+			method : 'POST',
+			url : 'ajax/getPublicComments',
+			data : $.param({
+				projectId : $scope.projectId,
+				set : setNumber+1
+			}),
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded'
+			}
+		}).success(function(data, status, headers, config) {
+//			alert(data.length)
+			if(data.length>0){
+				
+			$scope.publicComments = $scope.publicComments.concat(data);
+			
+			}else{
+				$scope.messagepubliccomments.push("No more comments found");	
+				$('#publiccomments').hide();
+				
+			}
+		}).error(function(data, status, headers, config) {
+			$scope.messagepubliccomments.push("Possibly the service is down, Please contact the admin if problem persists.");
+		});
+	
+
+};
+$scope.viewMoreTeamComments = function(comment,setNumber) {
+
+	$scope.messageteamcomments = [];
+	$http({
+		method : 'POST',
+		url : 'ajax/getTeamComments',
+		data : $.param({
+			projectId : $scope.projectId,
+			set : setNumber+1
+		}),
+		headers : {
+			'Content-Type' : 'application/x-www-form-urlencoded'
+		}
+	}).success(function(data, status, headers, config) {
+		if(data.length>0){
+		$scope.teamComments = $scope.teamComments.concat(data);
+		
+		}else{
+			$scope.messageteamcomments.push("No more comments found");	
+			$('#teamcomments').hide();
+			
+		}
+	}).error(function(data, status, headers, config) {
+		$scope.messageteamcomments.push("Possibly the service is down, Please contact the admin if problem persists.");
+	});
+
+
+};
 
 	$scope.deleteMentor = function(mentor) {
+		if(confirm("Are you sure ?")){
 		$http({
 			method : 'POST',
 			url : 'ajax/deleteMentorFromProject',
@@ -1137,21 +1406,23 @@ function ProjectDetail($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
+			
 			if (data.status == 'success') {
 
 				var index = $scope.projectMentorList.indexOf(mentor);
 				$scope.projectMentorList.splice(index, 1);
 
-				$scope.message = [];
-				$scope.message.push("Mentor deleted");
+				$scope.mentordeletemessage = [];
+				$scope.mentordeletemessage.push("Mentor deleted");
 			} else {
-				$scope.message = [];
-				$scope.message.push("Failed to delete mentor");
+				$scope.mentordeletemessage = [];
+				$scope.mentordeletemessage.push("Failed to delete mentor");
 			}
 		}).error(function(data, status, headers, config) {
-			$scope.message = [];
-			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+			$scope.mentordeletemessage = [];
+			$scope.mentordeletemessage.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
+		}
 	};
 
 	$scope.follow = function() {
@@ -1167,7 +1438,7 @@ function ProjectDetail($scope, $http) {
 			}
 		}).success(function(data, status, headers, config) {
 			$scope.message = [];
-			if (data === 'N')
+			if (data.status == 'failure')
 				$scope.doesFollow = false;
 			else
 				$scope.doesFollow = true;
@@ -1191,43 +1462,112 @@ function ProjectDetail($scope, $http) {
 			}
 		}).success(function(data, status, headers, config) {
 			$scope.message = [];
-			if (data === 'N')
-				$scope.doesFollow = false;
-			else
+			if (data.status == 'failure')
 				$scope.doesFollow = true;
+			else
+				$scope.doesFollow = false;
 
 		}).error(function(data, status, headers, config) {
 			$scope.message = [];
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
 	};
-
-	$scope.postComment = function(comment) {
+	$scope.postpublicComment = function(comment,regid) {
+		location.reload();
 		$http({
 			method : 'POST',
 			url : 'ajax/postComment',
 			data : $.param({
 				projectId : $scope.projectId,
-				registerId : $scope.registerId,
+				registerId :regid,
+//				registerId : regid,
 				comment : $scope.teamComment
+				
 			}),
+			
 			headers : {
 				'Content-Type' : 'application/x-www-form-urlencoded'
+					
 			}
+	
 		}).success(function(data, status, headers, config) {
+			alert(registerId);
 			$scope.message = [];
 			if (data === 'N')
 				$scope.message.push("Some error occured while posting the comment");
 			else {
 				$scope.InitLoad();
 			}
-
+			 $scope.teamComment = '';
 		}).error(function(data, status, headers, config) {
 			$scope.message = [];
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
 	};
-
+	$scope.postComment = function(comment) {
+	
+		
+		$http({
+			method : 'POST',
+			url : 'ajax/postComment',
+			data : $.param({
+				projectId : $scope.projectId,
+				registerId : $scope.registerId,
+//				registerId : regid,
+				comment : $scope.teamComment
+				
+			}),
+			
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded'
+					
+			}
+	
+		}).success(function(data, status, headers, config) {
+			
+			$scope.message = [];
+			if (data === 'N')
+				$scope.message.push("Some error occured while posting the comment");
+			else {
+				$scope.InitLoad();
+			}
+			 $scope.teamComment = '';
+		}).error(function(data, status, headers, config) {
+			$scope.message = [];
+			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+		});
+	};
+	$scope.deletePublicComment = function(comment, type) {
+		var id=-1;
+		if (confirm("Are you sure ?")) {
+			$http({
+				method : 'POST',
+				url : 'ajax/deleteComment',
+				data : $.param({
+					projectId : $scope.projectId,
+					commentId : comment.commentId,
+					registerId : id,
+				}),
+				headers : {
+					'Content-Type' : 'application/x-www-form-urlencoded'
+				}
+			}).success(function(data, status, headers, config) {
+				$scope.message = [];
+				if (data.status == 'failure'){
+					alert('Failed to delete comment');}
+				
+					
+						var index = $scope.publicComments.indexOf(comment);
+					
+						$scope.publicComments.splice(index, 1);
+					
+				
+			}).error(function(data, status, headers, config) {
+				$scope.message = [];
+				$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+			});
+		}
+	};
 	$scope.deleteComment = function(comment, type) {
 		if (confirm("Are you sure ?")) {
 			$http({
@@ -1247,10 +1587,10 @@ function ProjectDetail($scope, $http) {
 					alert('Failed to delete comment');
 				else {
 					if (type === 'public') {
-						var index = $scope.publicComment.indexOf(comment.projComment);
-						$scope.teamComments.splice(index, 1);
+						var index = $scope.publicComments.indexOf(comment);
+						$scope.publicComments.splice(index, 1);
 					} else {
-						var index = $scope.teamComment.indexOf(comment.projComment);
+						var index = $scope.teamComments.indexOf(comment);
 						console.log(comment.projComment);
 						console.log($scope.teamComment);
 						$scope.teamComments.splice(index, 1);
@@ -1276,25 +1616,26 @@ function ProjectDetail($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
-			if (data === 'Y') {
-				$scope.message = [];
+			if (data.status == 'success') {
+				$scope.deletedocmessage = [];
+				$scope.deletedocmessage.push("Document deleted Successfully");
 				var index = $scope.challengeDocumentList.indexOf(document);
 				$scope.challengeDocumentList.splice(index, 1);
-				$scope.message.push("Document deleted");
+				$scope.deletedocmessage.push("Document deleted Successfully");
+				
 
 			} else {
-				$scope.message = [];
-				$scope.message.push("Failed to delete document");
+				$scope.deletedocmessage = [];
+				$scope.deletedocmessage.push("Failed to delete document");
 			}
 		}).error(function(data, status, headers, config) {
-			$scope.message = [];
-			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+			$scope.deletedocmessage = [];
+			$scope.deletedocmessage.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
 	};
 
-	$scope.downloadDocument = function(document) {
-		window.location = document.docLink;
-	};
+	
+
 };
 
 techpedia.controller('AddProjectController', function($scope, $http) {
@@ -1327,7 +1668,7 @@ techpedia.controller('AddProjectController', function($scope, $http) {
 				$scope.addProject.studentID = data.studentID;
 				$scope.addProject.collge = data.collge;
 				$scope.addProject.state = data.state;
-				
+				$scope.message = [];
 			}).error(function(data, status, headers, config) {
 				
 				$scope.message = [];
@@ -1344,7 +1685,7 @@ techpedia.controller('ChangePhotoController', function($scope, $http) {
 	$scope.InitLoad = function() {
 		$scope.canSaveImage = false;
 	};
-
+var img=$scope.photo;
 	$scope.$watch('file', function() {
 		$scope.editProfile = {};
 		$scope.msg = {};
@@ -1353,15 +1694,19 @@ techpedia.controller('ChangePhotoController', function($scope, $http) {
 		$scope.editProfile.photoSize = Math.round(($scope.editProfile.photo.length - head.length) * 3 / 4) / 1000;
 		if ($scope.editProfile.photoSize > 10) {
 			$scope.msg.size = "File size should not me bore than 10 KB";
-		} else {
-			$scope.msg.size = "";
-		}
-		if ($scope.editProfile.photo.indexOf("undefined") > -1) {
-			$scope.editProfile.photo = "images/UserDefault.jpg";
 			$scope.canSaveImage = false;
 		} else {
-			$scope.canSaveImage = true;
+			$scope.msg.size = "";
+			if ($scope.editProfile.photo.indexOf("undefined") > -1) {
+				$scope.editProfile.photo = img;
+				
+				$scope.canSaveImage = false;
+			} else {
+				
+				$scope.canSaveImage = true;
+			}
 		}
+			
 	}, true);
 
 	$scope.saveImage = function() {
@@ -1404,9 +1749,72 @@ techpedia.controller('ChangePhotoController', function($scope, $http) {
 	};
 });
 
+
+
+
+
+techpedia.controller('ChangePhotoFacController', function($scope, $http) {
+	$scope.InitLoad = function() {
+		$scope.canSaveImage = false;
+	};
+var img=$scope.photo;
+	$scope.$watch('file', function() {
+		$scope.editProfile = {};
+		$scope.msg = {};
+		var head = "data:" + $scope.file.filetype + ";base64,";
+		$scope.editProfile.photo = head + $scope.file.base64;
+		$scope.editProfile.photoSize = Math.round(($scope.editProfile.photo.length - head.length) * 3 / 4) / 1000;
+		if ($scope.editProfile.photoSize > 10) {
+			$scope.msg.size = "File size should not me bore than 10 KB";
+			$scope.canSaveImage = false;
+		} else {
+			$scope.msg.size = "";
+			if ($scope.editProfile.photo.indexOf("undefined") > -1) {
+				$scope.editProfile.photo = img;
+				
+				$scope.canSaveImage = false;
+			} else {
+				
+				$scope.canSaveImage = true;
+			}
+		}
+			
+	}, true);
+
+	$scope.saveFacImage = function() {
+		$http({
+			method : 'POST',
+			url : 'ajax/changeFacImage',
+			data : $.param({
+				
+				photoByteArray : "data:" + $scope.file.filetype + ";base64," + $scope.file.base64
+			}),
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded'
+			}
+		}).success(function(data, status, headers, config) {
+			if (data === 'Y') {
+				$scope.message = [];
+				$scope.message.push("Photo uploaded succesfully");
+			} else {
+				$scope.message = [];
+				$scope.message.push(data);
+			}
+		}).error(function(data, status, headers, config) {
+			$scope.message = [];
+			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+		});
+	
+	};
+});
+
+
+
 techpedia.controller('EditProfileController', function($scope, $http) {
+
 	$scope.initialEditProfileData = function() {
 		$scope.message = [];
+		
 		$http({
 			method : 'POST',
 			url : 'editProfileLoad',
@@ -1415,13 +1823,33 @@ techpedia.controller('EditProfileController', function($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
+			$scope.message = [];
 			$scope.edit = data;
 			$scope.edit.photo = '';
 		}).error(function(data, status, headers, config) {
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
+		$scope.$watch('file1', function() {
+			$scope.edit.logo = "data:" + $scope.file1.filetype + ";base64," + $scope.file1.base64;
+		}, true);
+		
+		
+		var dataArray = [];
+		for (var i = 0; i < data.collge.length; i++) {
+			//var id = data.projBranchList[i].branchId;
+			var text = data.projBranchList[0];
+			alert( "hai " + text);
+			var json = {};
+			//json.id = id;
+			json.text = text;
+			dataArray.push(json);
 
-		$scope.data = [ {
+		}
+
+		
+		console.log(JSON.stringify(dataArray));
+		$("#CollegeNames").select2("data", dataArray);
+		/*$scope.data = [ {
 			"branchId" : 1,
 			"projBranchDesc" : "Chemical Engineering"
 		}, {
@@ -1436,7 +1864,7 @@ techpedia.controller('EditProfileController', function($scope, $http) {
 		},{
 			"branchId" : 5,
 			"projBranchDesc" : "Computer Science"
-		} ];
+		} ];*/
 	};
 
 	$scope.search = function() {
@@ -1452,8 +1880,170 @@ techpedia.controller('EditProfileController', function($scope, $http) {
 			// or server returns response with an error status.
 		});
 	};
+	
+	$scope.deleteCollege = function(){
+		$scope.edit.collge = "";
+		$('#CollegeNames').select2('data',null);
+		$('#s2id_CollegeNames').show();
+	};
+	$scope.showCollege = function(){
+		try{
+			if($scope.edit.collge === ''){
+				$('#s2id_CollegeNames').show();
+			}else{
+				$('#s2id_CollegeNames').hide();
+			}
+			return $scope.edit.collge === '';
+		}catch(e){}
+	};
 
+	
+	
+	$scope.deleteUniversity = function(){
+		$scope.edit.university = "";
+		$('#university').select2('data',null);
+		$('#s2id_University').show();
+	};
+	$scope.showUniversity = function(){
+		try{
+			if($scope.edit.university === ''){
+				$('#s2id_university').show();
+			}else{
+				$('#s2id_university').hide();
+			}
+			return $scope.edit.university === '';
+		}catch(e){}
+	};
+	
+	
+	
+	
+	
+	$scope.deleteBranches = function(){
+		$scope.edit.branchIdOfStudent2 = "";
+		$('#branchIdOfStudent2').select2('data',null);
+		$('#s2id_branchIdOfStudent2').show();
+	};
+	$scope.showBranches = function(){
+		try{
+			if($scope.edit.branchIdOfStudent2 === ''){
+				$('#s2id_branchIdOfStudent2').show();
+			}else{
+				$('#s2id_branchIdOfStudent2').hide();
+			}
+			return $scope.edit.branchIdOfStudent2 === '';
+		}catch(e){}
+	};
+	
+	
+	
+	
+	
+	$scope.deleteCollgeOfFaculty = function(){
+		$scope.edit.collgeOfFaculty = "";
+		$('#collgeOfFaculty').select2('data',null);
+		$('#s2id_collgeOfFaculty').show();
+	};
+	$scope.showCollgeOfFaculty = function(){
+		try{
+			if($scope.edit.collgeOfFaculty === ''){
+				$('#s2id_collgeOfFaculty').show();
+			}else{
+				$('#s2id_collgeOfFaculty').hide();
+			}
+			return $scope.edit.collgeOfFaculty === '';
+		}catch(e){}
+	};
+	
+	
+	
+	$scope.deleteSpecializationOfFaculty = function(){
+		$scope.edit.specializationOfFaculty2 = "";
+		$('#specializationOfFaculty2').select2('data',null);
+		$('#s2id_specializationOfFaculty2').show();
+	};
+	$scope.showSpecializationOfFaculty = function(){
+		try{
+			if($scope.edit.specializationOfFaculty2 === ''){
+				$('#s2id_specializationOfFaculty2').show();
+			}else{
+				$('#s2id_specializationOfFaculty2').hide();
+			}
+			return $scope.edit.specializationOfFaculty2 === '';
+		}catch(e){}
+	};
+	
+	
+	
+	
+	$scope.deleteUniversityOfFaculty = function(){
+		$scope.edit.universityOfFaculty = "";
+		$('#universityOfFaculty').select2('data',null);
+		$('#s2id_universityOfFaculty').show();
+	};
+	$scope.showUniversityOfFaculty = function(){
+		try{
+			if($scope.edit.universityOfFaculty === ''){
+				$('#s2id_universityOfFaculty').show();
+			}else{
+				$('#s2id_universityOfFaculty').hide();
+			}
+			return $scope.edit.universityOfFaculty === '';
+		}catch(e){}
+	};
+	
+	
+	
+	$scope.deleteBranchIdOfMentor2 = function(){
+		$scope.edit.branchIdOfMentor2 = "";
+		$('#branchIdOfMentor2').select2('data',null);
+		$('#s2id_branchIdOfMentor2').show();
+	};
+	$scope.showBranchIdOfMentor2 = function(){
+		try{
+			if($scope.edit.branchIdOfMentor2 === ''){
+				$('#s2id_branchIdOfMentor2').show();
+			}else{
+				$('#s2id_branchIdOfMentor2').hide();
+			}
+			return $scope.edit.branchIdOfMentor2 === '';
+		}catch(e){}
+	};
+	
+	
+
+	//for university 	 	
+			$scope.search1 = function() { 	 	
+				 alert($scope.form.searchUName); 	 	
+			$http({ 	 	
+				method : 'GET', 	 	
+					data : $.param({}), 	 	
+					url : 'getUniversityList?uName=' + $scope.searchUName 	 	
+			}).success(function(data, status, headers, config) { 	 	
+				$scope.data = data; 	 	
+				}).error(function(data, status, headers, config) { 	 	
+					// called asynchronously if an error occurs 	 	
+					// or server returns response with an error status. 	 	
+				}); 	 	
+			};
+	//--------------------------------------------------------------------------------
+	
 	$scope.editProfile = function() {
+//		$scope.message = "";
+		 var cval=$('#captchavalue span').text();
+		   if (($('#captcha').val()== "") ||($('#captcha').val() != parseInt(cval))){
+
+			  // alert(cval);   
+
+	         error = true;
+
+	         errorString = 'Captcha failed';
+	         $('getnewcaptcha').show();
+	 
+
+	  }
+		   else{
+			   
 		$http({
 			method : 'POST',
 			url : 'editProfileRequest',
@@ -1463,13 +2053,16 @@ techpedia.controller('EditProfileController', function($scope, $http) {
 			}
 		}).success(function(data, status, headers, config) {
 			if (data === 'success') {
+				$scope.message = [];
 				$scope.message.push("Profile edited");
+			
 			} else {
 				$scope.message.push(data);
 			}
 		}).error(function(data, status, headers, config) {
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
+		   }
 	};
 });
 
@@ -1498,35 +2091,102 @@ techpedia.controller('ChangePasswordController', function($scope, $http) {
 	};
 });
 
+
+
+techpedia.controller('SetPasswordFacultyController', function($scope, $http) {
+	$scope.data = {};
+	$scope.setPasswordFac = function() {
+		
+		$http({
+			method : 'POST',
+			url : 'setPasswordFac',
+			data : $.param($scope.data),
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded'
+			}
+		}).success(function(data, status, headers, config) {
+			if (data === 'success') {
+				$scope.message = [];
+				$scope.message.push("Password Created succesfully");
+			} else {
+				$scope.message = [];
+				$scope.message.push(data);
+			}
+		}).error(function(data, status, headers, config) {
+			$scope.message = [];
+			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+		});
+	};
+});
+
+
+
+
+
 techpedia.controller('RegisterController', function($scope, $http) {
 	$scope.message = [];
 	$scope.register = {};
-	$scope.register.userType = "student";
+	
+
+	
 	$scope.typeOfUser = function(data) {
 		$scope.register.userType = data;
 	};
 	
 	$scope.$watch('file', function() {
-		$scope.editProfile = {};
-		$scope.msg = {};
-		var head = "data:" + $scope.file.filetype + ";base64,";
-		$scope.editProfile.photo = head + $scope.file.base64;
-		$scope.editProfile.photoSize = Math.round(($scope.editProfile.photo.length - head.length) * 3 / 4) / 1000;
-		if ($scope.editProfile.photoSize > 10) {
-			$scope.msg.size = "File size should not me bore than 10 KB";
-		} else {
-			$scope.msg.size = "";
-		}
-		if ($scope.editProfile.photo.indexOf("undefined") > -1) {
-			$scope.editProfile.photo = "images/UserDefault.jpg";
-			$scope.canSaveImage = false;
-		} else {
-			$scope.canSaveImage = true;
-		}
+		$scope.register.photo = "data:" + $scope.file.filetype + ";base64," + $scope.file.base64;
 	}, true);
-
+	$scope.$watch('file1', function() {
+		$scope.register.logo = "data:" + $scope.file1.filetype + ";base64," + $scope.file1.base64;
+	}, true);
 	$scope.InitLoad = function() {
-		$scope.data = [ {
+
+		
+		var url= window.location.href;
+		
+		var userTypes = ''
+			
+			if(url.toLowerCase().indexOf('student') > -1)
+				{
+				
+				userTypes = 'student';
+				jQuery('#facultyBtn').removeClass('btn-info');
+				jQuery('#collegeBtn').removeClass('btn-info');
+				jQuery('#mentorBtn').removeClass('btn-info');
+				jQuery('#studentBtn').addClass('btn-info');
+				}
+			else if(url.toLowerCase().indexOf('mentor') > -1)
+				{				
+				userTypes = 'mentor';
+				jQuery('#studentBtn').removeClass('btn-info');
+				jQuery('#collegeBtn').removeClass('btn-info');
+				jQuery('#facultyBtn').removeClass('btn-info');
+				jQuery('#mentorBtn').addClass('btn-info');
+				}
+			else if(url.toLowerCase().indexOf('college') > -1)
+				{
+				userTypes = 'college';
+				jQuery('#facultyBtn').removeClass('btn-info');
+				jQuery('#studentBtn').removeClass('btn-info');
+				jQuery('#mentorBtn').removeClass('btn-info');
+				jQuery('#collegeBtn').addClass('btn-info');
+				}
+			else if(url.toLowerCase().indexOf('faculty') > -1)
+				{
+				userTypes = 'faculty';
+				jQuery('#studentBtn').removeClass('btn-info');
+				jQuery('#collegeBtn').removeClass('btn-info');
+				jQuery('#mentorBtn').removeClass('btn-info');
+				jQuery('#facultyBtn').addClass('btn-info');
+				}
+		
+		$scope.typeOfUser(userTypes);
+		
+		$scope.register.userType = userTypes;
+		
+	
+
+/*		$scope.data = [ {
 			"branchId" : 1,
 			"projBranchDesc" : "Chemical Engineering"
 		}, {
@@ -1542,7 +2202,7 @@ techpedia.controller('RegisterController', function($scope, $http) {
 		 {
 			"branchId" : 5,
 			"projBranchDesc" : "Computer Science"
-		}];
+		}];*/
 	};
 
 	$scope.search = function() {
@@ -1560,6 +2220,21 @@ techpedia.controller('RegisterController', function($scope, $http) {
 	};
 	
 	$scope.registerSubmit = function() {
+		
+		 var cval=$('#captchavalue span').text();
+		   if (($('#captcha').val()== "") ||($('#captcha').val() != parseInt(cval))){
+
+			  // alert(cval);   
+
+               error = true;
+
+               errorString = 'Captcha failed';
+               $('getnewcaptcha').show();
+       
+
+        }
+		   else{
+		$scope.message = "";
 		$http({
 			method : 'POST',
 			url : 'registerRequest',
@@ -1579,6 +2254,7 @@ techpedia.controller('RegisterController', function($scope, $http) {
 			$scope.message = [];
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
+		   }
 	};
 	
 });
@@ -1586,7 +2262,7 @@ techpedia.controller('RegisterController', function($scope, $http) {
 techpedia.controller('AddChallengeController', function($scope, $http) {
 	$scope.data = {};
 
-	$scope.InitChallengeLoad = function() {
+	/*$scope.InitChallengeLoad = function() {
 		$scope.data = [ {
 			"challengTypeId" : 10,
 			"challengTypeDesc" : "Academic"
@@ -1597,7 +2273,7 @@ techpedia.controller('AddChallengeController', function($scope, $http) {
 			"challengTypeId" : 30,
 			"challengTypeDesc" : "Innovation"
 		}];
-	};
+	};*/
 
 	$scope.searchChallengeType = function() {
 	//	alert($scope.form.searchTerm);
@@ -1641,6 +2317,7 @@ techpedia.controller('AddChallengeController', function($scope, $http) {
 
 techpedia.controller('ProjectsPageController', function($scope, $http) {
 	$scope.initialProjectsData = function() {
+		$('#img').hide();
 		$scope.isSearchResult = false;
 		$scope.count = 1;
 		$scope.message = [];
@@ -1660,25 +2337,40 @@ techpedia.controller('ProjectsPageController', function($scope, $http) {
 		});
 	};
 
-	$scope.viewMore = function(setNumber) {
-		if ($scope.isSearchResult) {
+	$scope.viewMore = function(setNumber,keyword) {	
+		$('#showMoreBtn').hide();
+		$('#img').show();
+		if (keyword) {
+			/*alert("in if");*/
 			$scope.message = [];
 			$http({
 				method : 'POST',
 				url : 'ajax/searchProjectByKeyword',
 				data : $.param({
-					term : $scope.searchTerm,
-					set : setNumber
+					term : keyword,
+					set : setNumber+1
 				}),
 				headers : {
 					'Content-Type' : 'application/x-www-form-urlencoded'
 				}
 			}).success(function(data, status, headers, config) {
-				$scope.projects = $scope.projects.concat(data);
+				$('#img').hide();
+				$('#showMoreBtn').show();
+				if(data.length>0)
+				{
+					$scope.projects = $scope.projects.concat(data);
+				}
+				
+			
+		else{
+			$scope.message.push("No more Project found with this title");	
+			$('#showMoreBtn').hide(); 
+			}
 			}).error(function(data, status, headers, config) {
 				$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 			});
 		} else {
+			/*alert("in else");*/
 			$scope.message = [];
 			$http({
 				method : 'POST',
@@ -1690,8 +2382,20 @@ techpedia.controller('ProjectsPageController', function($scope, $http) {
 					'Content-Type' : 'application/x-www-form-urlencoded'
 				}
 			}).success(function(data, status, headers, config) {
-				$scope.projects = $scope.projects.concat(data);
+				
+				$('#img').hide();
+				$('#showMoreBtn').show();
+				/*alert(data.length);*/
+				if(data.length<=8){
+					$scope.projects = $scope.projects.concat(data);	
+				}else if(data.length === 3862 || data.length >8){
+					$scope.message.push("No more Projects found");
+					$('#showMoreBtn').hide(); 
+				}
+			
+			
 			}).error(function(data, status, headers, config) {
+				
 				$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 			});
 		}
@@ -1703,13 +2407,17 @@ techpedia.controller('ProjectsPageController', function($scope, $http) {
 	};
 
 	$scope.searchProjects = function(term, type) {
+		$scope.message = "";
+		$("#search").click(function() {
+			 $("#hide").hide();
+			});
 		if (type == 'keyword') {
 			$http({
 				method : 'POST',
 				url : 'ajax/searchProjectByKeyword',
 				data : $.param({
 					term : term,
-					set : 0
+					set : 1
 				}),
 				headers : {
 					'Content-Type' : 'application/x-www-form-urlencoded'
@@ -1718,6 +2426,12 @@ techpedia.controller('ProjectsPageController', function($scope, $http) {
 				$scope.projects = data;
 				$scope.isSearchResult = true;
 				$scope.count = 0;
+				if(data.length <= 7){
+					$("#showMoreBtn").hide();
+
+				}else{
+					$("#showMoreBtn").show();
+				} 
 			}).error(function(data, status, headers, config) {
 				$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 			});
@@ -1729,7 +2443,8 @@ techpedia.controller('ProjectsPageController', function($scope, $http) {
 
 techpedia.controller('MentorsPageController', function($scope, $http) {
 	$scope.initialMentorsData = function() {
-		$scope.count = 1;
+		$('#img').hide();
+        $scope.count = 1;
 		$scope.message = [];
 		$http({
 			method : 'POST',
@@ -1741,13 +2456,15 @@ techpedia.controller('MentorsPageController', function($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
-			$scope.mentors = data;
+  $scope.mentors = data;
 		}).error(function(data, status, headers, config) {
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
 	};
 
 	$scope.viewMore = function(setNumber) {
+		$('#showMoreBtn').hide();
+		$('#img').show();
 		$scope.message = [];
 		$http({
 			method : 'POST',
@@ -1759,7 +2476,15 @@ techpedia.controller('MentorsPageController', function($scope, $http) {
 				'Content-Type' : 'application/x-www-form-urlencoded'
 			}
 		}).success(function(data, status, headers, config) {
+			$('#showMoreBtn').show();
+			$('#img').hide();
+			
+			if(data.length <=8){
 			$scope.mentors = $scope.mentors.concat(data);
+			}else if(data.length=== 3961 ||data.length >8){
+				$scope.message.push("No more mentor records found");
+				$('#showMoreBtn').hide();
+			}
 		}).error(function(data, status, headers, config) {
 			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 		});
@@ -1772,6 +2497,7 @@ techpedia.controller('MentorsPageController', function($scope, $http) {
 
 techpedia.controller('ChallengesPageController', function($scope, $http) {
 	$scope.initialChallengesData = function() {
+		$('#img').hide();
 		$scope.isSearchResult = false;
 		$scope.count = 1;
 		$scope.message = [];
@@ -1792,9 +2518,38 @@ techpedia.controller('ChallengesPageController', function($scope, $http) {
 		});
 	};
 
-	$scope.viewMore = function(setNumber) {
-		if ($scope.isSearchResult) {
-			;
+	$scope.viewMore = function(setNumber,searchTerm) {
+		$('#showMoreBtn').hide();
+		$('#img').show();
+		if (searchTerm ) {
+			$scope.message = [];
+				$http({
+				method : 'POST',
+				url : 'ajax/searchChallengeByTitle',
+				data : $.param({
+					term : searchTerm,
+					set : setNumber+1
+				}),
+				headers : {
+					'Content-Type' : 'application/x-www-form-urlencoded'
+				}
+			}).success(function(data, status, headers, config) {
+				$('#showMoreBtn').show();
+				$('#img').hide();
+				if(data.length>0)
+					{
+					$scope.challenges = $scope.challenges.concat(data);
+					}
+					
+				
+			else{
+				$scope.message.push("No more challenge records found with this title");	
+				$('#showMoreBtn').hide();
+			}
+			
+			}).error(function(data, status, headers, config) {
+				$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+			});
 		} else {
 			$scope.message = [];
 			$http({
@@ -1807,9 +2562,20 @@ techpedia.controller('ChallengesPageController', function($scope, $http) {
 					'Content-Type' : 'application/x-www-form-urlencoded'
 				}
 			}).success(function(data, status, headers, config) {
+				$('#showMoreBtn').show();
+				$('#img').hide();
+				
+				if(data.length>0){
 				$scope.challenges = $scope.challenges.concat(data);
+				}else{
+					$("#showMoreBtn").hide();
+					$scope.message.push("No more challenge records found");	
+					$('#showMoreBtn').hide();
+			
+				}
 			}).error(function(data, status, headers, config) {
 				$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+				
 			});
 		}
 	};
@@ -1818,13 +2584,17 @@ techpedia.controller('ChallengesPageController', function($scope, $http) {
 	};
 
 	$scope.searchChallenge = function(term, type) {
+		$scope.message = ""; 
+		
+		
 		if (type == 'title') {
+			
 			$http({
 				method : 'POST',
 				url : 'ajax/searchChallengeByTitle',
 				data : $.param({
 					term : term,
-					set : 0
+					set : 1
 				}),
 				headers : {
 					'Content-Type' : 'application/x-www-form-urlencoded'
@@ -1833,6 +2603,13 @@ techpedia.controller('ChallengesPageController', function($scope, $http) {
 				$scope.challenges = data;
 				$scope.isSearchResult = true;
 				$scope.count = 0;
+				if(data.length <= 7){
+					$("#showMoreBtn").hide();
+					
+				}else{
+					$("#showMoreBtn").show();
+				}
+				
 			}).error(function(data, status, headers, config) {
 				$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
 			});
@@ -1875,3 +2652,286 @@ techpedia.directive('passwordMatch', [function () {
         }
     };
 }]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+techpedia.controller('NewFacultyController', function($scope, $http) {
+
+	$scope.initialEditProfileData = function() {
+		$scope.message = [];
+		
+		$http({
+			method : 'POST',
+			url : 'newFacultyLoad',
+			data : $.param({}),
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded'
+			}
+		}).success(function(data, status, headers, config) {
+			$scope.message = [];
+			$scope.edit = data;
+			$scope.edit.photo = '';
+		}).error(function(data, status, headers, config) {
+			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+		});
+		$scope.$watch('file1', function() {
+			$scope.edit.logo = "data:" + $scope.file1.filetype + ";base64," + $scope.file1.base64;
+		}, true);
+		
+		
+		var dataArray = [];
+		for (var i = 0; i < data.collge.length; i++) {
+			//var id = data.projBranchList[i].branchId;
+			var text = data.projBranchList[0];
+			alert( "hai " + text);
+			var json = {};
+			//json.id = id;
+			json.text = text;
+			dataArray.push(json);
+
+		}
+
+		
+		console.log(JSON.stringify(dataArray));
+		$("#CollegeNames").select2("data", dataArray);
+		/*$scope.data = [ {
+			"branchId" : 1,
+			"projBranchDesc" : "Chemical Engineering"
+		}, {
+			"branchId" : 2,
+			"projBranchDesc" : "Electronic and Communiaction"
+		}, {
+			"branchId" : 3,
+			"projBranchDesc" : "Mechanical"
+		}, {
+			"branchId" : 4,
+			"projBranchDesc" : "Electrical Engineering"
+		},{
+			"branchId" : 5,
+			"projBranchDesc" : "Computer Science"
+		} ];*/
+	};
+
+	$scope.search = function() {
+		// alert($scope.form.searchTerm);
+		$http({
+			method : 'GET',
+			data : $.param({}),
+			url : 'getSuggestedBranches?q=' + $scope.searchTerm
+		}).success(function(data, status, headers, config) {
+			$scope.data = data;
+		}).error(function(data, status, headers, config) {
+			// called asynchronously if an error occurs
+			// or server returns response with an error status.
+		});
+	};
+	
+	$scope.deleteCollege = function(){
+		$scope.edit.collge = "";
+		$('#CollegeNames').select2('data',null);
+		$('#s2id_CollegeNames').show();
+	};
+	$scope.showCollege = function(){
+		try{
+			if($scope.edit.collge === ''){
+				$('#s2id_CollegeNames').show();
+			}else{
+				$('#s2id_CollegeNames').hide();
+			}
+			return $scope.edit.collge === '';
+		}catch(e){}
+	};
+
+	
+	
+	$scope.deleteUniversity = function(){
+		$scope.edit.university = "";
+		$('#university').select2('data',null);
+		$('#s2id_University').show();
+	};
+	$scope.showUniversity = function(){
+		try{
+			if($scope.edit.university === ''){
+				$('#s2id_university').show();
+			}else{
+				$('#s2id_university').hide();
+			}
+			return $scope.edit.university === '';
+		}catch(e){}
+	};
+	
+	
+	
+	
+	
+	$scope.deleteBranches = function(){
+		$scope.edit.branchIdOfStudent2 = "";
+		$('#branchIdOfStudent2').select2('data',null);
+		$('#s2id_branchIdOfStudent2').show();
+	};
+	$scope.showBranches = function(){
+		try{
+			if($scope.edit.branchIdOfStudent2 === ''){
+				$('#s2id_branchIdOfStudent2').show();
+			}else{
+				$('#s2id_branchIdOfStudent2').hide();
+			}
+			return $scope.edit.branchIdOfStudent2 === '';
+		}catch(e){}
+	};
+	
+	
+	
+	
+	
+	$scope.deleteCollgeOfFaculty = function(){
+		$scope.edit.collgeOfFaculty = "";
+		$('#collgeOfFaculty').select2('data',null);
+		$('#s2id_collgeOfFaculty').show();
+	};
+	$scope.showCollgeOfFaculty = function(){
+		try{
+			if($scope.edit.collgeOfFaculty === ''){
+				$('#s2id_collgeOfFaculty').show();
+			}else{
+				$('#s2id_collgeOfFaculty').hide();
+			}
+			return $scope.edit.collgeOfFaculty === '';
+		}catch(e){}
+	};
+	
+	
+	
+	$scope.deleteSpecializationOfFaculty = function(){
+		$scope.edit.specializationOfFaculty2 = "";
+		$('#specializationOfFaculty2').select2('data',null);
+		$('#s2id_specializationOfFaculty2').show();
+	};
+	$scope.showSpecializationOfFaculty = function(){
+		try{
+			if($scope.edit.specializationOfFaculty2 === ''){
+				$('#s2id_specializationOfFaculty2').show();
+			}else{
+				$('#s2id_specializationOfFaculty2').hide();
+			}
+			return $scope.edit.specializationOfFaculty2 === '';
+		}catch(e){}
+	};
+	
+	
+	
+	
+	$scope.deleteUniversityOfFaculty = function(){
+		$scope.edit.universityOfFaculty = "";
+		$('#universityOfFaculty').select2('data',null);
+		$('#s2id_universityOfFaculty').show();
+	};
+	$scope.showUniversityOfFaculty = function(){
+		try{
+			if($scope.edit.universityOfFaculty === ''){
+				$('#s2id_universityOfFaculty').show();
+			}else{
+				$('#s2id_universityOfFaculty').hide();
+			}
+			return $scope.edit.universityOfFaculty === '';
+		}catch(e){}
+	};
+	
+	
+	
+	$scope.deleteBranchIdOfMentor2 = function(){
+		$scope.edit.branchIdOfMentor2 = "";
+		$('#branchIdOfMentor2').select2('data',null);
+		$('#s2id_branchIdOfMentor2').show();
+	};
+	$scope.showBranchIdOfMentor2 = function(){
+		try{
+			if($scope.edit.branchIdOfMentor2 === ''){
+				$('#s2id_branchIdOfMentor2').show();
+			}else{
+				$('#s2id_branchIdOfMentor2').hide();
+			}
+			return $scope.edit.branchIdOfMentor2 === '';
+		}catch(e){}
+	};
+	
+	
+
+	//for university 	 	
+			$scope.search1 = function() { 	 	
+				 alert($scope.form.searchUName); 	 	
+			$http({ 	 	
+				method : 'GET', 	 	
+					data : $.param({}), 	 	
+					url : 'getUniversityList?uName=' + $scope.searchUName 	 	
+			}).success(function(data, status, headers, config) { 	 	
+				$scope.data = data; 	 	
+				}).error(function(data, status, headers, config) { 	 	
+					// called asynchronously if an error occurs 	 	
+					// or server returns response with an error status. 	 	
+				}); 	 	
+			};
+	//--------------------------------------------------------------------------------
+	
+	$scope.newFaculty = function() {
+//		$scope.message = "";
+		 var cval=$('#captchavalue span').text();
+		   if (($('#captcha').val()== "") ||($('#captcha').val() != parseInt(cval))){
+
+			  // alert(cval);   
+
+	         error = true;
+
+	         errorString = 'Captcha failed';
+	         $('getnewcaptcha').show();
+	 
+
+	  }
+		   else{
+			   
+		$http({
+			method : 'POST',
+			url : 'newFacultyRequest',
+			data : $.param($scope.edit),
+			headers : {
+				'Content-Type' : 'application/x-www-form-urlencoded'
+			}
+		}).success(function(data, status, headers, config) {
+			if (data === 'success') {
+				$scope.message = [];
+				$scope.message.push("You Profile has been created Successfully");
+			
+			} else {
+				$scope.message.push(data);
+			}
+		}).error(function(data, status, headers, config) {
+			$scope.message.push("Possibly the service is down, Please contact the admin if problem persists.");
+		});
+		   }
+	};
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+

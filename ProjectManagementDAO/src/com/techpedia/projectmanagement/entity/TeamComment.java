@@ -32,7 +32,7 @@ public class TeamComment {
 	@Column(name="proj_team_leader_id")
 	private Long projTeamLeaderId;
 	
-	@Column(name="proj_guide_id")
+	@Column(name="PROJ_FAC_RGSTR_ID")
 	private Long projGuideId;
 	
 	@Column(name="proj_mentor1_id")	

@@ -1,238 +1,36 @@
-<!DOCTYPE HTML>
+<!DOCTYPE html>
 <html ng-app="techpedia">
-<head>
-<meta charset="utf-8" />
-<title>Techpedia</title>
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta content="width=device-width, initial-scale=1" name="viewport" />
-<meta content="" name="description" />
-<meta content="" name="author" />
-<link href="http://fonts.googleapis.com/css?family=Roboto:100,100italic,300,300italic,400,400italic"
-	rel="stylesheet" type="text/css" />
-<!-- 
-<noscript> -->
-<link rel="stylesheet" href="css/skel-noscript.css" />
-<!-- </noscript> -->
-<link rel="stylesheet" href="css/style2.css">
-<link rel="stylesheet" href="css/style-wide.css" />
+<!-- BEGIN HEAD -->
 
-<link rel="stylesheet" href="css/bootstrap.min.css">
-<link rel="stylesheet" href="css/bootstrap-theme.min.css">
-<link rel="stylesheet" href="css/style.css">
+<jsp:include page="template/NewHeader.jsp" />
+	
+	<!-- BEGIN SLIDER -->
+	        <div id="my-slide" class="borderRadius">
+            <img data-lazy-src="http://devrama.com/static/devrama-slider/images/265740754_141774705b_b.png" />
+            <img data-lazy-src="http://devrama.com/static/devrama-slider/images/4247776023_81a3f048ca_b.png" />
+            <img data-lazy-src="http://devrama.com/static/devrama-slider/images/4277941123_044d26b6df_b.png" />
+            <img data-lazy-src="http://devrama.com/static/devrama-slider/images/4432435310_d5010f8efc_b.png" />
+            <img data-lazy-src="images/s1.1.jpg" />
+			</div>					   
 
-<link rel="stylesheet" href="css/select2.css">
-<link rel="stylesheet" href="css/select2-bootstrap.css">
-<link rel="stylesheet" href="css/prettyphoto.css">
-<!-- for gallery -->
-<!-- <link rel="stylesheet" href="css/skins/teal.css">
- -->
-<!-- skin color -->
-<link rel="stylesheet" href="css/responsive.css">
-<link rel="stylesheet" href="css/jquery-ui.css">
-<!--[if lt IE 9]>
-    <script src="js/html5shiv.js"></script>
-     <script src="js/respond.min.js"></script>
- <![endif]-->
-<!--[if lte IE 8]><link rel="stylesheet" href="css/ie/v8.css" /><![endif]-->
-<!--[if lte IE 9]><link rel="stylesheet" href="css/ie/v9.css" /><![endif]-->
-<script src="js/jquery.min.js"></script>
-<script src="js/skel.min.js"></script>
-<script src="js/init.js"></script>
-<script src="js/dashboardJs/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
-<script type="text/javascript">
-	function noBack() {
-		window.history.forward();
-	}
-	noBack();
-	window.onload = noBack;
-	window.onpageshow = function(evt) {
-		if (evt.persisted)
-			noBack();
-	}
-	window.onunload = function() {
-		void (0);
-	}
-</script>
-
-</head>
-<body ng-controller="IndexController" ng-init="InitLoad()">
-
-	<script>
-		window.fbAsyncInit = function() {
-			FB.init({
-				appId : '700867383301572',
-				xfbml : true,
-				version : 'v2.1'
-			});
-		};
-
-		(function(d, s, id) {
-			var js, fjs = d.getElementsByTagName(s)[0];
-			if (d.getElementById(id)) {
-				return;
-			}
-			js = d.createElement(s);
-			js.id = id;
-			js.src = "//connect.facebook.net/en_US/sdk.js";
-			fjs.parentNode.insertBefore(js, fjs);
-		}(document, 'script', 'facebook-jssdk'));
-	</script>
-
-	<nav class="navbar navbar-inverse navbar-fixed-top">
-		<div class="container-fluid">
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse"
-					data-target="#bs-example-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span
-						class="icon-bar"></span> <span class="icon-bar"></span>
-				</button>
-
-				<a class="navbar-brand" href="./"> <img src="images/logo.png" alt="logo"
-					class="logo-default" width="35" height="35" style="margin-top: -5px;" /><span
-					class="pos_fixed" style="color: white;"> &nbsp;Techpedia</span></a>
-			</div>
-
-			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav">
-
-				</ul>
-
-				<ul class="nav navbar-nav navbar-right">
-					<%
-						if (session.getAttribute("username") != null) {
-					%>
-					<li class="active"><a href="dashboard">Dashboard</a></li>
-
-					<%
-						} else {
-					%>
-					<li class="active"><a href="./">Home</a></li>
-					<%
-						}
-					%>
-					<li><a href="projects">Projects</a></li>
-					<li><a href="challenges">Challenges</a></li>
-					<li><a href="mentors">Mentors</a></li>
-					<%
-						if (session.getAttribute("username") != null) {
-					%>
-
-
-
-					<li><div class="top-menu,collapse navbar-collapse">
-							<ul class="nav navbar-nav pull-right,nav navbar-nav navbar-right">
-
-								<!-- END TODO DROPDOWN -->
-								<!-- BEGIN USER LOGIN DROPDOWN -->
-								<li class="dropdown dropdown-user"><a href="#" class="dropdown-toggle"
-									data-toggle="dropdown" data-hover="dropdown" data-close-others="true"> <span
-										class="username"> Hi, <%=session.getAttribute("firstname")%>&nbsp;<%=session.getAttribute("lastname")%>
-									</span> <i class="fa fa-angle-down"></i>
-								</a>
-									<ul class="dropdown-menu">
-										<li><a href="editProfile"> <i class="fa fa-pencil-square-o"></i> Edit Profile
-										</a></li>
-
-										<li><a href="logout"> <i class="fa fa-share-square-o"></i> Log Out
-										</a></li>
-									</ul></li>
-								<!-- END USER LOGIN DROPDOWN -->
-								<!-- BEGIN QUICK SIDEBAR TOGGLER -->
-
-								<!-- END QUICK SIDEBAR TOGGLER -->
-							</ul>
-						</div></li>
-					<%-- 	<li><a href="logout">Logout</a></li><br>
-			<li><a href="dashboard">Hi, <%=session.getAttribute("username") %> </a></li>
-		 --%>
-					<%
-						} else {
-					%>
-
-					<li><a href="#signin" data-toggle="modal" data-target=".bs-modal-sm">Login</a></li>
-					<li><a href="register">Register</a></li>
-
-					<%
-						}
-					%>
-
-					<!-- <li><a href="#signin" data-toggle="modal" data-target=".bs-modal-sm">Login</a></li>
-					<li><a href="register">Register</a></li> -->
-				</ul>
-			</div>
-			<!-- /.navbar-collapse -->
+	<br />
+	<div class="customFont">
+		<h2 style="text-align:center;color:white">Creativity | Collaboration | Compassion</h2>
+	</div>
+	<br />
+	<div ng-controller="IndexController" ng-init="InitLoad()" class="container customFont borderRadius" style="background-color:#FAFAF7;padding:20px;max-width:1130px;border-radius:5px;">
+		<div class="row" style="padding-left:20px;padding-right:20px;">
+		<div class="span8" style="color:black; text-align:justify">
+		<h3 style="font-weight: 700;">Welcome to techpedia</h3>
+		
+		<p style="font-size:16px;"> Techpedia, an initiative at SRISTI aims at putting the problems of micro, small and medium enterprises, informal sector, grassroots innovators and other social sectors on the agenda of the young technology students across the country. For over last sixty years, India has not utilized much the technological outputs of millions of students. But no more. Can a knowledge society really afford to ignore the huge talent distributed in thousands of polytechnics, diploma and degree colleges of engineering, pharmacy, medical science, agriculture etc.? SRISTI is providing a platform for the industry and academic institutions to collaborate, co-create and foster distributed and horizontal innovations. Most of the ideas mentioned here have been implemented in the state of Gujarat in close cooperation with Gujarat Technical University and initial results are extremely encouraging. <a href="aboutus">Read More...</a></p>
 		</div>
-		<!-- /.container-fluid -->
-	</nav>
-
-	<!-- Header -->
-	<section id="header" class="dark">
-		<header>
-			<h1>Welcome to Techpedia</h1>
-			<p>creativity,collaboration, compassion</p>
-		</header>
-		<footer>
-			<a href="#first" class="button scrolly">What we do <span
-				class="glyphicon glyphicon-arrow-down"></span></a>
-		</footer>
-	</section>
-
-	<!-- First -->
-	<section id="first" class="main">
-		<header>
-			<div class="container">
-				<h2>
-					"The most pathetic person in the world is some one who has sight but no vision"<br>- Helen
-					Keller
-				</h2>
-			</div>
-		</header>
-		<div class="content dark style1 featured">
-			<div class="container">
-				<div class="row">
-					<div class="4u">
-						<section>
-							<span class="feature-icon"><span class="fa fa-cloud"></span></span>
-							<header>
-								<h3>Ideate</h3>
-							</header>
-						</section>
-					</div>
-					<div class="4u">
-						<section>
-							<span class="feature-icon"><span class="fa fa-check-square-o"></span></span>
-
-							<h3>Mentor</h3>
-						</section>
-					</div>
-					<div class="4u">
-						<section>
-							<span class="feature-icon"><span class="fa fa-group"></span></span>
-							<header>
-								<h3>Collaborate</h3>
-							</header>
-						</section>
-					</div>
-				</div>
-			</div>
 		</div>
-	</section>
-
-	<!-- Second -->
-	<section id="second" class="main">
-		<header>
-			<div class="container">
-				<h2>Welcome</h2>
-				<p>
-					Techpedia, an initiative at SRISTI aims at putting the problems of micro, small and medium
-					enterprises, informal sector, grassroots innovators and other social sectors on the agenda of
-					the young technology students across the country. <a href="aboutus">Read More</a>
-				</p>
-			</div>
-		</header>
-		<div class="content dark style2">
+		    
+    </div>
+    
+     <div id="copyright"  ng-controller="IndexController" ng-init="InitLoad()" class="container customFont" style="padding:5px;max-width:1130px;border-radius:5px;margin-top:20px;border-radius:5px;">
+    	<div class="customFont borderRadius" style="background-color:#FAFAF7;padding:15px;">
 			<div class="container">
 				<div class="row">
 					<div class="col-xs-6">
@@ -240,7 +38,7 @@
 							<div class="Spotlights">
 								<div>
 									<h3 style="cursor: pointer;" ng-click="viewProject(project)">{{project.projTitle}}</h3>
-									<p style="cursor: pointer;" ng-click="viewProject(project)">{{project.projDescription}}
+									<p style="cursor: pointer;" ng-click="viewProject(project)">{{project.projDescription | truncate:true:150:'...'}}
 
 									
 									<p>
@@ -254,18 +52,18 @@
 
 					<div class="col-xs-6">
 						<div class="row no-collapse">
-							<div class="col-xs-12">
+							<div class="col-xs-25">
 								<a style="cursor: pointer;" ng-click="viewProject(project)" class="image full"><img
-									src="{{project.projImage||'images/no_project.png'}}" alt="" /></a>
+									class="img-responsive" src="{{project.projImage||'images/art/project.png'}}" alt="" /></a>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</section>
-
-	<!-- Third -->
+		</div>
+    
+    <div id="copyright" ng-controller="IndexController" ng-init="InitLoad()" class="container customFont" style="background-color:#FAFAF7;padding:5px;max-width:1130px;border-radius:5px;margin-top:20px;">
 	<section id="third" class="main">
 		<header>
 			<div class="container">
@@ -279,7 +77,7 @@
 						<div class="testimonials" style="border-left: 0px;">
 							<div>
 								<p class="welcome">
-									{{testimonial.testimonial}} <cite>- {{testimonial.cite}}</cite>
+									{{testimonial.testimonial | truncate:true:150:'...'}} <cite>- {{testimonial.cite}}</cite>
 								</p>
 							</div>
 						</div>
@@ -288,9 +86,187 @@
 			</div>
 		</div>
 	</section>
+</div>
 
-	<!-- Modal -->
-	<jsp:include page="template/loginModal.jsp" />
+    <!-- Table of Contents -->
+	<!--<div class="container">
+    	
+    		<div class="col-sm-3" id="Table_of_Contents" >
+    			<div class="list-group">
+    				<span class="list-group-item" style="background-color: #026881; color: #fff;">Table of Contents</span>
+    				<a class="list-group-item" href="javascript:;" onclick='$("html, body").delay(100).animate({scrollTop: $("#whats-included").offset().top }, 1000);'>What's included</a>
+    				<a class="list-group-item" href="javascript:;" onclick='$("html, body").delay(100).animate({scrollTop: $("#basic-setup-ltr").offset().top }, 1000);'>Basic setup</a>
+    				<a class="list-group-item" href="javascript:;" onclick='$("html, body").delay(100).animate({scrollTop: $("#basic-setup-rtl").offset().top }, 1000);'>Basic setup (rtl language layout)</a>
+    				<a class="list-group-item" href="javascript:;" onclick='$("html, body").delay(100).animate({scrollTop: $("#credits").offset().top }, 1000);'>Sources and Credits</a>
+    				<a class="list-group-item" href="javascript:;" onclick='$("html, body").delay(100).animate({scrollTop: $("#license").offset().top }, 1000);'>License </a>
+    				<a class="list-group-item" href="javascript:;" onclick='$("html, body").delay(100).animate({scrollTop: $("#documentation").offset().top }, 1000);'>Online documentation</a>
+    			</div>
+    		</div>
+    	</div> -->
+		
+		<!-- FOOTER CONTENT BEGIN -->
+		<jsp:include page="template/footer.jsp" />
+	<!-- 	<div id="copyright" class="container customFont" style="background-color:#FAFAF7;padding:5px;max-width:1130px;border-radius:5px;margin-top:20px;">
+			<div id="footer" ng-controller="FooterController" ng-init="InitLoad()" class="ng-scope">
+				<footer class="row" style="margin-left: 5%">
+		
+			<div class="col-xs-12 col-sm-6 col-md-4">
+			<h3 class="footer-title">Mentors</h3>
+			ngRepeat: mentor in mentors<div class="col-xs-6 col-sm-6 col-md-4 footer-img ng-scope" ng-repeat="mentor in mentors">
+				<a style="cursor: pointer;padding:5px;" ng-click="viewMentor(mentor)"><img src="images/footer/team1.jpg" alt="admin admin" title="admin admin" width="60" height="60"></a>
+			</div>end ngRepeat: mentor in mentors<div class="col-xs-6 col-sm-6 col-md-4 footer-img ng-scope" ng-repeat="mentor in mentors">
+				<a style="cursor: pointer;padding:5px;" ng-click="viewMentor(mentor)"><img src="images/footer/team2.jpg" alt="jhnghjkhmhj gbg" title="jhnghjkhmhj gbg" width="60" height="60"></a>
+			</div>end ngRepeat: mentor in mentors<div class="col-xs-6 col-sm-6 col-md-4 footer-img ng-scope" ng-repeat="mentor in mentors">
+				<a style="cursor: pointer;padding:5px;" ng-click="viewMentor(mentor)"><img src="images/footer/team3.jpg" alt="surej K " title="surej K " width="60" height="60"></a>
+			</div>end ngRepeat: mentor in mentors<div class="col-xs-6 col-sm-6 col-md-4 footer-img ng-scope" ng-repeat="mentor in mentors">
+				<a style="cursor: pointer;padding:5px;" ng-click="viewMentor(mentor)"><img src="images/footer/team4.jpg" alt="naimar nn" title="naimar nn" width="60" height="60"></a>
+			</div>end ngRepeat: mentor in mentors<div class="col-xs-6 col-sm-6 col-md-4 footer-img ng-scope" ng-repeat="mentor in mentors">
+				<a style="cursor: pointer;padding:5px;" ng-click="viewMentor(mentor)"><img src="images/footer/team5.jpg" alt="Ronoldino rm" title="Ronoldino rm" width="60" height="60"></a>
+			</div>end ngRepeat: mentor in mentors<div class="col-xs-6 col-sm-6 col-md-4 footer-img ng-scope" ng-repeat="mentor in mentors">
+				<a style="cursor: pointer;padding:5px;" ng-click="viewMentor(mentor)"><img src="images/footer/team6.jpg" alt="Prabhat Pathania" title="Prabhat Pathania" width="60" height="60"></a>
+			</div>end ngRepeat: mentor in mentors
+		</div>
+
+		<div class="col-xs-12 col-sm-6 col-md-4">
+			<h3 class="footer-title">Entrepreneurs</h3>
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<img src="images/footer/team7.jpg" width="60" height="60">
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<img src="images/footer/team8.jpg" width="60" height="60">
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<img src="images/footer/team9.jpg" width="60" height="60">
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<img src="images/footer/team10.jpg" width="60" height="60">
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<img src="images/footer/team11.jpg" width="60" height="60">
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<img src="images/footer/team12.jpg" width="60" height="60">
+			</div>
+		</div>
+		<div class="col-xs-12 col-sm-6 col-md-4">
+			<h3 class="footer-title">Partners</h3>
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<a href="http://www.ge.com"><img src="images/footer/ge.jpg" width="60" height="60"></a>
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<a href="http://www.tcs.com"><img src="images/footer/tcs.jpg" width="60" height="60"></a>
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<a href="http://www.birlasoft.com"><img src="images/footer/birlasoft.jpg" width="60" height="60"></a>
+			</div>
+
+			<div class="col-xs-6 col-sm-6 col-md-4 footer-img">
+				<a href="http://www.techmahindra.com/pages/default.aspx"><img src="images/footer/techmahindra.jpg" width="60" height="60"></a>
+			</div>
+
+		</div>
+	</footer>
+
+<br><br>
+  
+    <p>© 2014 Techpedia Design Team. All Right Reserved.</p>
+	 
+  </div>
+ 
+</div> -->
+
+
+    <script>
+    	//Start Fix MegaNavbar on scroll page
+    	//var navHeight = $('#main_navbar').offset().top;
+		var navHeight = 150;
+    	FixMegaNavbar(navHeight);
+    	$(window).bind('scroll', function() {FixMegaNavbar(navHeight);});
+
+    	function FixMegaNavbar(navHeight) {
+    	    if (!$('#main_navbar').hasClass('navbar-fixed-bottom')) {
+			//console.log($(window).scrollTop());
+			//console.log('navHeight='+navHeight);
+			
+    	        if ($(window).scrollTop() > navHeight) {
+    	            $('#main_navbar').addClass('navbar-fixed-top')
+    	            $('body').css({'margin-top': $('#main_navbar').height()+'px'});
+    	            if ($('#main_navbar').parent('div').hasClass('container')) $('#main_navbar').children('div').addClass('container').removeClass('container-fluid');
+    	            else if ($('#main_navbar').parent('div').hasClass('container-fluid')) $('#main_navbar').children('div').addClass('container-fluid').removeClass('container');
+    	        }
+    	        else {
+    	            $('#main_navbar').removeClass('navbar-fixed-top');
+    	            $('#main_navbar').children('div').addClass('container-fluid').removeClass('container');
+    	            $('body').css({'margin-top': ''});
+    	        }
+    	    }
+    	}
+    	//Start Fix MegaNavbar on scroll page
+
+
+    	//Start Fix MegaNavbar on scroll page
+    	//var tocHeight = $('#Table_of_Contents').offset().top;
+		var tocHeight = 150;
+    	FixTOC(tocHeight);
+    	$(window).bind('scroll', function() {FixTOC(tocHeight);});
+
+    	function FixTOC(tocHeight) {
+
+    	        if ($(window).scrollTop() > (tocHeight-75)) {
+                    $('#Table_of_Contents').css({'position':'relative', 'top':(($(window).scrollTop()-tocHeight)+90)+"px", 'right':'auto'});
+    	        }
+    	        else {
+                    $('#Table_of_Contents').css({'position':'relative', 'top':'0px', 'right':'auto'});
+    	        }
+    	}
+    	//Start Fix MegaNavbar on scroll page
+
+
+    	//Next code used to prevent unexpected menu close when using some components (like accordion, tabs, forms, etc), please add the next JavaScript to your page
+    	$( window ).load(function() {
+    	    $(document).on('click', '.navbar .dropdown-menu', function(e) {e.stopPropagation();});
+    	});
+
+        /*SCROLL PAGE TO TOP*/
+        $(document).ready(function() {
+            $(".toTop").css("display", "none");
+
+            $(window).scroll(function(){
+                if($(window).scrollTop() > 0){$(".toTop").fadeIn("slow");} else {$(".toTop").fadeOut("slow");}
+            });
+
+            $(".toTop").click(function(){
+                event.preventDefault();
+                $("html, body").animate({scrollTop:0},"slow");
+            });
+        });
+		
+		function userLogin() {
+		jQuery('.dropdown-grid').removeClass('open');
+		}
+
+    </script>
+    
+<!--   <script>
+  
+  $( document ).ready(function() {
+	  
+	  setTimeout(function() {
+		  alert("page is loading");
+		  $("#myFunction").substring(0,10).replace(/"([^"]*)"/g, "...");  
+	  }, 1000);
+	  });
+	   
+
+
+  </script> -->
 </body>
+
 </html>
-<jsp:include page="template/footer.jsp" />

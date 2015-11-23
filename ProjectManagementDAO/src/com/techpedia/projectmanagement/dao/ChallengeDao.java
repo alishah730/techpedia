@@ -6,6 +6,7 @@ package com.techpedia.projectmanagement.dao;
 import java.util.ArrayList;
 
 import com.techpedia.projectmanagement.bean.Challenge;
+import com.techpedia.projectmanagement.bean.ChallengeType;
 import com.techpedia.projectmanagement.bean.ChallengeTypeMasterVO;
 import com.techpedia.projectmanagement.bean.DeleteChallDocVO;
 import com.techpedia.projectmanagement.bean.DownChallengeDocVO;
@@ -21,6 +22,7 @@ import com.techpedia.projectmanagement.exception.DownloadChallengeDocException;
 import com.techpedia.projectmanagement.exception.GetAllChallengeException;
 import com.techpedia.projectmanagement.exception.GetChallengeDetailException;
 import com.techpedia.projectmanagement.exception.GetChallengeException;
+import com.techpedia.projectmanagement.exception.GetChallengeTypeException;
 import com.techpedia.projectmanagement.exception.SearchChallengeException;
 import com.techpedia.projectmanagement.exception.SuggestedChallengeNotFoundException;
 import com.techpedia.projectmanagement.exception.UploadChallengeDocException;
@@ -52,4 +54,6 @@ public interface ChallengeDao {
 	public abstract String acceptChallenge(Project project) throws AcceptChallengeException;
 	
 	public abstract String deleteChallengeDocument(DeleteChallDocVO deleteChallDocVO) throws DeleteDocumentException;
+	
+	public abstract ArrayList<ChallengeType> getChallengeType() throws GetChallengeTypeException;
 }

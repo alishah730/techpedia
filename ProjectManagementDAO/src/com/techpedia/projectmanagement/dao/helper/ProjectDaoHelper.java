@@ -2,6 +2,8 @@ package com.techpedia.projectmanagement.dao.helper;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.HibernateException;
 import org.hibernate.SQLQuery;
@@ -15,8 +17,10 @@ import com.techpedia.projectmanagement.bean.Team;
 import com.techpedia.projectmanagement.bean.UserProfileVO;
 import com.techpedia.projectmanagement.entity.Mentor;
 import com.techpedia.projectmanagement.entity.ProjectTeamDetail;
+import com.techpedia.projectmanagement.entity.ProjectUser;
 import com.techpedia.projectmanagement.entity.TeamComment;
 import com.techpedia.projectmanagement.entity.TopFiveProjFollowers;
+import com.techpedia.projectmanagement.exception.DownloadProjDocException;
 import com.techpedia.projectmanagement.exception.GetAllMentorsException;
 import com.techpedia.projectmanagement.exception.GetDetailOfTeamException;
 import com.techpedia.projectmanagement.exception.GetProjectFollowersException;
@@ -47,15 +51,15 @@ public class ProjectDaoHelper {
 				+ "USR_MNGT_MASTER AS UMM, USR_MNGT_STUDENT AS UMS WHERE ";
 		StringBuffer hql2 = new StringBuffer();
 		
-		if(enrlmtNo != null)
+		if(enrlmtNo != null && enrlmtNo.trim() != "")
 			hql2 = hql2.append(" UMS.ENROLLMENT_NO LIKE :ENROLLMENT_NO AND ");
-		if(college != null)
+		if(college != null && college.trim() != "")
 			hql2 = hql2.append(" COLLEGE LIKE :COLLEGE AND ");
-		if(fName != null)
+		if(fName != null && fName.trim() != "")
 			hql2 = hql2.append(" FNAME LIKE :FNAME AND ");
-		if(lName != null)
+		if(lName != null && lName.trim() != "")
 			hql2 = hql2.append(" LNAME LIKE :LNAME AND ");
-		if(mName != null)
+		if(mName != null && mName.trim() != "")
 			hql2 = hql2.append(" MNAME LIKE :MNAME AND ");
 		
 		String hql3 = " UMM.RGSTR_ID = UMS.RGSTR_ID";
@@ -63,15 +67,15 @@ public class ProjectDaoHelper {
 			
 			SQLQuery query  = session.createSQLQuery(hql1+hql2.toString()+hql3);
 			
-			if(enrlmtNo != null)
+			if(enrlmtNo != null && enrlmtNo.trim() != "")
 				query.setParameter("ENROLLMENT_NO", "%"+enrlmtNo+"%");
-			if(college != null)
+			if(college != null && college.trim() != "")
 				query.setParameter("COLLEGE", "%"+college+"%");
-			if(fName != null)
+			if(fName != null && fName.trim() != "")
 				query.setParameter("FNAME", "%"+fName+"%");
-			if(lName != null)
+			if(lName != null && lName.trim() != "")
 				query.setParameter("LNAME", "%"+lName+"%");
-			if(mName != null)
+			if(mName != null && mName.trim() != "")
 				query.setParameter("MNAME", "%"+mName+"%");
 			
 			suggestedTeamMembers = (ArrayList<Team>) query.list();
@@ -148,8 +152,10 @@ public class ProjectDaoHelper {
 		int minIndex = (initCount*8)-8;
 		int maxResultSize = 8;
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		String hql = "SELECT UMM.RGSTR_ID, IFNULL(FNAME,'') AS FNAME, IFNULL(MNAME,'') AS MNAME, IFNULL(LNAME,'') AS LNAME, UMMT.DESIGNATION  FROM "
-				+ "USR_MNGT_MASTER AS UMM, USR_MNGT_MENTOR AS UMMT WHERE UMM.RGSTR_ID = ummt.RGSTR_ID ORDER BY RGSTR_ID";
+		String hql = "SELECT UMM.RGSTR_ID, IFNULL(FNAME,'') AS FNAME, IFNULL(MNAME,'') AS MNAME, IFNULL(LNAME,'') "
+				+ "AS LNAME, UMMT.DESIGNATION, PHOTO  FROM USR_MNGT_MASTER AS UMM, USR_MNGT_MENTOR AS UMMT, "
+				+ "usr_mngt_contact_info UMCI WHERE UMM.RGSTR_ID = ummt.RGSTR_ID AND UMM.RGSTR_ID = UMCI.RGSTR_ID "
+				+ " ORDER BY RGSTR_ID";
 		try{
 			SQLQuery query  = session.createSQLQuery(hql);
 			query.setFirstResult(minIndex);
@@ -166,6 +172,7 @@ public class ProjectDaoHelper {
 					userProfileVO.setMidName(mentor.getmName());
 					userProfileVO.setLastName(mentor.getlName());
 					userProfileVO.setDesignationOfMentor(mentor.getDesignation());
+					userProfileVO.setPhoto(mentor.getPhoto());
 					userProfileVOs.add(userProfileVO);
 				}
 			}
@@ -196,18 +203,24 @@ public class ProjectDaoHelper {
 		int minIndex = (initCount*5)-5;
 		int maxResultSize = 5;
 		Session session = HibernateUtil.getSessionFactory().openSession();
-		String hql = "select proj.proj_id, proj.proj_team_leader_id, proj.proj_guide_id, proj.proj_mentor1_id, "
-				+ "proj.proj_mentor2_id, proj.regstr_id, IFNULL(proj.FNAME,'') AS FNAME, IFNULL(proj.MNAME,'') AS MNAME, IFNULL(proj.LNAME,'') AS LNAME, comt.comment_id, comt.proj_comment "
-				+ "from((select comment_id, txn_project_comment.regstr_id, txn_projects_team.proj_id, proj_comment "
-				+ "from tb_tech001_txn_projects_team txn_projects_team, tb_tech001_txn_project_comment "
-				+ "txn_project_comment	WHERE txn_projects_team.regstr_id = txn_project_comment.regstr_id "
-				+ "and txn_projects_team.PROJ_ID = txn_project_comment.PROJ_ID and IS_ACTIVE_COMMNT = 'Y' "
-				+ "GROUP BY comment_id, txn_project_comment.regstr_id, txn_projects_team.proj_id, proj_comment "
-				+ "ORDER BY  comment_id) comt, (select mpd.proj_id, proj_team_leader_id, proj_guide_id, proj_mentor1_id, "
-				+ "proj_mentor2_id,	tpt.regstr_id, IFNULL(FNAME,'') AS FNAME, IFNULL(MNAME,'') AS MNAME, IFNULL(LNAME,'') AS LNAME from  tb_tech001_mast_projects_detail mpd, "
-				+ "tb_tech001_txn_projects_team tpt, usr_mngt_master umm where	mpd.proj_id = tpt.proj_id and "
-				+ "tpt.REGSTR_ID = umm.RGSTR_ID) proj) where comt.regstr_id=proj.regstr_id and comt.PROJ_ID = "
-				+ "proj.PROJ_ID and proj.PROJ_ID = :PROJ_ID order by comt.comment_id";
+		String hql = "select cmt.proj_id,cmt.comment_id,cmt.REGSTR_ID,cmt.proj_comment,(Select IFNULL(umm.FNAME,'') "
+				+ "from usr_mngt_master umm where umm.RGSTR_ID= cmt.regstr_id) FNAME,(Select IFNULL(umm.MNAME,'')  "
+				+ "from usr_mngt_master umm where umm.RGSTR_ID= cmt.regstr_id) MNAME,(Select IFNULL(umm.LNAME,'') "
+				+ "from usr_mngt_master umm where umm.RGSTR_ID= cmt.regstr_id) LNAME, (select proj_team_leader_id "
+				+ "from tb_tech001_mast_projects_detail xx where xx.proj_id=cmt.proj_id)proj_team_leader_id, "
+				+ "(select PROJ_FAC_RGSTR_ID from tb_tech001_mast_projects_detail xx where xx.proj_id=cmt.proj_id)PROJ_FAC_RGSTR_ID,"
+				+ "(select proj_mentor1_id from tb_tech001_mast_projects_detail xx where xx.proj_id=cmt.proj_id)proj_mentor1_id,"
+				+ "(select proj_mentor2_id from tb_tech001_mast_projects_detail xx where xx.proj_id=cmt.proj_id)proj_mentor2_id  "
+				+ "from tb_tech001_txn_projects_team team, tb_tech001_txn_project_comment cmt where cmt.proj_id = team.proj_id "
+				+ "and cmt.REGSTR_ID = team.REGSTR_ID and team.proj_id= :PROJ_ID and cmt.IS_ACTIVE_COMMNT = 'Y' and "
+				+ "team.proj_id=cmt.proj_id union select cmt.proj_id,cmt.comment_id,cmt.REGSTR_ID, cmt.proj_comment,"
+				+ "(Select IFNULL(umm.FNAME,'') from usr_mngt_master umm where umm.RGSTR_ID= cmt.regstr_id) FNAME,"
+				+ "(Select IFNULL(umm.MNAME,'')  from usr_mngt_master umm where umm.RGSTR_ID= cmt.regstr_id) MNAME,"
+				+ "(Select IFNULL(umm.LNAME,'') from usr_mngt_master umm where umm.RGSTR_ID= cmt.regstr_id) LNAME "
+				+ ",x.proj_team_leader_id, x.PROJ_FAC_RGSTR_ID,x.proj_mentor1_id,x.proj_mentor2_id from "
+				+ "tb_tech001_mast_projects_detail x, tb_tech001_txn_project_comment cmt where (x.proj_team_leader_id = "
+				+ "cmt.REGSTR_ID or x.PROJ_FAC_RGSTR_ID = cmt.REGSTR_ID or x.proj_mentor1_id = cmt.REGSTR_ID or x.proj_mentor2_id "
+				+ "= cmt.REGSTR_ID) and x.proj_id= :PROJ_ID and cmt.IS_ACTIVE_COMMNT = 'Y' and cmt.proj_id=x.proj_id";
 		try {			
 			SQLQuery query  = session.createSQLQuery(hql);
 			query.setParameter("PROJ_ID", Long.valueOf(projId));
@@ -252,17 +265,18 @@ public class ProjectDaoHelper {
 		String teamName = "";
 		long projId = 0;
 		String projTitle = "";
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		String hql = "select -1 PROJ_TEAM_LEADER_ID,-1 PROJ_ID,'-1' PROJ_TITLE, '-1' PROJ_TEAM_DESC, umm.rgstr_Id "
-				+ "RGSTR_ID, IFNULL(FNAME,'') AS FNAME, IFNULL(MNAME,'') AS MNAME, IFNULL(LNAME,'') AS LNAME, PHOTO, STATE, COUNTRY, COLLEGE from usr_mngt_master umm, usr_mngt_addr"
-				+ " uma, usr_mngt_student ums, usr_mngt_contact_info umci where	 umm.rgstr_Id in (select regstr_Id "
-				+ "from tb_tech001_txn_projects_team where team_id = :team_id) and umm.rgstr_Id = uma.rgstr_Id and "
-				+ "umm.rgstr_Id = ums.rgstr_Id and umm.rgstr_Id = umci.rgstr_Id union select DISTINCT "
-				+ "PROJ_TEAM_LEADER_ID, PROJ_D.PROJ_ID, PROJ_D.PROJ_TITLE, PROJ_TEAM_DESC, '-1' RGSTR_ID, "
-				+ "'-1' FNAME, '-1' MNAME, '-1' LNAME, '-1' PHOTO, '-1' STATE, '-1' COUNTRY, '-1' COLLEGE "
-				+ "from tb_tech001_mast_projects_detail PROJ_D, tb_tech001_txn_projects_team PROJ_T, "
-				+ "tb_tech001_mast_projects_team PROJ_TEAM where PROJ_D.proj_id = PROJ_T.proj_id AND "
-				+ "PROJ_D.team_id = PROJ_TEAM.team_id AND PROJ_T.team_id = :team_id";
+		Session session = HibernateUtil.getSessionFactory().openSession();		
+		String hql ="select cmt.REGSTR_ID RGSTR_ID,(Select IFNULL(umm.FNAME,'') from usr_mngt_master umm where umm.RGSTR_ID=" 
+                + " cmt.regstr_id) FNAME,(Select IFNULL(umm.MNAME,'')  from usr_mngt_master umm where umm.RGSTR_ID= cmt.regstr_id) MNAME,(Select "
+                + " IFNULL(umm.LNAME,'') from usr_mngt_master umm where umm.RGSTR_ID= cmt.regstr_id) LNAME, (select umci.PHOTO from "
+                + " usr_mngt_contact_info umci where umci.rgstr_id=cmt.regstr_id) Photo, cmt.proj_id PROJ_ID,(select PROJ_TITLE from " 
+                + " tb_tech001_mast_projects_detail xx where xx.proj_id=cmt.proj_id)PROJ_TITLE,(select proj_team_leader_id from "
+                + " tb_tech001_mast_projects_detail xx where xx.proj_id=cmt.proj_id)PROJ_TEAM_LEADER_ID,     team.PROJ_TEAM_DESC PROJ_TEAM_DESC , "
+                + " (select uma.State from usr_mngt_addr uma where uma.rgstr_id=cmt.regstr_id) State, (select uma.Country from usr_mngt_addr uma "
+                + " where uma.rgstr_id=cmt.regstr_id)Country,(select ums.College from usr_mngt_student ums where ums.rgstr_id=cmt.regstr_id) College "
+                + " from tb_tech001_txn_projects_team cmt, tb_tech001_mast_projects_team team where  cmt.team_id = team.team_id and "
+                + " cmt.team_id=:team_id";
+
 		try {			
 			SQLQuery query  = session.createSQLQuery(hql);
 			query.setParameter("team_id", Long.valueOf(teamId));
@@ -310,7 +324,7 @@ public class ProjectDaoHelper {
 			
 		} catch (Exception e) {
 			//log.error("Error while retrieving the Team Comments: " + e.getMessage());
-			throw new GetDetailOfTeamException("Error while retrieving the Team Comments: "+ e.getMessage());
+			throw new GetDetailOfTeamException("Error while retrieving the Team details: "+ e.getMessage());
 		}finally{
 			if(session!=null)
 				session.close();
@@ -328,15 +342,22 @@ public static ArrayList<ProjectTeamComment> displayOtherComments(String projId, 
 		int initCount = Integer.valueOf(iterationCount);
 		int minIndex = (initCount*5)-5;
 		int maxResultSize = 5;
-		Session session = HibernateUtil.getSessionFactory().openSession();
-		String hql = "select a.*, IFNULL(usr.FNAME,'') AS FNAME, IFNULL(usr.MNAME,'') AS MNAME, IFNULL(usr.LNAME,'') AS LNAME from (select proj.proj_id,proj_team_leader_id, "
-				+ "proj_guide_id, proj_mentor1_id, proj_mentor2_id, cmt.regstr_id,comment_id, proj_comment from "
-				+ "tb_tech001_mast_projects_detail proj, tb_tech001_txn_project_comment cmt where "
-				+ "proj.PROJ_ID=cmt.PROJ_ID and not exists (select 1 from tb_tech001_txn_projects_team team where "
-				+ "cmt.proj_id = team.proj_id and cmt.REGSTR_ID = team.REGSTR_ID) and not exists (select 1 "
-				+ "from tb_tech001_mast_projects_detail x where x.proj_team_leader_id = cmt.REGSTR_ID or "
-				+ "x.proj_guide_id = cmt.REGSTR_ID or x.proj_mentor1_id = cmt.REGSTR_ID or x.proj_mentor2_id = "
-				+ "cmt.REGSTR_ID) and proj.PROJ_ID = :PROJ_ID)A, usr_mngt_master Usr where a.regstr_id=usr.rgstr_id";
+		Session session = HibernateUtil.getSessionFactory().openSession();		
+		String hql = "select cmt1.proj_id,cmt1.comment_id,cmt1.regstr_id,cmt1.proj_comment,(Select IFNULL(umm.FNAME,'') "
+				+ "from usr_mngt_master umm where umm.RGSTR_ID = cmt1.regstr_id) FNAME,(Select IFNULL(umm.MNAME,'')  "
+				+ "from usr_mngt_master umm where umm.RGSTR_ID = cmt1.regstr_id) MNAME,(Select IFNULL(umm.LNAME,'') "
+				+ "from usr_mngt_master umm where umm.RGSTR_ID = cmt1.regstr_id) LNAME, (select proj_team_leader_id "
+				+ "from tb_tech001_mast_projects_detail xx where xx.proj_id=cmt1.proj_id)proj_team_leader_id, "
+				+ "(select PROJ_FAC_RGSTR_ID from tb_tech001_mast_projects_detail xx where xx.proj_id=cmt1.proj_id)PROJ_FAC_RGSTR_ID,"
+				+ "(select proj_mentor1_id from tb_tech001_mast_projects_detail xx where xx.proj_id=cmt1.proj_id)proj_mentor1_id,"
+				+ "(select proj_mentor2_id from tb_tech001_mast_projects_detail xx where xx.proj_id=cmt1.proj_id)proj_mentor2_id "
+				+ "from tb_tech001_txn_project_comment cmt1 where regstr_id not in (select cmt.REGSTR_ID from "
+				+ "tb_tech001_txn_projects_team team, tb_tech001_txn_project_comment cmt where cmt.proj_id = team.proj_id and "
+				+ "cmt.REGSTR_ID = team.REGSTR_ID and team.proj_id= :PROJ_ID and cmt.IS_ACTIVE_COMMNT = 'Y' and team.proj_id=cmt.proj_id"
+				+ " union select cmt.REGSTR_ID from tb_tech001_mast_projects_detail x, tb_tech001_txn_project_comment cmt "
+				+ "where (x.proj_team_leader_id = cmt.REGSTR_ID or x.PROJ_FAC_RGSTR_ID = cmt.REGSTR_ID or x.proj_mentor1_id "
+				+ "= cmt.REGSTR_ID or x.proj_mentor2_id = cmt.REGSTR_ID) and x.proj_id= :PROJ_ID and cmt.IS_ACTIVE_COMMNT = 'Y' "
+				+ "and cmt.proj_id=x.proj_id) and proj_id= :PROJ_ID and IS_ACTIVE_COMMNT = 'Y'";
 		try {			
 			SQLQuery query  = session.createSQLQuery(hql);
 			query.setParameter("PROJ_ID", Long.valueOf(projId));
@@ -403,6 +424,42 @@ public static ArrayList<ProjectTeamComment> displayOtherComments(String projId, 
 				session.close();
 		}
 		return projects;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static Set<Long> getProjectTeamMembers(long projId) throws DownloadProjDocException{
+				
+		Set<Long> projTeamMems = new HashSet<Long>();
+		ArrayList<ProjectUser> projUsers = new ArrayList<ProjectUser>();
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		String hql = "select proj_team_leader_id , PROJ_FAC_RGSTR_ID , proj_mentor1_id , proj_mentor2_id "
+				+ "from tb_tech001_mast_projects_detail xx where xx.proj_id=:PROJ_ID union Select team.REGSTR_ID,"
+				+ "-1,-1,-1  from tb_tech001_txn_projects_team team where team.proj_id=:PROJ_ID union select "
+				+ "folo.REGSTR_ID,-1,-1,-1 from tb_tech001_txn_projects_follow folo where folo.proj_id= :PROJ_ID";
+		try {			
+			SQLQuery query  = session.createSQLQuery(hql);
+			query.setParameter("PROJ_ID", projId);
+			query.addEntity(ProjectUser.class);		
+			projUsers = (ArrayList<ProjectUser>) query.list();
+			for(ProjectUser projectUser:projUsers){	
+				if(projectUser.getProjFacRgstrId()!=0 || projectUser.getProjFacRgstrId()!=-1)				
+					projTeamMems.add(projectUser.getProjFacRgstrId());
+				if(projectUser.getProjMentor1Id()!=0 || projectUser.getProjMentor1Id()!=-1)				
+					projTeamMems.add(projectUser.getProjMentor1Id());
+				if(projectUser.getProjMentor2Id()!=0 || projectUser.getProjMentor2Id()!=-1)				
+					projTeamMems.add(projectUser.getProjMentor2Id());
+				if(projectUser.getProjTeamLeaderId()!=0 || projectUser.getProjTeamLeaderId()!=-1)				
+					projTeamMems.add(projectUser.getProjTeamLeaderId());
+			}			
+						
+		} catch (Exception e) {
+			//log.error("Error while retrieving Project Team Members rgstr Id: " + e.getMessage());
+			throw new DownloadProjDocException("Error while retrieving Project Team Members rgstr Id: "+ e.getMessage());
+		}finally{
+			if(session!=null)
+				session.close();
+		}
+		return projTeamMems;
 	}
 
 }

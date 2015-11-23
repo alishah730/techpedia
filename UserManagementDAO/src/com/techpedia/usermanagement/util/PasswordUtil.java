@@ -105,7 +105,7 @@ public class PasswordUtil {
 	    return strDate;
 	}
 	
-	public String getCurrentPassword(String userId) throws UserNotFoundException, PasswordResetException {
+/*	public String getCurrentPassword(String userId) throws UserNotFoundException, PasswordResetException {
 		String currentPassword =null;
 		Session ss = HibernateUtil.getSessionFactory().openSession();
 		try {
@@ -120,6 +120,33 @@ public class PasswordUtil {
 		currentPassword = ChiperUtils.decrypt2(passwords.getUsrPasswd());
 		} catch (Exception e) {
 			log.error("Password Reset Exception" + e.getMessage());
+			throw new PasswordResetException("UM-Ex-005","PasswordResetException",e.getMessage());
+		}finally{
+			ss.close();
+		}
+		return currentPassword;
+	}*/
+	
+	
+	public String getCurrentPassword(String emailId) throws UserNotFoundException, PasswordResetException {
+		String currentPassword =null;
+		Session ss = HibernateUtil.getSessionFactory().openSession();
+		try {
+		//Query queryPassword = ss.createQuery("from UsrMngtPassword where USR_ID = :userid order by CREATED_DATE desc");
+		Query queryPassword = ss.createQuery("from UsrMngtPassword where USR_ID in(select userId from UsrMngtMaster where EMAIL_ID=:emailId) order by CREATED_DATE desc");
+		queryPassword.setParameter("emailId", emailId);
+		queryPassword.setMaxResults(1);
+		UsrMngtPassword passwords = (UsrMngtPassword) queryPassword.uniqueResult();
+		if(passwords == null) {
+			log.error("Entered Email Id is not Existed in the database");
+			throw new UserNotFoundException("UM-Ex006","UserNotFoundException","Entered Email ID does not exist in Techpedia database");
+		}
+		currentPassword = ChiperUtils.decrypt2(passwords.getUsrPasswd());
+		}catch (UserNotFoundException e) {
+			log.error("User Not Found Exception" + e);
+			throw e;
+		}catch (Exception e) {
+			log.error("Password Reset Exception" + e);
 			throw new PasswordResetException("UM-Ex-005","PasswordResetException",e.getMessage());
 		}finally{
 			ss.close();

@@ -1,17 +1,35 @@
 <!DOCTYPE html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page import="java.util.ArrayList"%>
 <html ng-app="techpedia">
 <!-- BEGIN HEAD -->
-<jsp:include page="template/dashboardHeader.jsp" />
+
+<jsp:include page="template/NewHeader.jsp" />
 <!-- END HEADER -->
+ <style>
+  .breadcrumb>li+li:before {
+padding: 0 5px;
+color: #ccc;
+content: none;
+}
+
+.row {
+margin-right: -1px;
+margin-left: -1px;
+}
+
+
+ </style>
 <div class="clearfix"></div>
 <!-- BEGIN CONTAINER -->
+<div class="container customFont borderRadius style" >
+	
 <div class="page-container">
 	<!-- BEGIN SIDEBAR -->
 	<div class="page-sidebar-wrapper">
 		<!-- DOC: Set data-auto-scroll="false" to disable the sidebar from auto scrolling/focusing -->
 		<!-- DOC: Change data-auto-speed="200" to adjust the sub menu slide up/down speed -->
-		<jsp:include page="template/dashboardMenu.jsp" />
+		
 	</div>
 	<!-- END SIDEBAR -->
 	<!-- BEGIN CONTENT -->
@@ -29,23 +47,23 @@
 						<i class="fa fa-user" id="icon-size"></i> Mentors
 						<!-- <small>dashboard & statistics</small> -->
 					</h3>
-					<ul class="page-breadcrumb breadcrumb">
+					<ul class="page-breadcrumb breadcrumb" style="background-color: #D8D8D8;">
 						<%
 							if (session.getAttribute("username") != null) {
 						%>
-						<li><a href="./">Home</a> &raquo;</li>
-						<li><a href="dashboard">Dashboard</a> &raquo;</li>
+						<li><a href="./">Home</a> <font style="font-weight: bold; color: black; font-size:18px;">&raquo;</font></li>
+						<li><a href="dashboard">Dashboard</a><font style="font-weight: bold; color: black; font-size:18px;">&raquo;</font></li>
 						<li>Mentors</li>
 
-						<li class="pull-right">
+						<!-- <li class="pull-right">
 							<div id="dashboard-report-range" class="dashboard-date-range tooltips"
 								data-placement="bottom" data-original-title="Change dashboard date range">
 								<i class="icon-calendar"></i> <span></span> <i class="fa fa-angle-down"></i>
 							</div>
-						</li>
+						</li> -->
 						<%
 							} else {
-						%><li><a href="./">Home</a> &raquo;</li>
+						%><li><a href="./">Home</a> <font style="font-weight: bold; color: black; font-size:18px;">&raquo;</font></li>
 						<li>Mentors</li>
 						<%
 							}
@@ -71,22 +89,29 @@
 				<div class="row">
 					<div id="portofolio" ng-repeat="mentor in mentors | filter:filterSearch">
 						<a href="#" ng-click="clickMentor(mentor.rgstrId)">
-							<div class="post col-md-3 category">
+							<div class="col-md-3">
+							<div class="post col-xs-15 category">
 								<h5 class="header-customize">
 									{{mentor.firstName}}&nbsp;{{mentor.lastName}}<br />{{mentor.designationOfMentor}}
 								</h5>
+								<c:set var="mentorphoto" value="${projectdetails.projTeamLeaderId}" />
 								<div class="portofoliothumb">
-									<img src="{{mentor.photo||'images/UserDefault.jpg'}}" class="fourimage" alt="" />
+									<img ng-show="(mentor.photo=='data:undefined;base64,undefined')||(mentor.photo=='Photo path')" src="images/profile_icon.png" class="fourimage" alt="" style="width:110px; height:110px"/>
+									<img ng-hide="(mentor.photo=='data:undefined;base64,undefined')||(mentor.photo=='Photo path')" src="{{mentor.photo||'images/profile_icon.png'}}" class="fourimage" alt="" style="width:110px; height:110px"/>
 								</div>
-							</div>
+							</div></div>
 						</a>
 					</div>
 				</div>
-
+							<div class="alert alert-sm alert-info alert-dismissible" role="alert"
+					ng-show="message.length>0">
+					<p ng-repeat="msg in message" style="text-align: center">{{msg}}</p>
+				</div>
 				<div class="row">
-					<br />
+					<br/>
 					<p style="text-align: center">
-						<button ng-click="viewMore(count=count+1)">Show more</button>
+						<button id="showMoreBtn" ng-click="viewMore(count=count+1)" ng-show="message.length==0">Show more</button>
+						<img src="images/loading1.gif" id="img" style"display:none"width="42" height="42"/ >
 					</p>
 				</div>
 			</div>
@@ -100,6 +125,10 @@ BEGIN FOOTER -->
 	</div>
 </div>
 <!-- END FOOTER -->
+</div>
+<p class="back-top floatright">
+			<a href="#top"><span></span></a>
+		</p>
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
 <!--[if lt IE 9]>
@@ -107,7 +136,6 @@ BEGIN FOOTER -->
 <script src="../../assets/global/plugins/excanvas.min.js"></script> 
 <![endif]-->
 
-<jsp:include page="template/loginModal.jsp" />
 </body>
 <!-- END BODY -->
 </html>

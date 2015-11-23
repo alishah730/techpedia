@@ -3,6 +3,32 @@ package com.techpedia.bean;
 import org.codehaus.jackson.annotate.JsonIgnore;
 
 public class UserProfileVO {
+	private String projectBranchDescOfMentor;
+	public String getProjectBranchDescOfMentor() {
+		return projectBranchDescOfMentor;
+	}
+
+	public void setProjectBranchDescOfMentor(String projectBranchDescOfMentor) {
+		this.projectBranchDescOfMentor = projectBranchDescOfMentor;
+	}
+
+	private String projectBranchDescOfFaculty;
+	public String getProjectBranchDescOfFaculty() {
+		return projectBranchDescOfFaculty;
+	}
+
+	public void setProjectBranchDescOfFaculty(String projectBranchDescOfFaculty) {
+		this.projectBranchDescOfFaculty = projectBranchDescOfFaculty;
+	}
+
+	private String projectBranchDescOfStudent;
+	public String getProjectBranchDescOfStudent() {
+		return projectBranchDescOfStudent;
+	}
+
+	public void setProjectBranchDescOfStudent(String projectBranchDescOfStudent) {
+		this.projectBranchDescOfStudent = projectBranchDescOfStudent;
+	}
 
 	private String branchIdOfStudent;
 
@@ -45,6 +71,8 @@ public class UserProfileVO {
 		this.branchIdOfFaculty = branchIdOfFaculty;
 	}
 
+	
+	
 	// USR_MNGT_MASTER
 	private long rgstrId;
 	private String firstName;
@@ -1143,7 +1171,9 @@ public class UserProfileVO {
 	 */
 	@Override
 	public String toString() {
-		return "UserProfileVO [rgstrId=" + rgstrId + ", firstName=" + firstName + ", midName=" + midName + ", lastName=" + lastName + ", dob=" + dob + ", iSactive=" + iSactive + ", userType=" + userType + ", userName=" + userName + ", faceBookId=" + faceBookId + ", email=" + email + ", addrLn1=" + addrLn1 + ", addrLn2=" + addrLn2 + ", city=" + city + ", pincode=" + pincode + ", country=" + country + ", state=" + state + ", district=" + district + ", mobile=" + mobile + ", homePhoneNo=" + homePhoneNo + ", photo=" + photo + ", degreeOfStudent=" + degreeOfStudent + ", collge=" + collge + ", studentID=" + studentID + ", completionYear=" + completionYear + ", university=" + university + ", degreeOfMentor=" + degreeOfMentor + ", designationOfMentor=" + designationOfMentor + ", specializationOfMentor=" + specializationOfMentor + ", institutionalAssctnInfo=" + institutionalAssctnInfo + ", professionalExperience=" + professionalExperience + ", timeUspaceForMentoringPerMnth=" + timeUspaceForMentoringPerMnth + ", mentorProfile=" + mentorProfile + ", expectationFromMentor=" + expectationFromMentor + ", commitmentUBringIn=" + commitmentUBringIn + ", intOnGrassrtInnovators=" + intOnGrassrtInnovators + ", webpage=" + webpage + ", logo=" + logo + ", cntctPerNameofCollege=" + cntctPerNameofCollege + ", collgeContactEmail=" + collgeContactEmail + ", prinicipalName=" + prinicipalName + ", prinicipalEmail=" + prinicipalEmail + ", facilitiesOffrdToStudents=" + facilitiesOffrdToStudents + ", cntctInfoForNatnlInnovnClub=" + cntctInfoForNatnlInnovnClub + ", affltUniversityOfCollege=" + affltUniversityOfCollege + ", techpdaFactlyCoordtr=" + techpdaFactlyCoordtr + ", fax=" + fax + ", contactNameOfIndustry=" + contactNameOfIndustry + ", contactEmailOfIndustry=" + contactEmailOfIndustry + ", operatnSectr=" + operatnSectr + ", kindOfSprtUProvideInnovtr=" + kindOfSprtUProvideInnovtr + ", prdRng=" + prdRng + ", associateIndustry=" + associateIndustry + ", techngyExprtizOffrToOthers=" + techngyExprtizOffrToOthers + ", solnReqrdForTechnlgicalChlngs=" + solnReqrdForTechnlgicalChlngs + ", intrstToPoseInnovtnChlngAwrds=" + intrstToPoseInnovtnChlngAwrds + ", degreeOfFaculty=" + degreeOfFaculty + ", collgeOfFaculty=" + collgeOfFaculty + ", specializationOfFaculty=" + specializationOfFaculty + ", universityOfFaculty=" + universityOfFaculty + ", alumni=" + alumni + ", memshipInAssocns=" + memshipInAssocns + ", psnlWebpgLink=" + psnlWebpgLink + ", proffesionalExpOfFaculty=" + proffesionalExpOfFaculty + ", affltUniversityOfFaculty=" + affltUniversityOfFaculty + ", password=" + password + ", collegeName=" + collegeName + ", collegeDesc=" + collegeDesc + "]";
+	
+		
+		return "UserProfileVO [rgstrId=" + rgstrId + ", firstName=" + firstName + ", midName=" + midName + ", lastName=" + lastName + ", dob=" + dob + ", iSactive=" + iSactive + ", userType=" + userType + ", userName=" + userName + ", faceBookId=" + faceBookId + ", email=" + email + ", addrLn1=" + addrLn1 + ", addrLn2=" + addrLn2 + ", city=" + city + ", pincode=" + pincode + ", country=" + country + ", state=" + state + ", district=" + district + ", mobile=" + mobile + ", homePhoneNo=" + homePhoneNo + ", photo=" + photo + ", degreeOfStudent=" + degreeOfStudent + ", collge=" + collge + ", studentID=" + studentID + ", completionYear=" + completionYear + ", university=" + university + ", degreeOfMentor=" + degreeOfMentor + ", designationOfMentor=" + designationOfMentor + ", specializationOfMentor=" + specializationOfMentor + ", institutionalAssctnInfo=" + institutionalAssctnInfo + ", professionalExperience=" + professionalExperience + ", timeUspaceForMentoringPerMnth=" + timeUspaceForMentoringPerMnth + ", mentorProfile=" + mentorProfile + ", expectationFromMentor=" + expectationFromMentor + ", commitmentUBringIn=" + commitmentUBringIn + ", intOnGrassrtInnovators=" + intOnGrassrtInnovators + ", webpage=" + webpage + ", logo=" + logo + ", cntctPerNameofCollege=" + cntctPerNameofCollege + ", collgeContactEmail=" + collgeContactEmail + ", prinicipalName=" + prinicipalName + ", prinicipalEmail=" + prinicipalEmail + ", facilitiesOffrdToStudents=" + facilitiesOffrdToStudents + ", cntctInfoForNatnlInnovnClub=" + cntctInfoForNatnlInnovnClub + ", affltUniversityOfCollege=" + affltUniversityOfCollege + ", techpdaFactlyCoordtr=" + techpdaFactlyCoordtr + ", fax=" + fax + ", contactNameOfIndustry=" + contactNameOfIndustry + ", contactEmailOfIndustry=" + contactEmailOfIndustry + ", operatnSectr=" + operatnSectr + ", kindOfSprtUProvideInnovtr=" + kindOfSprtUProvideInnovtr + ", prdRng=" + prdRng + ", associateIndustry=" + associateIndustry + ", techngyExprtizOffrToOthers=" + techngyExprtizOffrToOthers + ", solnReqrdForTechnlgicalChlngs=" + solnReqrdForTechnlgicalChlngs + ", intrstToPoseInnovtnChlngAwrds=" + intrstToPoseInnovtnChlngAwrds + ", degreeOfFaculty=" + degreeOfFaculty + ", collgeOfFaculty=" + collgeOfFaculty + ", specializationOfFaculty=" + specializationOfFaculty + ", universityOfFaculty=" + universityOfFaculty + ", alumni=" + alumni + ", memshipInAssocns=" + memshipInAssocns + ", psnlWebpgLink=" + psnlWebpgLink + ", proffesionalExpOfFaculty=" + proffesionalExpOfFaculty + ", affltUniversityOfFaculty=" + affltUniversityOfFaculty + ", password=" + password + ", collegeName=" + collegeName + ", collegeDesc=" + collegeDesc + ", branchIdOfStudent=" + branchIdOfStudent + " ,branchIdOfMentor=" + branchIdOfMentor + "]";
 	}
 
 }

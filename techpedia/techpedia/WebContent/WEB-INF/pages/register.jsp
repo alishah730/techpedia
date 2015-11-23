@@ -1,11 +1,32 @@
 <%@ page import="java.util.Random"%>
 <html ng-app="techpedia">
-<jsp:include page="template/dashboardHeader.jsp" />
+<jsp:include page="template/NewHeader.jsp" />
+ <style>
+  .breadcrumb>li+li:before {
+padding: 0 5px;
+color: #ccc;
+content: none;
+} 
 
+.input-group-addon, .input-group-btn {
+width: 200px !important;
+width: 200px !important;
+}
+
+.input-group-addon, .input-group-btn, .input-group .form-control {
+display: table-cell;
+width: 100%;
+}
+.row {
+margin-right: -1px;
+margin-left: -1px;
+}
+</style>
 <div class="clearfix"></div>
+<div class="container customFont borderRadius style">
 <div class="page-container">
 	<div class="page-sidebar-wrapper">
-		<jsp:include page="template/dashboardMenu.jsp" />
+	
 	</div>
 	<div class="page-content-wrapper" ng-controller="RegisterController" ng-init="InitLoad()">
 		<div class="page-content">
@@ -13,31 +34,19 @@
 				<div class="col-md-11">
 					<!-- BEGIN PAGE TITLE & BREADCRUMB-->
 					<h3 class="page-title">
-						<i class="fa fa-book" id="icon-size"></i>&nbsp;Register
+					<%String typeofuser = (String) request.getParameter("usertype"); %>
+						<i class="fa fa-book" id="icon-size"></i>&nbsp;<span style="text-transform: capitalize;">Register - <%=typeofuser %></span>
 					</h3>
 					<ul class="page-breadcrumb breadcrumb">
 						<li><a href="./">Home</a> &raquo;</li>
 						<li>Register</li>
 
-						<li class="pull-right">
-							<div id="dashboard-report-range" class="dashboard-date-range tooltips"
-								data-placement="bottom" data-original-title="Change dashboard date range">
-								<i class="icon-calendar"></i> <span></span> <i class="fa fa-angle-down"></i>
-							</div>
-						</li>
+						
 					</ul>
 					<!-- END PAGE TITLE & BREADCRUMB-->
 				</div>
 			</div>
-			<!-- ERROR MESSAGE -->
-			<div class="row error-place" style="display: none;">
-				<div class="col-xs-11">
-					<div class="panel panel-danger">
-						<div class="panel-heading">Error:</div>
-						<div class="panel-body error"></div>
-					</div>
-				</div>
-			</div>
+	
 			<!-- END PAGE HEADER-->
 
 			<div class="row">
@@ -65,38 +74,93 @@
 						<div>
 							<form id="registerBasicForm" name="registerBasicForm" method="post" novalidate>
 								<div class="col-xs-12">
-									<div class="panel panel-default">
-										<div class="panel-heading">
-											<div class="btn-group">Type of user</div>
-										</div>
-										<div class="panel-body">
+								<div class="panel panel-default">
+										<div class="panel-heading">Login Information</div>
+										<div class="panel-body user-info">
+										<div class="col-xs-12">
+												<div class="input-group input-group-sm" >
+													<span class="input-group-addon">Username *</span> <input name="userName" type="text" id="userName"
+														class="form-control" placeholder="Username" ng-model="register.userName" required
+														ng-maxlength="50" data-toggle='tooltip' data-placement='right' 
+														title='Please enter Username' />
+												</div>
 
-											<div class="btn-group">
-												<div class="col-xs-1 col-md-3">
-													<button class="btn btn-info reg-select" type="button" ng-click="typeOfUser('student')">Student</button>
-												</div>
-												<div class="col-xs-12 col-md-3">
-													<button class="btn btn-default reg-select" type="button"
-														ng-click="typeOfUser('college')">College</button>
-												</div>
-												<div class="col-xs-12 col-md-3">
-													<button class="btn btn-default reg-select" type="button"
-														ng-click="typeOfUser('faculty')">Faculty</button>
-												</div>
-												<div class="col-xs-12 col-md-3">
-													<button class="btn btn-default reg-select" type="button"
-														ng-click="typeOfUser('mentor')">Mentor</button>
-												</div>
-												<!-- <div class="col-xs-12 col-md-2">
-													<button class="btn btn-default reg-select" type="button"
-														ng-click="typeOfUser('industry')">Industry</button>
-												</div> -->
+												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.userName.$dirty && registerBasicForm.userName.$error.required">User
+													name is required</div>
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.userName.$dirty && registerBasicForm.userName.$error.maxlength">User
+													name cannot be more than 40 characters</div> -->
+
 											</div>
 
-										</div>
-									</div>
-								</div>
+											<div class="col-xs-12">&nbsp;</div>
+											<div class="col-xs-12">
+											<div class="input-group input-group-sm"  >
+													<span class="input-group-addon">Password *</span> <input name="password" type="password" id="userPassword1"
+														class="form-control" placeholder="Password" ng-model="register.password" required
+														ng-model="register.confirmPassword" required ng-minlength="6" ng-maxlength="16" ng-pattern="/^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%&^*-+ = /| < >{}]).{6,}$/" password-match="register.password" data-toggle='tooltip' data-placement='right' 
+														title='Password should contain a minimum of 6 and a maximun of 16 characters with atleast one numeric value and one special character excluding (,.[]_\-)'/>
+												</div>
 
+												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.password.$dirty && registerBasicForm.password.$error.required">Password
+													is required</div>
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.password.$dirty && registerBasicForm.password.$error.minlength">Password
+													must be more than 6 characters long</div>-->
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.password.$dirty && registerBasicForm.password.$error.pattern">Password should contain a minimum of 6 and a maximun of 16 characters with atleast one numeric value and one special character excluding (,.[]_\-)</div> 
+													
+
+											</div>
+
+											<div class="col-xs-12">&nbsp;</div>
+
+											<div class="col-xs-12" >
+											<div class="input-group input-group-sm" >
+													<span class="input-group-addon">Confirm *</span> <input name="confirmPassword"
+														type="password" class="form-control" placeholder="Confirm password" id="confirmPassword"
+														ng-model="register.confirmPassword" required ng-minlength="6" ng-maxlength="16"  ng-pattern="/^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%&^*+ = /| < >{}]).{6,}$/" password-match="register.password" data-toggle='tooltip' data-placement='right' 
+														title='Password & Confirm password should be same '/>
+												</div>
+
+												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.confirmPassword.$dirty && registerBasicForm.confirmPassword.$error.required">Password
+													is required</div>
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.confirmPassword.$dirty && registerBasicForm.confirmPassword.$error.minlength">Password
+													must be more than 6 characters long</div>
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.confirmPassword.$dirty && registerBasicForm.confirmPassword.$error.maxlength">Password
+													must be less than 16 characters long</div>
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.confirmPassword.$dirty && registerBasicForm.confirmPassword.$error.pwmatch">Passwords
+													do not match</div> -->
+									<!-- 				<div class="alert alert-sm alert-danger alert-dismissible" role="alert" 
+													ng-show="registerBasicForm.confirmPassword.$dirty && registerBasicForm.confirmPassword.$error.passwordVerify">
+        Fields are not equal!</div> -->
+											</div>
+										<div class="col-xs-12">&nbsp;</div>
+											<div class="col-xs-12">
+												<div class="input-group input-group-sm">
+													<span class="input-group-addon">Email *</span> <input name="email" type="email" id="email"
+														maxlength=100 class="form-control remail email-input" placeholder="Email"
+														ng-model="register.email" required data-toggle='tooltip' data-placement='right' 
+														title="Please enter valid email as a@a.com" />
+												</div>
+												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.email.$dirty && registerBasicForm.email.$error.required">Email
+													is required</div>
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.email.$dirty && registerBasicForm.email.$error.email">Email
+													is not valid</div> -->
+
+											</div>
+										</div>
+										</div>
+							
+</div>
 								<div class="col-xs-12 col-md-6">
 									<!-- USER INFO START -->
 									<div class="panel panel-default">
@@ -107,7 +171,7 @@
 													<span class="input-group-addon"> First name *</span> 
 													<input name="firstName" type="text" id="firstName"
 														 class="form-control rname my-tooltip" placeholder="First name" ng-model="register.firstName"
-														required ng-maxlength="30" ng-pattern="/^(\D)+$/" data-toggle='tooltip' data-placement='right' 
+														required ng-maxlength="50" ng-pattern="/^(\D)+$/" data-toggle='tooltip' data-placement='right' 
 														title='Please enter firstname without special characters' />
 														
 												</div> 
@@ -164,7 +228,7 @@
 												<div class="input-group input-group-sm" >
 													<span class="input-group-addon">Last name *</span> <input name="lastName" type="text" id="lastName"
 														class="form-control rname" placeholder="Last name" ng-model="register.lastName"
-														required ng-maxlength="30" ng-pattern="/^(\D)+$/" data-toggle='tooltip' data-placement='right' 
+														required ng-maxlength="50" ng-pattern="/^(\D)+$/" data-toggle='tooltip' data-placement='right' 
 														title='Please enter lastname without special characters'/>
 												</div>
 
@@ -183,79 +247,11 @@
 											<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12">
-												<div class="input-group input-group-sm" >
-													<span class="input-group-addon">Username *</span> <input name="userName" type="text" id="userName"
-														class="form-control" placeholder="Username" ng-model="register.userName" required
-														ng-maxlength="40" data-toggle='tooltip' data-placement='right' 
-														title='Please enter Username' />
-												</div>
-
-												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.userName.$dirty && registerBasicForm.userName.$error.required">User
-													name is required</div>
-												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.userName.$dirty && registerBasicForm.userName.$error.maxlength">User
-													name cannot be more than 40 characters</div> -->
-
-											</div>
-
-											<div class="col-xs-12">&nbsp;</div>
-
-											<div class="col-xs-12">
-											<div class="input-group input-group-sm" >
-													<span class="input-group-addon">Password *</span> <input name="password" type="password" id="password"
-														class="form-control" placeholder="Password" ng-model="register.password" required
-														ng-minlength="6" ng-maxlength="16" ng-pattern="/^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/" data-toggle='tooltip' data-placement='right' 
-														title='Password should contain atleast one numeric value and one special character'/>
-												</div>
-
-												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.password.$dirty && registerBasicForm.password.$error.required">Password
-													is required</div>
-												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.password.$dirty && registerBasicForm.password.$error.minlength">Password
-													must be more than 6 characters long</div>
-												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.password.$dirty && registerBasicForm.password.$error.maxlength">Password
-													must be less than 16 characters long</div> -->
-													
-
-											</div>
-
-											<div class="col-xs-12">&nbsp;</div>
-
-											<div class="col-xs-12">
-											<div class="input-group input-group-sm" >
-													<span class="input-group-addon">Confirm *</span> <input name="confirmPassword"
-														type="password" class="form-control" placeholder="Confirm password" id="confirmPassword"
-														ng-model="register.confirmPassword" required ng-minlength="6" ng-maxlength="16" password-match="register.password" data-toggle='tooltip' data-placement='right' 
-														title='Password & Confirm password should be same '/>
-												</div>
-
-												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.confirmPassword.$dirty && registerBasicForm.confirmPassword.$error.required">Password
-													is required</div>
-												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.confirmPassword.$dirty && registerBasicForm.confirmPassword.$error.minlength">Password
-													must be more than 6 characters long</div>
-												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.confirmPassword.$dirty && registerBasicForm.confirmPassword.$error.maxlength">Password
-													must be less than 16 characters long</div>
-												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.confirmPassword.$dirty && registerBasicForm.confirmPassword.$error.pwmatch">Passwords
-													do not match</div> -->
-									<!-- 				<div class="alert alert-sm alert-danger alert-dismissible" role="alert" 
-													ng-show="registerBasicForm.confirmPassword.$dirty && registerBasicForm.confirmPassword.$error.passwordVerify">
-        Fields are not equal!</div> -->
-											</div>
-
-											<div class="col-xs-12">&nbsp;</div>
-
-											<div class="col-xs-12">
+										
 												<div class="input-group input-group-sm">
 													<span class="input-group-addon">Mobile *</span> <input name="mobile" type="text" id="mobile"
 														class="form-control" placeholder="Mobile" ng-model="register.mobile" required
-														ng-minlength=10 ng-maxlength=10 data-toggle='tooltip' data-placement='right' 
+														ng-minlength=10 ng-maxlength=10  ng-pattern="/^(\d)+$/" data-toggle='tooltip' data-placement='right' 
 														title='Mobile number should be 10 digits' />
 												</div>
 												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -431,28 +427,13 @@
 													can only contain digits</div> -->
 
 											</div>
-											<div class="col-xs-12">&nbsp;</div>
-											<div class="col-xs-12">
-												<div class="input-group input-group-sm">
-													<span class="input-group-addon">Email *</span> <input name="email" type="email" id="email"
-														maxlength=100 class="form-control remail email-input" placeholder="Email"
-														ng-model="register.email" required data-toggle='tooltip' data-placement='right' 
-														title="Please enter valid email as a@a.com" />
-												</div>
-												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.email.$dirty && registerBasicForm.email.$error.required">Email
-													is required</div>
-												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.email.$dirty && registerBasicForm.email.$error.email">Email
-													is not valid</div> -->
-
-											</div>
+											
 											<div class="col-xs-12">&nbsp;</div>
 										</div>
 									</div>
 								</div>
 
-								<div class="col-xs-12">
+								 <div class="col-xs-12">
 									<div class="panel panel-default">
 										<div class="panel-heading">
 											<div class="btn-group">Photograph</div>
@@ -464,22 +445,22 @@
 											<canvas class='canvas' width='160' height='120' style='display: none;'></canvas>
 											<div class="col-xs-12">
 												<div class="col-xs-3">
-													<video class='live' width='160' height='120' autoplay></video>
+													<!-- <video class='live' width='160' height='120' autoplay></video> -->
 													<img width=160 height=120 src='images/gravatar.png' class='photo' alt='photo'
-														style="display: none;">
+														>
 												</div>
 
 												<div class="col-xs-9">
 													<div class="col-xs-12">
-														<!-- <button class='takePhoto btn btn-info btn-sm'>Take photo</button> -->
-														<!-- <button class='retakePhoto btn btn-info btn-sm' style="display: none;">Retake
+														<!-- <button class='takePhoto btn btn-info btn-sm'>Take photo</button>
+														<button class='retakePhoto btn btn-info btn-sm' style="display: none;">Retake
 															photo</button> -->
 														<input id='hidden-photo-input' type='file' accept='image*;capture=camera'
 															style='display: none;' ng-file="file" base64 />
 													</div>
 													<div class="col-xs-12">&nbsp;</div>
 													
-														<button class='btn btn-sm btn-info photo-btn-click'>Upload photo</button>
+														<button class='btn btn-sm btn-info' onclick="$('#hidden-photo-input').click();">Upload photo</button>
 														<div class="col-xs-12" ng-show="msg.size.length>0">File size cannot be more than 10 KB</div>
 							<div class="col-xs-12" ng-show="message.length>0">
 								<div ng-repeat="msg in message">{{msg}}</div>
@@ -490,7 +471,7 @@
 										</div>
 									</div>
 								</div>
-								<div class="col-xs-12">
+								 <div class="col-xs-12">
 <!-- 									
 <a href="#" class="btn btn-primary reg-ctn-1" onclick="checkEmpty()"><span
 										style="color: white;">Continue</span></a> -->
@@ -504,12 +485,14 @@
 						ng-class="registerBasicForm.$invalid?'ui-state-disabled':'ui-state-default'">Additional
 						Information</h3>
 					<div>
-						<input name="userType" id="userType" type="text" style="display: none;">
+						
 						<form id="rfegisterAdditionalStudentForm" name="registerAdditionalStudentForm" method="post"
 							novalidate>
+							
 							<div class="dynamic-div" id="student" ng-show="register.userType=='student'">
 								<div class="panel panel-default">
-									<div id="profession" class="panel-heading">Student</div>
+									<!-- <div id="profession" class="panel-heading">Student</div> -->
+									<input name="userType1" id="userType1" type="hidden" style="display: none;" value="<%=typeofuser %>">
 									<div class="panel-body">
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
@@ -534,7 +517,8 @@
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Date of birth *</span> <input id="dateOfBirthDatePicker"
 													name="dob" type="text" class="form-control" placeholder="Date of birth"
-													ng-model="register.dob" datepicker-angular /><span class="input-group-addon">YYYY-MM-DD</span>
+													ng-model="register.dob" datepicker-angular required style="width: 217px;" required data-toggle='tooltip' data-placement='right' 
+														title="Please enter date of Birth"/><span class="input-group-addon">YYYY-MM-DD</span>
 
 												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 													ng-show="registerAdditionalStudentForm.dob.$dirty && registerAdditionalStudentForm.dob.$error.required">DOB
@@ -565,8 +549,9 @@
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Completion Year *</span> <input
 													id="studentCompletionYear" name="completionYear" type="text" class="form-control"
-													placeholder="Completion year" ng-model="register.completionYear" datepicker-angular /><span
-													class="input-group-addon">YYYY-MM-DD</span>
+													placeholder="Completion year" ng-model="register.completionYear" datepicker-angular  required style="width: 217px;" required data-toggle='tooltip' data-placement='right' 
+														title="Please enter degree completion year"/><span
+													class="input-group-addon" >YYYY-MM-DD</span>
 											</div>
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 												ng-show="registerAdditionalStudentForm.completionYear.$dirty && registerAdditionalStudentForm.completionYear.$error.required">Student
@@ -580,11 +565,25 @@
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
-												<span class="input-group-addon">College name *</span> <input id="CollegeNames"
+												<span class="input-group-addon">College name *</span><!--  <input id="CollegeNames"
 													name="collge" type="text" class="form-control" placeholder="College name"
-													ng-model="register.collge" required ng-maxlength="100" ng-pattern="/^(\D)+$/" />
+													ng-model="register.collge" required ng-maxlength="100" ng-pattern="/^(\D)+$/"
+													
+													required data-toggle='tooltip' data-placement='right' 
+														title="Please enter College Name" /> -->
+														<input style="width: 180px !important;" type="text" class="form-control" placeholder="Search Colleges" id="CollegeNames"
+														ng-model="register.collge" value="" required data-toggle='tooltip' data-placement='right' 
+														title="Please enter your college name">
 											</div>
-
+                                               
+                                                
+                                             <!--   <div class="col-xs-12"> 
+													<input type="text" class="form-control" placeholder="Search branches" id="branchIdOfStudent2"
+														ng-model="register.branchIdOfStudent" ng-change="search()" value=""  required data-toggle='tooltip' data-placement='right' 
+														title="Please enter Branch"/>
+												</div>
+                                                 -->
+                                               
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 												ng-show="registerAdditionalStudentForm.collge.$dirty && registerAdditionalStudentForm.collge.$error.required">College
 												is required</div>
@@ -600,9 +599,10 @@
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
-												<span class="input-group-addon">University *</span> <input name="university" type="text" id="university"
+												<span class="input-group-addon">University *</span> <input style="width: 180px !important;"name="university" type="text" id="university"
 													class="form-control" placeholder="University" ng-model="register.university" required
-													ng-maxlength="100" ng-pattern="/^(\D)+$/" />
+													ng-maxlength="100" ng-pattern="/^(\D)+$/"  data-toggle='tooltip' data-placement='right' 
+														title="Please enter  University"/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -623,20 +623,21 @@
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm">
 												<span class="input-group-addon">Branch *</span>
-												<div class="col-xs-12">
-													<input type="text" class="form-control" placeholder="Search branches" id="branchIdOfStudent2"
-														ng-model="searchTerm" ng-change="search()" value="" required/>
-												</div> 
+												
+													<input style="width: 180px !important;" type="text" class="form-control" placeholder="Search branches" ng-model="register.branchIdOfStudent" id="branchIdOfStudent2"
+														  value=""  required data-toggle='tooltip' data-placement='right' 
+														title="Please enter Branch">
+												  
 												<!--  <div class="col-xs-12">
 													<input type="text" class="form-control" placeholder="Search branches" id="branchIdOfStudent2"
 														ng-model="searchTerm" ng-change="search()" value="" />
 												</div> -->
-										 <div class="col-xs-12" >
+									<!-- 	 <div class="col-xs-12" >
 													<select id="branchIdOfStudent" class="form-control"
 														ng-model="register.branchIdOfStudent" 
 														ng-options="item.branchId as item.projBranchDesc for item in data" >
 													</select>
-												</div> 
+												</div>  -->
 											</div>
 										</div>
 									</div>
@@ -646,15 +647,17 @@
 
 						<form id="registerAdditionalCollegeForm" name="registerAdditionalCollegeForm" method="post"
 							novalidate>
+							<input name="userType1" id="userType1" type="hidden" style="display: none;" value="<%=typeofuser %>">
 							<div class="dynamic-div" id="college" ng-show="register.userType=='college'">
 								<div class="panel panel-default">
-									<div id="profession" class="panel-heading">College</div>
+									<!-- <div id="profession" class="panel-heading">College</div> -->
 									<div class="panel-body">
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm">
-												<span class="input-group-addon">College name *</span> <input name="collegeName" id="collegeName"
-													type="text" class="form-control" placeholder="College name"
-													ng-model="register.collegeName" required ng-pattern="/^(\D)+$/" required />
+												<span class="input-group-addon">Contact Person  Name *</span> <input name="cntctPerNameofCollege" id="collegecontactname"
+													type="text" class="form-control" placeholder="Contact Person Name"
+													ng-model="register.cntctPerNameofCollege" required ng-pattern="/^(\D)+$/" required   data-toggle='tooltip' data-placement='right' 
+														title="Please enter Contact Person Name"/>
 											</div>
 
 
@@ -672,7 +675,8 @@
 											<div class="input-group input-group-sm">
 												<span class="input-group-addon">Principal name *</span> <input name="prinicipalName" id="prinicipalName"
 													type="text" class="form-control" placeholder="Principal name"
-													ng-model="register.prinicipalName" required ng-pattern="/^(\D)+$/" required/>
+													ng-model="register.prinicipalName" required ng-pattern="/^(\D)+$/" required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter Principal Name of college"/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -690,7 +694,8 @@
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">University *</span>  <input name="affltUniversityOfCollege" id="affltUniversityOfCollege"
 													type="text" class="form-control" placeholder="University name"
-													ng-model="register.affltUniversityOfCollege" required ng-pattern="/^(\D)+$/"  required/> 
+													ng-model="register.affltUniversityOfCollege" required ng-pattern="/^(\D)+$/"   required data-toggle='tooltip' data-placement='right' 
+														title="Please enter University of college"/> 
 													 
 											</div>
 
@@ -705,10 +710,11 @@
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm">
-												<span class="input-group-addon">Techpedia faculty *</span> <input id="collegecontactname"
+												<span class="input-group-addon">Techpedia faculty *</span> <input id="techpdaFactlyCoordtr"
 													maxlength=100 name="techpdaFactlyCoordtr" type="text" class="form-control"
 													placeholder="Techpedia faculty co-ordinator" ng-model="register.techpdaFactlyCoordtr"
-													required ng-pattern="/^(\D)+$/" required />
+													required ng-pattern="/^(\D)+$/" required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter Techpedia registered Faculty of college"/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -724,9 +730,10 @@
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm">
-												<span class="input-group-addon">Principal email *</span> <input id="collegecontactemail"
+												<span class="input-group-addon">Principal email *</span> <input id="prinicipalEmail"
 													name="prinicipalEmail" maxlength=100 type="email" class="form-control"
-													placeholder="Principal email id" ng-model="register.principalEmail"  required/>
+													placeholder="Principal email id" ng-model="register.prinicipalEmail"  required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter Principal Email"/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -741,7 +748,8 @@
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Website link *</span> <input name="webpage" id="webpage" type="url"
-													class="form-control" placeholder="College url" ng-model="register.webpage" required/>
+													class="form-control" placeholder="College url" ng-model="register.webpage" required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter Website link of college"/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -756,37 +764,39 @@
 												<span class="input-group-addon">Facility offered *</span> <input
 													name="facilitiesOffrdToStudents" id="facilitiesOffrdToStudents" type="text" class="form-control"
 													placeholder="Facility offered to students"
-													ng-model="register.facilitiesOffrdToStudents" required />
+													ng-model="register.facilitiesOffrdToStudents" required required data-toggle='tooltip' data-placement='right' 
+														title="Please enter Facility offered to students" />
 											</div>
 										</div>
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
-												<span class="input-group-addon">Innovation club *</span> <input id="collegecontactname"
+												<span class="input-group-addon">Innovation club *</span> <input id="cntctInfoForNatnlInnovnClub"
 													maxlength=100 name="cntctInfoForNatnlInnovnClub" type="text" class="form-control"
 													placeholder="Innovation club contact info"
-													ng-model="register.cntctInfoForNatnlInnovnClub" required />
+													ng-model="register.cntctInfoForNatnlInnovnClub" required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter innovation club contact information" />
 											</div>
 										</div>
 										<div class="col-xs-12">&nbsp;</div>
 
-										<div class="col-xs-12 col-md-6">
+										<!-- <div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">College description *</span> <input
 													id="collegeDesc" name="collegeDesc" type="text" class="form-control"
-													placeholder="College description" ng-model="register.collegeDesc" required/>
+													placeholder="College description" ng-model="register.collegeDesc" required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter college description"/>
 											</div>
-										</div>
+										</div> -->
 
-										<div class="col-xs-12 col-md-6">
+										<!-- <div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">College Logo</span> 
 											<input ng-model="register.logo" type="text" name="logo" id="logoByte64"
 												style="display: none;" /> <input type="text" name="logo" id="logoByte64Size"
 												style="display: none;" />
 										
-										
-											
+									
 
 												
 													<div class="col-xs-12">
@@ -794,13 +804,13 @@
 														style="display: none;">
 														<input id='hidden-logo-input' type='file' accept='image*;'
 															style='display: none;' ng-file="file" base64 />
-															<button class="btn btn-sm btn-info choose-logo-btn">Upload Logo</button>
+															<button class="btn btn-sm btn-info" onclick="$('#hidden-logo-input').click();">Upload Logo</button>
 													</div>
 											
 											
 										
 										</div>
-									<!-- 	<div class="input-group input-group-sm">
+										<div class="input-group input-group-sm">
 												<span class="input-group-addon" style="width: 138px;">Logo </span>
 												<button class="btn btn-info choose-logo-btn">Choose logo</button>
 													<img width=160 height=120 src='images/gravatar.png' class='logo' alt='logo'
@@ -811,9 +821,48 @@
 												style="display: none;" />
 													
 											</div>
-					 -->
+					
+										</div>
+									 -->
+									 <div class="col-xs-12">
+									<div class="panel panel-default">
+										<div class="panel-heading">
+											<div class="btn-group">College Logo</div>
+										</div>
+										<div class="panel-body photoRTC">
+											<input ng-model="register.logo" type="text" name="logo" id="photo1Byte64"
+												style="display: none;" /> <input type="text" name="logo" id="photo1Byte64Size"
+												style="display: none;" />
+											<canvas class='canvas' width='160' height='120' style='display: none;'></canvas>
+											<div class="col-xs-12">
+												<div class="col-xs-3">
+													<video class='live' width='160' height='120' autoplay></video>
+													<img width=160 height=120 src='images/gravatar.png' class='photo1' alt='photo'
+														style="display: none;">
+												</div>
+
+												<div class="col-xs-9">
+													<div class="col-xs-12">
+														<!-- <button class='takePhoto btn btn-info btn-sm'>Take photo</button> -->
+														<!-- <button class='retakePhoto btn btn-info btn-sm' style="display: none;">Retake
+															photo</button> -->
+														<input id='hidden-photo1-input' type='file' accept='image*;capture=camera'
+															style='display: none;' ng-file="file1" base64 />
+													</div>
+													<div class="col-xs-12">&nbsp;</div>
+													
+														<button class='btn btn-sm btn-info' onclick="$('#hidden-photo1-input').click();">Upload logo</button>
+														<div class="col-xs-12" ng-show="msg.size.length>0">File size cannot be more than 10 KB</div>
+							<div class="col-xs-12" ng-show="message.length>0">
+								<div ng-repeat="msg in message">{{msg}}</div>
+													</div>
+													
+												</div>
+											</div>
 										</div>
 									</div>
+								</div>
+								</div>
 								</div>
 							
 							</div>
@@ -821,16 +870,18 @@
 
 						<form id="registerAdditionalFacultyForm" name="registerAdditionalFacultyForm" method="post"
 							novalidate>
+							<input name="userType1" id="userType1" type="hidden" style="display: none;" value="<%=typeofuser %>">
 							<div class="dynamic-div" id="faculty" ng-show="register.userType=='faculty'">
 								<div class="panel panel-default">
-									<div id="profession" class="panel-heading">Faculty</div>
+									<!-- <div id="profession" class="panel-heading">Faculty</div> -->
 									<div class="panel-body">
 
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Degree *</span> <input id="facultydegree" maxlength=100
 													name="degreeOfFaculty" type="text" class="form-control" placeholder="Degree"
-													ng-model="register.degreeOfFaculty" required ng-pattern="/^(\D)+$/" required/>
+													ng-model="register.degreeOfFaculty" required ng-pattern="/^(\D)+$/" required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter degree of faculty"/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -842,9 +893,10 @@
 										</div>
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
-												<span class="input-group-addon">College name *</span> <input name="collgeOfFaculty" id="collgeOfFaculty"
+												<span class="input-group-addon">College name *</span> <input style="width: 173px;" name="collgeOfFaculty" id="collgeOfFaculty"
 													type="text" class="form-control" placeholder="College name"
-													ng-model="register.collgeOfFaculty" required ng-pattern="/^(\D)+$/" required/>
+													ng-model="register.collgeOfFaculty" required ng-pattern="/^(\D)+$/" required required data-toggle='tooltip' data-placement='right' 
+														title="Please enter college of faculty"/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -863,21 +915,27 @@
 											<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Speciality *</span>
-										<div class="col-xs-12">
-													<input type="text" class="form-control" placeholder="Search branches" id="specializationOfFaculty2"
-														ng-model="searchTerm" ng-change="search()" value="" required />
-												</div>												<div class="col-xs-12">
+										
+													<input style="width: 173px;" type="text" class="form-control" placeholder="Search branches" id="specializationOfFaculty2"
+														ng-model="register.specializationOfFaculty"  value=""  required data-toggle='tooltip' data-placement='right' 
+														title="Please enter specialised branch of faculty"/>
+												
+												
+												
+												
+																							<!-- <div class="col-xs-12">
 											<select class="form-control" ng-model="register.specializationOfFaculty" 
 													ng-options="item.branchId as item.projBranchDesc for item in data">
  													</select> 
-												</div> 
+												</div>  -->
 											</div>
 										</div>
 													<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm"  >
-												<span class="input-group-addon">University *</span> <input name="universityOfFaculty" id="universityOfFaculty"
+												<span class="input-group-addon">University *</span> <input style="width: 173px;" name="universityOfFaculty" id="universityOfFaculty"
 													type="text" class="form-control" placeholder="University"
-													ng-model="register.universityOfFaculty" required ng-pattern="/^(\D)+$/" required />
+													ng-model="register.universityOfFaculty" required ng-pattern="/^(\D)+$/" required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter University of faculty"/>
 											</div>
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 												ng-show="registerAdditionalFacultyForm.universityOfFaculty.$dirty && registerAdditionalFacultyForm.universityOfFaculty.$error.required">University
@@ -893,7 +951,8 @@
 											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Experience *</span> <input name="proffesionalExpOfFaculty" id="proffesionalExpOfFaculty"
 													type="text" class="form-control" placeholder="Profeesional experience in months"
-													ng-model="register.proffesionalExpOfFaculty" ng-pattern="/^(\d)+$/" required />
+													ng-model="register.proffesionalExpOfFaculty" ng-pattern="/^(\d)+$/"  required data-toggle='tooltip' data-placement='right' 
+														title="Please enter experience of faculty" />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -905,7 +964,8 @@
 											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Webpage link *</span> <input name="psnlWebpgLink" id="psnlWebpgLink"
 													type="url" class="form-control" placeholder="Personal webpage link"
-													ng-model="register.psnlWebpgLink" required />
+													ng-model="register.psnlWebpgLink"  required data-toggle='tooltip' data-placement='right' 
+														title="Please enter personal webpage link"/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -919,19 +979,21 @@
 											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Alumni *</span> <input name="alumni" type="text" id="alumni"
 													class="form-control" placeholder="Alumni" ng-model="register.alumni"
-													ng-pattern="/^(\D)+$/" required/>
+													ng-pattern="/^(\D)+$/" required required data-toggle='tooltip' data-placement='right' 
+														title="Please enter alumni of faculty"/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 												ng-show="registerAdditionalFacultyForm.alumni.$dirty && registerAdditionalFacultyForm.alumni.$error.pattern">Alumni
 												can only contain text</div> -->
 										</div>
-<div class="col-xs-12 col-md-6">
+                                    <div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Association list *</span> <input
 													id="facultycompletionyear" maxlength=100 name="memshipInAssocns" type="text"
 													class="form-control" placeholder="Association or membership name list"
-													ng-model="register.memshipInAssocns" required />
+													ng-model="register.memshipInAssocns" required required data-toggle='tooltip' data-placement='right' 
+														title="Please enter Association or membership name list"/>
 											</div>
 										</div>
 										
@@ -943,7 +1005,8 @@
 												<span class="input-group-addon">Affiliated university *</span> <input
 													name="affltUniversityOfFaculty" id="affltUniversityOfFaculty" type="text" class="form-control"
 													placeholder="Affiliated university name" ng-model="register.affltUniversityOfFaculty"
-													ng-pattern="/^(\D)+$/" required />
+													ng-pattern="/^(\D)+$/" required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter Affilated University of faculty" />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -958,15 +1021,17 @@
 
 						<form id="registerAdditionalMentorForm" name="registerAdditionalMentorForm" method="post"
 							novalidate>
+							<input name="userType1" id="userType1" type="hidden" style="display: none;" value="<%=typeofuser %>">
 							<div class="dynamic-div" id="mentor" ng-show="register.userType=='mentor'">
 								<div class="panel panel-default">
-									<div id="profession" class="panel-heading">Mentor</div>
+									<!-- <div id="profession" class="panel-heading">Mentor</div> -->
 									<div class="panel-body">
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm">
 												<span class="input-group-addon">Degree *</span> <input name="degreeOfMentor"  id="degreeOfMentor" type="text"
 													class="form-control" placeholder="Degree" ng-model="register.degreeOfMentor" required
-													ng-pattern="/^(\D)+$/" />
+													ng-pattern="/^(\D)+$/" required data-toggle='tooltip' data-placement='right' 
+														title="Please enter degree of mentor"/>
 											</div>
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 												ng-show="registerAdditionalMentorForm.degreeOfMentor.$dirty && registerAdditionalMentorForm.degreeOfMentor.$error.required">Degree
@@ -980,7 +1045,8 @@
 											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Designation *</span> <input name="designationOfMentor" id="designationOfMentor"
 													type="text" class="form-control" placeholder="Designation"
-													ng-model="register.designationOfMentor" required ng-pattern="/^(\D)+$/"  required/>
+													ng-model="register.designationOfMentor" required ng-pattern="/^(\D)+$/"   required data-toggle='tooltip' data-placement='right' 
+														title="Please enter designation of mentor"/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -997,14 +1063,17 @@
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Speciality *</span>
 
-												<div class="col-xs-12">
-													<input type="text" class="form-control" placeholder="Search branches" id="branchIdOfMentor2"
-														ng-model="searchTerm" ng-change="search()" value="" required />
-												</div>												<div class="col-xs-12">
+												
+													<input style="width: 173px;" type="text" class="form-control" placeholder="Search branches" id="branchIdOfMentor2"
+														ng-model="register.branchIdOfMentor"  value="" required required data-toggle='tooltip' data-placement='right' 
+														title="Please enter specialised branch of mentor"/>
+											
+												
+												 										<!-- <div class="col-xs-12">
 											<select class="form-control" ng-model="register.branchIdOfMentor" 
 													ng-options="item.branchId as item.projBranchDesc for item in data">
  													</select> 
-												</div>
+												</div> -->
 
 											</div>
 										</div>
@@ -1013,7 +1082,8 @@
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Experience *</span> <input name="professionalExperience" id="professionalExperience"
 													type="text" class="form-control" placeholder="Professional experience in months"
-													ng-model="register.professionalExperience" required ng-pattern="/^(\d)+$/"  required/>
+								 					ng-model="register.professionalExperience" required ng-pattern="/^(\d)+$/"  required required data-toggle='tooltip' data-placement='right' 
+														title="Please enter proffesional experience in months of mentor"/>
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -1030,7 +1100,8 @@
 											<div class="input-group input-group-sm"  >
 												<span class="input-group-addon">Association *</span> <input maxlength=200
 													name="institutionalAssctnInfo" id="institutionalAssctnInfo" type="text" class="form-control"
-													placeholder="Institution association info" ng-model="register.institutionalAssctnInfo" required/>
+													placeholder="Institution association info" ng-model="register.institutionalAssctnInfo" required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter Institutional Association Info"/>
 											</div>
 										</div>
 
@@ -1039,7 +1110,8 @@
 												<span class="input-group-addon">Time spare *</span> <input
 													name="timeUspaceForMentoringPerMnth" id="timeUspaceForMentoringPerMnth" type="text" class="form-control"
 													placeholder="Time spare for mentoring per month" ng-pattern="/^(\d)+$/"
-													ng-model="register.timeUspaceForMentoringPerMnth" required />
+													ng-model="register.timeUspaceForMentoringPerMnth"  required data-toggle='tooltip' data-placement='right' 
+														title="Please enter time space for mentoring per month" />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -1051,7 +1123,8 @@
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Mentor profile *</span>
 												<textarea rows="3" cols="32" name="mentorProfile" id="mentorProfile" placeholder="Mentor Profile"
-													ng-model="register.mentorProfile" style="resize:none;" required></textarea>
+													ng-model="register.mentorProfile" style="resize:none;" required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter mentor profile"></textarea>
 											</div>
 										</div>
 
@@ -1059,7 +1132,8 @@
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Webpage link *</span> <input id="mentorwebpage"
 													name="webpage" type="url" class="form-control" placeholder="Personal webpage link"
-													ng-model="register.webpage" required />
+													ng-model="register.webpage" required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter personal webpage link  " />
 											</div>
 
 											<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -1071,14 +1145,16 @@
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Commitment *</span> <input id="commitmentUBringIn"
 													maxlength=100 name="commitmentUBringIn" type="text" class="form-control"
-													placeholder="Commitment you bring" ng-model="register.commitmentUBringIn" required/>
+													placeholder="Commitment you bring" ng-model="register.commitmentUBringIn" required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter commitment you bring"/>
 											</div>
 										</div>
 										<div class="col-xs-12 col-md-6">
 											<div class="input-group input-group-sm" >
 												<span class="input-group-addon">Interest *</span> <input name="intOnGrassrtInnovators"  id="intOnGrassrtInnovators"
 													type="text" class="form-control" placeholder="grass root innovators interest"
-													ng-model="register.intOnGrassrtInnovators" required/>
+													ng-model="register.intOnGrassrtInnovators" required  data-toggle='tooltip' data-placement='right' 
+														title="Please enter grass root innovators interest"/>
 											</div>
 										</div>
 										<div class="col-xs-12 col-md-6"></div>
@@ -1205,6 +1281,15 @@
 						</div>
 					</div>
 				</div>
+						<!-- ERROR MESSAGE -->
+			<div class="row error-place" style="display: none;">
+				<div class="col-xs-11">
+					<div class="panel panel-danger">
+						<div class="panel-heading">Error:</div>
+						<div class="panel-body error"></div>
+					</div>
+				</div>
+			</div>
 				<div class="col-xs-12">
 					<div class="panel panel-info reg-response-panel" ng-show="message.length>0"
 						ng-repeat="msg in message">
@@ -1215,6 +1300,7 @@
 		</div>
 	</div>
 </div>
+</div>
 <!-- END FOOTER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
@@ -1222,56 +1308,165 @@
 <script src="js/dashboardJs/excanvas.min.js"></script> 
 <![endif]-->
 
-<!-- END JAVASCRIPTS -->
- <jsp:include page="template/loginModal.jsp" /> 
-<script type="text/javascript">
+<!-- END JAVASCRIPTS --></body>
+
+<script >
  function checkEmpty() {
-    var empty = null;
+    var empty = '';
     
     $("input", registerBasicForm).each(function() {
        // empty = ($(this).val() == "") ? true : false;
-        if($.trim($("#firstName").val()) === "" || $.trim($("#lastName").val()) === ""|| $.trim($("#userName").val()) === ""|| $.trim($("#password").val()) === ""|| $.trim($("#confirmPassword").val()) === ""|| $.trim($("#mobile").val()) === ""|| $.trim($("#addrLn1").val()) === ""|| $.trim($("#district").val()) === ""|| $.trim($("#city").val()) === ""|| $.trim($("#state").val()) === ""|| $.trim($("#country").val()) === ""|| $.trim($("#pincode").val()) === ""|| $.trim($("#email").val()) === "")      {
-        	empty="isempty"
-        
+        if($.trim($("#firstName").val()) === "" || $.trim($("#lastName").val()) === ""|| $.trim($("#userName").val()) === ""|| $.trim($("#userPassword1").val()) === ""|| $.trim($("#confirmPassword").val()) === ""|| $.trim($("#mobile").val()) === ""|| $.trim($("#addrLn1").val()) === ""|| $.trim($("#district").val()) === ""|| $.trim($("#city").val()) === ""|| $.trim($("#state").val()) === ""|| $.trim($("#country").val()) === ""|| $.trim($("#pincode").val()) === ""|| $.trim($("#email").val()) === "")      {
+        	empty="isempty";
+            
         }
         
         else{
         	empty="notempty";
+        	
         }
     });
-    if(empty === "isempty") {
-       return alert("Some of the field are empty . Please fill the * marked field ");
+    //alert($("#firstName").val()+'###'+$("#lastName").val()+'###'+$("#userName").val()+'###'+$("#userPassword1").val()+'###'+$("#confirmPassword").val()+'###'+$("#mobile").val()+'###'+$("#addrLn1").val()+'###'+$("#district").val()+'###'+$("#city").val()+'###'+$("#state").val()+'###'+$("#country").val()+'###'+$("#pincode").val()+'###'+$("#email").val());
+    //alert('password is '+$("#userPassword1").val());
+    
+    if(empty == "isempty") {
+      alert("Some of the field are empty . Please fill the * marked field");
+      return false;
         
     }
 }
  function checkAdditionalEmpty() {
+	 
+//alert($("#userType1").val());
 	    var empty = null;
-	    
+
+if($("#userType1").val()==="student"){
+
 	    $("input", registerAdditionalStudentForm).each(function() {
-	      //if($(this).val() === ""){
-	        if($.trim($("#studentdegree").val()) === "" || $.trim($("#dateOfBirthDatePicker").val()) === ""|| $.trim($("#studentID").val()) === ""|| $.trim($("#studentCompletionYear").val()) === ""|| $.trim($("#CollegeNames").val()) === ""|| $.trim($("#university").val()) === ""|| $.trim($("#branchIdOfStudent2").val()) === 
-	        	                                     ""|| $.trim($("#facultydegree").val()) === ""|| $.trim($("#collgeOfFaculty").val()) === ""|| $.trim($("#specializationOfFaculty2").val()) === 
- ""|| $.trim($("#universityOfFaculty").val()) === ""|| $.trim($("#proffesionalExpOfFaculty").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#alumni").val()) === ""|| $.trim($("#facultycompletionyear").val()) === ""|| $.trim($("#affltUniversityOfFaculty").val()) === ""|| $.trim($("#college").val()) === 
-	        	                                     ""|| $.trim($("#degreeOfMentor").val()) === ""|| $.trim($("#designationOfMentor").val()) === ""|| $.trim($("#branchIdOfMentor2").val()) === ""|| $.trim($("#professionalExperience").val()) === ""|| $.trim($("#institutionalAssctnInfo").val()) === ""|| $.trim($("#timeUspaceForMentoringPerMnth").val()) === ""|| $.trim($("#mentorProfile").val()) === ""|| $.trim($("#mentorwebpage").val()) ===
-	        	                                     ""|| $.trim($("#intOnGrassrtInnovators").val()) === ""|| $.trim($("#collegeName").val()) ===  ""|| $.trim($("#prinicipalName").val()) === ""|| $.trim($("#affltUniversityOfCollege").val()) ==="" || $.trim($("#collegecontactname").val()) ==="" || $.trim($("#collegecontactemail").val()) ==="" || $.trim($("#webpage").val()) ==="" || $.trim($("#facilitiesOffrdToStudents").val()) ==="")     
-	        {
+
+	        if($.trim($("#studentdegree").val()) === "" || $.trim($("#dateOfBirthDatePicker").val()) === ""|| $.trim($("#studentID").val()) === ""|| $.trim($("#studentCompletionYear").val()) === ""|| $.trim($("#CollegeNames").val()) === ""|| $.trim($("#university").val()) === ""|| $.trim($("#branchIdOfStudent2").val()) ==="") 
+
+{
 	        	empty="isempty"
-	        
+
 	        }
-	        
+
+
 	        else{
 	        	empty="notempty";
 	        }
 	    });
 	    if(empty === "isempty") {
-	       return alert("Some of the field are empty . Please fill the * marked field ");
-	        
+	        alert("Some of the field are empty . Please fill the * marked field ");
+	        return false;
+
 	    }
-	}
+
+	    }
+else if($("#userType1").val()==="college"){
+	
+//alert('in college else');
+	     $("input", registerAdditionalCollegeForm).each(function() {
+		      //if($(this).val() === ""){
+		        if($.trim($("#cntctInfoForNatnlInnovnClub").val()) ===  ""||$.trim($("#collegecontactname").val()) ===  ""|| $.trim($("#prinicipalName").val()) === ""|| $.trim($("#affltUniversityOfCollege").val()) ==="" || $.trim($("#techpdaFactlyCoordtr").val()) ==="" || $.trim($("#prinicipalEmail").val()) ==="" || $.trim($("#webpage").val()) ===""||$.trim($("#facilitiesOffrdToStudents").val()) ==="") 
+
+	   {
+		        	empty="isempty"
+
+		        }
+
+		        else{
+		        	empty="notempty";
+		        }
+		    });
+	    
+	    // alert($("#collegecontactname").val()+'###'+$("#prinicipalName").val()+'###'+$("#affltUniversityOfCollege").val()+'###'+$("#collegecontactname").val()+'###'+$("#prinicipalEmail").val()+'###'+$("#webpage").val()+'###'+$("#collegeDesc").val()+'###'+$("#facilitiesOffrdToStudents").val());
+	     
+		    if(empty === "isempty") {
+		    	
+		    	   
+		        alert("Some of the field are empty . Please fill the * marked field ");
+		        return false;
+
+		    } 
+	} 
+
+
+else if($("#userType1").val().toLowerCase()==="faculty"){
+ $("input", registerAdditionalFacultyForm).each(function() {
+	      //if($(this).val() === ""){
+	        if($.trim($("#facultydegree").val()) === ""|| $.trim($("#collgeOfFaculty").val()) === ""|| $.trim($("#specializationOfFaculty2").val()) === ""|| $.trim($("#universityOfFaculty").val()) === ""|| $.trim($("#proffesionalExpOfFaculty").val()) === ""|| $.trim($("#psnlWebpgLink").val()) === ""|| $.trim($("#alumni").val()) === ""|| $.trim($("#facultycompletionyear").val()) === ""|| $.trim($("#affltUniversityOfFaculty").val()) === ""|| $.trim($("#collgeOfFaculty").val()) === 
+"") 
+
+{
+	        	empty="isempty"
+
+	        }
+
+	        else{
+	        	empty="notempty";
+	        }
+	    });
+	    if(empty === "isempty") {
+	       alert("Some of the field are empty . Please fill the * marked field ");
+	       return false;
+
+	    } 
+}
+else if($("#userType1").val().toLowerCase()==="mentor"){
+ $("input", registerAdditionalMentorForm).each(function() {
+	      //if($(this).val() === ""){
+	        if($.trim($("#degreeOfMentor").val()) === ""|| $.trim($("#designationOfMentor").val()) === ""|| $.trim($("#branchIdOfMentor2").val()) === ""|| $.trim($("#professionalExperience").val()) === ""|| $.trim($("#institutionalAssctnInfo").val()) === ""|| $.trim($("#timeUspaceForMentoringPerMnth").val()) === ""|| $.trim($("#mentorProfile").val()) === ""|| $.trim($("#mentorwebpage").val()) ===
+             ""|| $.trim($("#intOnGrassrtInnovators").val()) === ""|| $.trim($("#commitmentUBringIn").val()) === "") 
+
+{
+	        	empty="isempty"
+
+	        }
+
+	        else{
+	        	empty="notempty";
+	        }
+	    });
+	    if(empty === "isempty") {
+	        alert("Some of the field are empty . Please fill the * marked field ");
+	        return false;
+
+	    } 
+}
+	     } 
+	    
 </script>
-</body>
+
 <!-- END BODY -->
-</html>
+
 <jsp:include page="template/footer.jsp" />
 <script src="js/webrtc.js"></script>
+<script src="js/jquery.autocomplete.js"></script>
+<script src="js/logo.js"></script>
+<!-- js 
+================================================== -->
+<!-- Javascript files placed here for faster loading -->
+<!-- <script src="js/foundation.min.js"></script> -->
+<script src="js/jquery-ui.js"></script>
+<script src="js/angular.min.js"></script>
+<script src="js/Controller.js"></script>
+<script src="js/swfobject.js"></script>
+<script src="js/jquery.FileReader.min.js"></script>
+<!-- <script src="js/elasticslideshow.js"></script> -->
+<!-- <script src="js/jquery.cycle.js"></script> -->
+<!-- <script src="js/slidepanel.js"></script> -->
+<!-- <script src="js/responsivemenu.js"></script> -->
+<link rel="stylesheet" href="css/select2-bootstrap.css">
+<link rel="stylesheet" href="css/select2.css">
+<!-- <link rel="stylesheet" href="css/components.css"> -->
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link rel="stylesheet" href="css/customStyle.css">
+<script src="js/jquery.isotope.min.js"></script>
+<script src="js/jquery.prettyPhoto.js"></script>
+<script src="js/custom.js"></script>
+<!-- <script src="js/bootstrap.min.js"></script> -->
+<script src="js/select2.min.js"></script>
+<script src="js/script.min.js"></script>
+</html>
 

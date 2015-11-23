@@ -8,11 +8,14 @@ import com.techpedia.email.exception.EmailServiceException;
 import com.techpedia.logger.TechPediaLogger;
 import com.techpedia.usermanagement.dao.UserManagementDAO;
 import com.techpedia.usermanagement.dao.UserManagementDAOImpl;
-import com.techpedia.usermanagement.dataobject.CollegeUniversityListDO;
+import com.techpedia.usermanagement.dataobject.CollegeListDO;
 import com.techpedia.usermanagement.dataobject.Mentor1n2Details;
+import com.techpedia.usermanagement.dataobject.PasswordResetVo;
 import com.techpedia.usermanagement.dataobject.PopularMentorsDO;
 import com.techpedia.usermanagement.dataobject.SearchCriteriaDO;
 import com.techpedia.usermanagement.dataobject.SearchForMentorListDO;
+import com.techpedia.usermanagement.dataobject.SignInVo;
+import com.techpedia.usermanagement.dataobject.UniversityListDO;
 import com.techpedia.usermanagement.dataobject.UpdateUserPhotoDO;
 import com.techpedia.usermanagement.dataobject.UserProfileDO;
 import com.techpedia.usermanagement.dataobject.UserRecentComments;
@@ -36,6 +39,7 @@ import com.techpedia.usermanagement.exception.ProjectNotFoundException;
 import com.techpedia.usermanagement.exception.UniversitiesFetchException;
 import com.techpedia.usermanagement.exception.UserExistException;
 import com.techpedia.usermanagement.exception.UserFunctionsNotDefinedException;
+import com.techpedia.usermanagement.exception.UserInactiveException;
 import com.techpedia.usermanagement.exception.UserNotFoundException;
 import com.techpedia.usermanagement.exception.UserRecentCommentsFetchException;
 import com.techpedia.usermanagement.exception.UserRoleNotDefinedException;
@@ -66,7 +70,9 @@ public class UserManagementRestServiceHelper {
 		try {
 			boolean val = getUserManagementDAO().createProfile(userprofileDO);
 			if (val == true) {
-				// UserManagementEmailHelper.sendEmail(userprofileDO);
+
+				UserManagementEmailHelper.sendEmail(userprofileDO);
+
 				gson = new Gson();
 				response.setStatus(UserManagementServiceConstant.SUCCESS);
 				response.setDescription(UserManagementServiceConstant.PROFILE_CREATE_SUCCESS);
@@ -81,12 +87,10 @@ public class UserManagementRestServiceHelper {
 		} catch (UserExistException e) {
 			throw new UserManagementServiceException(e.getExceptionCode(),
 					e.getExceptionMessage(), e.getExceptionDetails());
-		} /*
-		 * catch (EmailServiceException e) { throw new
-		 * UserManagementServiceException
-		 * (e.getExceptionCode(),e.getExceptionMessage
-		 * (),e.getExceptionDetails()); }
-		 */catch (EmailExistException e) {
+		} catch (EmailServiceException e) {
+			throw new UserManagementServiceException(e.getExceptionCode(),
+					e.getExceptionMessage(), e.getExceptionDetails());
+		} catch (EmailExistException e) {
 			throw new UserManagementServiceException(e.getExceptionCode(),
 					e.getExceptionMessage(), e.getExceptionDetails());
 		}
@@ -115,6 +119,9 @@ public class UserManagementRestServiceHelper {
 					e.getExceptionMessage(), e.getExceptionDetails());
 		} catch (ChiperEncryptException e) {
 			return e.toString();
+		} catch (EmailExistException e) {
+			throw new UserManagementServiceException(e.getExceptionCode(),
+					e.getExceptionMessage(), e.getExceptionDetails());
 		}
 
 		return UserManagementServiceConstant.EMPTY_STRING;
@@ -169,13 +176,13 @@ public class UserManagementRestServiceHelper {
 		return UserManagementServiceConstant.EMPTY_STRING;
 	}
 
-	public static String signIn(String userID, String password)
+	public static String signIn(SignInVo signInVo)
 			throws UserManagementServiceException {
 		log.debug("UserManagementRestServiceHelper signIn : Start");
 		UserProfileDO userprofileDO = null;
 		response = new UMServiceResponse();
 		try {
-			userprofileDO = getUserManagementDAO().singIn(userID, password);
+			userprofileDO = getUserManagementDAO().singIn(signInVo);
 
 			if (userprofileDO != null) {
 				gson = new Gson();
@@ -191,7 +198,10 @@ public class UserManagementRestServiceHelper {
 		} catch (PasswordMismatchException e) {
 			throw new UserManagementServiceException(e.getExceptionCode(),
 					e.getExceptionMessage(), e.getExceptionDetails());
-		} catch (PasswordExpiryException e) {
+		} catch (UserInactiveException e) {
+			throw new UserManagementServiceException(e.getExceptionCode(),
+					e.getExceptionMessage(), e.getExceptionDetails());
+		}catch (PasswordExpiryException e) {
 			throw new UserManagementServiceException(e.getExceptionCode(),
 					e.getExceptionMessage(), e.getExceptionDetails());
 		} catch (PasswordResetException e) {
@@ -239,14 +249,12 @@ public class UserManagementRestServiceHelper {
 		return UserManagementServiceConstant.EMPTY_STRING;
 	}
 
-	public static String passwordReset(String userid, String oldpwd,
-			String newpwd) throws UserManagementServiceException {
+	public static String passwordReset(PasswordResetVo pwdResetVo) throws UserManagementServiceException {
 		log.debug("UserManagementRestServiceHelper passwordReset : Start");
 
 		response = new UMServiceResponse();
 		try {
-			boolean val = getUserManagementDAO().passwordReset(userid, oldpwd,
-					newpwd);
+			boolean val = getUserManagementDAO().passwordReset(pwdResetVo);
 
 			if (val == true) {
 				gson = new Gson();
@@ -477,15 +485,17 @@ public class UserManagementRestServiceHelper {
 	public static String forgotPassword(String email)
 			throws UserManagementServiceException {
 		log.debug("UserManagementRestServiceHelper forgotPassword : Start");
-
+		response = new UMServiceResponse();
 		try {
 			String currentPassword = getUserManagementDAO().forgotPassword(
 					email);
 			if (currentPassword != null) {
-				UserManagementEmailHelper.sendPassword(email, currentPassword);
 				gson = new Gson();
+				UserManagementEmailHelper.sendPassword(email, currentPassword);
 				response.setStatus(UserManagementServiceConstant.SUCCESS);
 				response.setDescription(UserManagementServiceConstant.PASSWORD_SENT_SUCCESS);
+				// System.out.println("response :"+response);
+				// System.out.println("response1 :"+gson.toJson(response));
 				return gson.toJson(response);
 			}
 		} catch (UserNotFoundException e) {
@@ -501,13 +511,13 @@ public class UserManagementRestServiceHelper {
 		return UserManagementServiceConstant.EMPTY_STRING;
 	}
 
-	public static String searchForMentors(String projId)
+	public static String searchForMentors(String projId, String registerID)
 			throws UserManagementServiceException {
 		log.debug("UserManagementRestServiceHelper searchForMentors : Start");
 
 		try {
 			List<SearchForMentorListDO> mentorsList = getUserManagementDAO()
-					.searchForMentors(new Long(projId));
+					.searchForMentors(new Long(projId), new Long(registerID));
 
 			if (mentorsList != null) {
 				gson = new Gson();
@@ -547,7 +557,7 @@ public class UserManagementRestServiceHelper {
 			throws CollegesFetchException, UserManagementServiceException {
 		log.debug("UserManagementRestServiceHelper getCollegesList : Start");
 		try {
-			List<CollegeUniversityListDO> collegeList = getUserManagementDAO()
+			List<CollegeListDO> collegeList = getUserManagementDAO()
 					.getCollegesList(cName);
 			if (collegeList != null) {
 				gson = new Gson();
@@ -560,20 +570,72 @@ public class UserManagementRestServiceHelper {
 		return UserManagementServiceConstant.EMPTY_STRING;
 	}
 
-	public static String getUniversitiesList(String Uname)
+	public static String getUniversitiesList(String uName)
 			throws UniversitiesFetchException, UserManagementServiceException {
 		log.debug("UserManagementRestServiceHelper getUniversitiesList : Start");
 		try {
-			List<CollegeUniversityListDO> collegeList = getUserManagementDAO()
-					.getCollegesList(Uname);
-			if (collegeList != null) {
+			List<UniversityListDO> universityList = getUserManagementDAO()
+					.getUniversitiesList(uName);
+
+			if (universityList != null) {
 				gson = new Gson();
-				return gson.toJson(collegeList);
+				return gson.toJson(universityList);
 			}
-		} catch (CollegesFetchException e) {
+		} catch (UniversitiesFetchException e) {
 			throw new UserManagementServiceException(e.getExceptionCode(),
 					e.getExceptionMessage(), e.getExceptionDetails());
 		}
 		return UserManagementServiceConstant.EMPTY_STRING;
 	}
+
+	public static String validateAdmin(String registerID)
+			throws UserManagementServiceException {
+		log.debug("UserManagementRestServiceHelper validateAdmin : Start");
+		response = new UMServiceResponse();
+		boolean flag = false;
+		try {
+			flag = getUserManagementDAO().validateAdmin(new Long(registerID));
+
+			gson = new Gson();
+			return gson.toJson(flag);
+
+		} catch (UserNotFoundException e) {
+			throw new UserManagementServiceException(e.getExceptionCode(),
+					e.getExceptionMessage(), e.getExceptionDetails());
+		} catch (ProfileFetchException e) {
+			throw new UserManagementServiceException(e.getExceptionCode(),
+					e.getExceptionMessage(), e.getExceptionDetails());
+		}
+
+	}
+	
+	public static String updateAddFacultyProfileHelper(UserProfileDO userprofileDO)
+			throws UserManagementServiceException {
+
+		log.debug("UserManagementRestServiceHelper updateAddFacultyProfileHelper:Start");
+		response = new UMServiceResponse();
+		try {
+			boolean val = getUserManagementDAO().updateAddFacultyProfileHelper(userprofileDO);
+			if (val == true) {
+				gson = new Gson();
+				response.setStatus(UserManagementServiceConstant.SUCCESS);
+				response.setDescription(UserManagementServiceConstant.PROFILE_UPDATE_SUCCESS);
+				return gson.toJson(response);
+			}
+		} catch (ProfileUpdateException e) {
+			throw new UserManagementServiceException(e.getExceptionCode(),
+					e.getExceptionMessage(), e.getExceptionDetails());
+		} catch (ProfileNotFoundException e) {
+			throw new UserManagementServiceException(e.getExceptionCode(),
+					e.getExceptionMessage(), e.getExceptionDetails());
+		} catch (ChiperEncryptException e) {
+			return e.toString();
+		} catch (EmailExistException e) {
+			throw new UserManagementServiceException(e.getExceptionCode(),
+					e.getExceptionMessage(), e.getExceptionDetails());
+		}
+
+		return UserManagementServiceConstant.EMPTY_STRING;
+	}
+
 }

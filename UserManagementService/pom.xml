@@ -1,48 +1,78 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>UserManagementService</groupId>
 	<artifactId>UserManagementService</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
 	<name>UserManagementService</name>
-
-
+	<repositories>
+		<repository>
+			<id>JBoss repository</id>
+			<url>https://repository.jboss.org/nexus/content/groups/public-jboss/</url>
+		</repository>
+	</repositories>
 	<dependencies>
-		<!-- <dependency> <groupId>TechPediaEmailService</groupId> <artifactId>TechPediaEmailService</artifactId> 
-			<version>1.0.0</version> <scope>system</scope> <systemPath>D:/GEGDC/JC345703/lib_mandatory/TechPediaEmailService.jar</systemPath> 
-			</dependency> <dependency> <groupId>UserManagementDAO</groupId> <artifactId>UserManagementDAO</artifactId> 
-			<version>1.0.0</version> <scope>system</scope> <systemPath>D:/GEGDC/JC345703/lib_mandatory/UserManagementDAO.jar</systemPath> 
-			</dependency> <dependency> <groupId>TechPediaUtil</groupId> <artifactId>TechPediaUtil</artifactId> 
-			<version>1.0.0</version> <scope>system</scope> <systemPath>D:/GEGDC/JC345703/lib_mandatory/TechPediaUtil.jar</systemPath> 
-			</dependency> <dependency> <groupId>TechPediaLogger</groupId> <artifactId>TechPediaLogger</artifactId> 
-			<version>1.0.0</version> <scope>system</scope> <systemPath>D:/GEGDC/JC345703/lib_mandatory/TechPediaLogger.jar</systemPath> 
-			</dependency> -->
-
 		<dependency>
-			<groupId>org.apache.logging.log4j</groupId>
-			<artifactId>log4j-core</artifactId>
-			<version>2.1</version>
+			<groupId>TechPediaEmailService</groupId>
+			<artifactId>TechPediaEmailService</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>D:/gegdc/AC340221/Softwares/eclipse/Techpedia_eclipse/Project_Jar/TechPediaEmailService.jar</systemPath>
 		</dependency>
-
 		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>2.0</version>
+			<groupId>UserManagementDAO</groupId>
+			<artifactId>UserManagementDAO</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>D:/gegdc/AC340221/Softwares/eclipse/Techpedia_eclipse/Project_Jar/UserManagementDAO.jar</systemPath>
 		</dependency>
-
-
+		<dependency>
+			<groupId>TechPediaUtil</groupId>
+			<artifactId>TechPediaUtil</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>D:/gegdc/AC340221/Softwares/eclipse/Techpedia_eclipse/Project_Jar/TechPediaUtil.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>TechPediaLogger</groupId>
+			<artifactId>TechPediaLogger</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>D:/gegdc/AC340221/Softwares/eclipse/Techpedia_eclipse/Project_Jar/TechPediaLogger.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>log4j-api-2.0-rc1</groupId>
+			<artifactId>log4j-api-2.0-rc1</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>D:/gegdc/AC340221/TechPedia_Jars/log4j-api-2.0-rc1.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>log4j-core-2.0-rc1</groupId>
+			<artifactId>log4j-core-2.0-rc1</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>D:/gegdc/AC340221/TechPedia_Jars/log4j-core-2.0-rc1.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>gson-2.2</groupId>
+			<artifactId>gson-2.2</artifactId>
+			<version>1.0.0</version>
+			<scope>system</scope>
+			<systemPath>D:/gegdc/AC340221/TechPedia_Jars/gson-2.2.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>jaxrs-api</artifactId>
+			<version>2.2.1.GA</version>
+		</dependency>
 		<dependency>
 			<groupId>org.jboss.resteasy</groupId>
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>2.2.1.GA</version>
 		</dependency>
 	</dependencies>
-
-
-
 	<build>
 		<finalName>UserManagementService</finalName>
 		<plugins>
@@ -50,14 +80,45 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<fork>true</fork>
+					<executable>D:\gegdc\AC340221\Softwares\Softwares\jdk1.7.0_55\jdk1.7.0_55\bin\javac.exe</executable>
 				</configuration>
 			</plugin>
 		</plugins>
-
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-compiler-plugin
+										</artifactId>
+										<versionRange>
+											[3.1,)
+										</versionRange>
+										<goals>
+											<goal>testCompile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
-
-
-
 </project>

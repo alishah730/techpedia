@@ -6,6 +6,7 @@ import com.ge.techpedia.constant.ProjectManagementServiceConstant;
 import com.ge.techpedia.service.response.ChallengeServiceResponse;
 import com.google.gson.Gson;
 import com.techpedia.projectmanagement.bean.Challenge;
+import com.techpedia.projectmanagement.bean.ChallengeType;
 import com.techpedia.projectmanagement.bean.ChallengeTypeMasterVO;
 import com.techpedia.projectmanagement.bean.DeleteChallDocVO;
 import com.techpedia.projectmanagement.bean.DownChallengeDocVO;
@@ -23,6 +24,7 @@ import com.techpedia.projectmanagement.exception.DownloadChallengeDocException;
 import com.techpedia.projectmanagement.exception.GetAllChallengeException;
 import com.techpedia.projectmanagement.exception.GetChallengeDetailException;
 import com.techpedia.projectmanagement.exception.GetChallengeException;
+import com.techpedia.projectmanagement.exception.GetChallengeTypeException;
 import com.techpedia.projectmanagement.exception.SearchChallengeException;
 import com.techpedia.projectmanagement.exception.SuggestedChallengeNotFoundException;
 import com.techpedia.projectmanagement.exception.UploadChallengeDocException;
@@ -252,6 +254,20 @@ static Gson gson = null;
 		} catch (DeleteDocumentException e) {			
 			throw e;
 		}		
+	}
+	
+	public static String getChallengeType() throws GetChallengeTypeException{
+		ArrayList<ChallengeType> challengeTypes = null;
+		try {
+			challengeTypes = getChallengeDao().getChallengeType();
+			if(challengeTypes != null){
+				gson = new Gson();
+				return gson.toJson(challengeTypes);
+			}
+		} catch (GetChallengeTypeException e) {			
+			throw e;
+		}
+		return ProjectManagementServiceConstant.EMPTY_STRING;
 	}
 	
 	private static ChallengeDao getChallengeDao() {

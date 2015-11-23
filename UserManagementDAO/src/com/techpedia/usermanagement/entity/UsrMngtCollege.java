@@ -19,11 +19,13 @@ public class UsrMngtCollege {
 	@Column(name = "LOGO")
 	private String logo;
 	 
-	@Column(name = "CNTCT_PER_NAME_OF_COLLEGE")
-	private String cntctPerNameofCollege;
+	@Column(name = "COLLEGE_NAME")
+	private String collegeName;
 	 
-	@Column(name = "CNTCT_PER_EMAIL_ID")
-	private String cntctPerEmailId;
+	
+
+	@Column(name = "COLLEGE_DESCRIPTION")
+	private String collegeDescription;
 	 
 	@Column(name = "PRINCIPAL_NAME")
 	private String principalName;
@@ -58,7 +60,7 @@ public class UsrMngtCollege {
 	 * @param techpdaFactlyCoordtr
 	 */
 	public UsrMngtCollege(long rgstrId, String webpgLnk, String logo,
-			String cntctPerNameofCollege, String cntctPerEmailId,
+			String collegeName, String collegeDescription,
 			String principalName, String principalMailId,
 			String facilitiesOffrdToStudents,
 			String cntctInfoForNatnlInnovnClub, String affltUniversity,
@@ -67,8 +69,8 @@ public class UsrMngtCollege {
 		this.rgstrId = rgstrId;
 		this.webpgLnk = webpgLnk;
 		this.logo = logo;
-		this.cntctPerNameofCollege = cntctPerNameofCollege;
-		this.cntctPerEmailId = cntctPerEmailId;
+		this.collegeName = collegeName;
+		this.collegeDescription = collegeDescription;
 		this.principalName = principalName;
 		this.principalMailId = principalMailId;
 		this.facilitiesOffrdToStudents = facilitiesOffrdToStudents;
@@ -130,29 +132,20 @@ public class UsrMngtCollege {
 	/**
 	 * @return the cntctPerNameofCollege
 	 */
-	public String getCntctPerNameofCollege() {
-		return cntctPerNameofCollege;
+	public String getCollegeName() {
+		return collegeName;
 	}
 
-	/**
-	 * @param cntctPerNameofCollege the cntctPerNameofCollege to set
-	 */
-	public void setCntctPerNameofCollege(String cntctPerNameofCollege) {
-		this.cntctPerNameofCollege = cntctPerNameofCollege;
+	public void setCollegeName(String collegeName) {
+		this.collegeName = collegeName;
 	}
 
-	/**
-	 * @return the cntctPerEmailId
-	 */
-	public String getCntctPerEmailId() {
-		return cntctPerEmailId;
+	public String getCollegeDescription() {
+		return collegeDescription;
 	}
 
-	/**
-	 * @param cntctPerEmailId the cntctPerEmailId to set
-	 */
-	public void setCntctPerEmailId(String cntctPerEmailId) {
-		this.cntctPerEmailId = cntctPerEmailId;
+	public void setCollegeDescription(String collegeDescription) {
+		this.collegeDescription = collegeDescription;
 	}
 
 	/**
@@ -245,9 +238,9 @@ public class UsrMngtCollege {
 	@Override
 	public String toString() {
 		return "UsrMngtCollege [rgstrId=" + rgstrId + ", webpgLnk=" + webpgLnk
-				+ ", logo=" + logo + ", cntctPerNameofCollege="
-				+ cntctPerNameofCollege + ", cntctPerEmailId="
-				+ cntctPerEmailId + ", principalName=" + principalName
+				+ ", logo=" + logo + ", collegeName="
+				+ collegeName + ", collegeDescription="
+				+ collegeDescription + ", principalName=" + principalName
 				+ ", principalMailId=" + principalMailId
 				+ ", facilitiesOffrdToStudents=" + facilitiesOffrdToStudents
 				+ ", cntctInfoForNatnlInnovnClub="

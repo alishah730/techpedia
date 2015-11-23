@@ -38,11 +38,11 @@ public class Challenge {
 	String challengCommentsPublish; // Display comments or not , default 'N'
 	String challengeBusinessPlan; // Nullable
 	String challengeImage; // Nullable, default image if null.
-	/*String challengeImpact;
-	String challengeSourceFund;
-	String challengeIncentive;
-	String challengeDeliveryExpectation;
-	String challengeBenchmark;*/
+	String challengImpact;
+	String challengSourceFund;
+	String challengIsIncentiv;
+	String challengDelivExpctatn;
+	String challengBenchmark;
 
 	@JsonIgnore
 	public String getChallengeID() {
@@ -100,18 +100,19 @@ public class Challenge {
 		return challengAbstract;
 	}
 
-	public void setChallengAbstract(String challengeAbstract) {
-		this.challengAbstract = challengeAbstract;
+	public void setChallengAbstract(String challengAbstract){
+		
+		this.challengAbstract = challengAbstract;
 	}
 
 	public String getChallengDescription() {
 		return challengDescription;
 	}
-
-	public void setChallengDescription(String challengeDescription) {
-		this.challengDescription = challengeDescription;
-	}
-
+    public void setChallengDescription(String challengDescription)
+    {
+    	this.challengDescription = challengDescription;
+    }
+	
 	@JsonIgnore
 	public String getChallengeUniversity() {
 		return challengUniversity;
@@ -274,49 +275,51 @@ public class Challenge {
 		return challengeImage;
 	}
 
+	public String getChallengImpact() {
+		return challengImpact;
+	}
+
+	public void setChallengImpact(String challengImpact) {
+		this.challengImpact = challengImpact;
+	}
+
+	public String getChallengSourceFund() {
+		return challengSourceFund;
+	}
+
+	public void setChallengSourceFund(String challengSourceFund) {
+		this.challengSourceFund = challengSourceFund;
+	}
+
+	public String getChallengIsIncentiv() {
+		return challengIsIncentiv;
+	}
+
+	public void setChallengIsIncentiv(String challengIsIncentiv) {
+		this.challengIsIncentiv = challengIsIncentiv;
+	}
+
+	public String getChallengDelivExpctatn() {
+		return challengDelivExpctatn;
+	}
+
+	public void setChallengDelivExpctatn(String challengDelivExpctatn) {
+		this.challengDelivExpctatn = challengDelivExpctatn;
+	}
+
+	public String getChallengBenchmark() {
+		return challengBenchmark;
+	}
+
+	public void setChallengBenchmark(String challengBenchmark) {
+		this.challengBenchmark = challengBenchmark;
+	}
+
 	public void setChallengeImage(String challengeImage) {
 		this.challengeImage = challengeImage;
 	}
 	
 
 	
-	/*public String getChallengeImpact() {
-		return challengeImpact;
-	}
 
-	public void setChallengeImpact(String challengeImpact) {
-		this.challengeImpact = challengeImpact;
-	}
-
-	public String getChallengeSourceFund() {
-		return challengeSourceFund;
-	}
-
-	public void setChallengeSourceFund(String challengeSourceFund) {
-		this.challengeSourceFund = challengeSourceFund;
-	}
-
-	public String getChallengeIncentive() {
-		return challengeIncentive;
-	}
-
-	public void setChallengeIncentive(String challengeIncentive) {
-		this.challengeIncentive = challengeIncentive;
-	}
-
-	public String getChallengeDeliveryExpectation() {
-		return challengeDeliveryExpectation;
-	}
-
-	public void setChallengeDeliveryExpectation(String challengeDeliveryExpectation) {
-		this.challengeDeliveryExpectation = challengeDeliveryExpectation;
-	}
-
-	public String getChallengeBenchmark() {
-		return challengeBenchmark;
-	}
-
-	public void setChallengeBenchmark(String challengeBenchmark) {
-		this.challengeBenchmark = challengeBenchmark;
-	}*/
 }

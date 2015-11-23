@@ -21,7 +21,7 @@ public class Project {
 
 	public String projIsForChallenge;
 
-	@JsonIgnore
+	
 	public String getProjIsForChallenge() {
 		return projIsForChallenge;
 	}
@@ -233,12 +233,12 @@ public class Project {
 		return this.projTeamDesc;
 	}
 
-	@JsonIgnore
+	
 	public long getProjTeamId() {
 		return this.projTeamId;
 	}
 
-	@JsonIgnore
+	
 	public long getProjTeamLeaderId() {
 		return this.projTeamLeaderId;
 	}
@@ -438,6 +438,6 @@ public class Project {
 	}
 
 	public String toString() {
-		return "Project [projTypeId=" + this.projTypeId + ", projTitle=" + this.projTitle + ", projBranches=" + this.projBranches + ", projKeywords=" + this.projKeywords + ", projTeamMembers=" + this.projTeamMembers + ", projTeamId=" + this.projTeamId + ", projTeamDesc=" + this.projTeamDesc + ", projStartDate=" + this.projStartDate + ", projEndDate=" + this.projEndDate + ", projYear=" + this.projYear + ", projDuration=" + this.projDuration + ", projAbstract=" + this.projAbstract + ", projDescription=" + this.projDescription + ", projUniversity=" + this.projUniversity + ", projCollege=" + this.projCollege + ", projCollegeState=" + this.projCollegeState + ", projStudentId=" + this.projStudentId + ", projFaculty=" + this.projFaculty + ", projEstimationCost=" + this.projEstimationCost + ", projImage=" + this.projImage + ", projCollegeRgstrIdUsr=" + this.projCollegeRgstrIdUsr + ", userRgstrNo=" + this.userRgstrNo + ", projMentor1Id=" + this.projMentor1Id + ", projMentor2Id=" + this.projMentor2Id + ", projGuideId=" + this.projGuideId + ", projStatusId=" + this.projStatusId + ", projToFloat=" + this.projToFloat + ", projCommentsPublish=" + this.projCommentsPublish + ", projGrade=" + this.projGrade + ", projTeamLeaderId=" + this.projTeamLeaderId + ", projAwardWon=" + this.projAwardWon + ", projAwardDesc=" + this.projAwardDesc + ", projIsMentorAvail=" + this.projIsMentorAvail + ", projIsFacApprove=" + this.projIsFacApprove + ", projAdminComments=" + this.projAdminComments + "]";
+		return "Project [challengId=" + challengId + ",projTypeId=" + projTypeId + ", projTitle=" + projTitle + ", projBranches=" + projBranches + ", projKeywords=" + this.projKeywords + ", projTeamMembers=" + projTeamMembers + ", projTeamId=" + this.projTeamId + ", projTeamDesc=" + this.projTeamDesc + ", projStartDate=" + projStartDate + ", projEndDate=" + projEndDate + ", projYear=" + projYear + ", projDuration=" + projDuration + ", projAbstract=" + projAbstract + ", projDescription=" + projDescription + ", projUniversity=" + projUniversity + ", projCollege=" + projCollege + ", projCollegeState=" + projCollegeState + ", projStudentId=" + projStudentId + ", projFaculty=" + projFaculty + ", projEstimationCost=" + projEstimationCost + ", projImage=" + projImage + ", projCollegeRgstrIdUsr=" + projCollegeRgstrIdUsr + ", userRgstrNo=" + userRgstrNo + ", projMentor1Id=" + projMentor1Id + ", projMentor2Id=" + projMentor2Id + ", projGuideId=" + projGuideId + ", projStatusId=" + projStatusId + ", projToFloat=" + projToFloat + ", projCommentsPublish=" + projCommentsPublish + ", projGrade=" + projGrade + ", projTeamLeaderId=" + this.projTeamLeaderId + ", projAwardWon=" + projAwardWon + ", projAwardDesc=" + projAwardDesc + ", projIsMentorAvail=" +projIsMentorAvail + ", projIsFacApprove=" + projIsFacApprove + ", projAdminComments=" + projAdminComments + ", projIsForChallenge="+ projIsForChallenge + " ]";
 	}
 }

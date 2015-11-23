@@ -1,10 +1,11 @@
 <%@ page import="java.util.Random"%>
 <html ng-app="techpedia">
-<jsp:include page="template/dashboardHeader.jsp" />
+<jsp:include page="template/NewHeader.jsp" />
 <div class="clearfix"></div>
+<div class="container customFont borderRadius style" >
 <div class="page-container">
 	<div class="page-sidebar-wrapper">
-		<jsp:include page="template/dashboardMenu.jsp" />
+<%-- 		<jsp:include page="template/dashboardMenu.jsp" /> --%>
 	</div>
 	<div class="page-content-wrapper" ng-controller="AddChallengeController" ng-init="InitChallengeLoad()">
 		<div class="page-content">
@@ -17,14 +18,9 @@
 					<ul class="page-breadcrumb breadcrumb">
 						<li><a href="./">Home</a> &raquo;</li>
 						<li><a href="dashboard">Dashboard</a> &raquo;</li>
-						<li><a href="manageProjects">Manage Challenge</a> &raquo;</li>
+						<li><a href="manageChallenge">Manage Challenge</a> &raquo;</li>
 						<li>Add Challenge</li>
-						<li class="pull-right">
-							<div id="dashboard-report-range" class="dashboard-date-range tooltips"
-								data-placement="bottom" data-original-title="Change dashboard date range">
-								<i class="icon-calendar"></i> <span></span> <i class="fa fa-angle-down"></i>
-							</div>
-						</li>
+					
 					</ul>
 					<!-- END PAGE TITLE & BREADCRUMB-->
 				</div>
@@ -47,7 +43,7 @@
 						<h3 class="addChallenge-accordion-1 acc-hover">Challenge Information</h3>
 						<div>
 							<div>
-								<div class="col-xs-12">
+								<div class="col-xs-12 col-md-6">
 									<!-- USER INFO START -->
 									<div class="panel panel-default">
 										<div class="panel-heading">Basic Information</div>
@@ -61,13 +57,13 @@
 														ng-maxlength="30" ng-minlength="5" />
 												</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeTitle.$dirty && addChallengeForm.challengeTitle.$error.required">Title
+													ng-show="addChallengeForm.challengTitle.$dirty && addChallengeForm.challengTitle.$error.required">Title
 													is required</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeTitle.$dirty && addChallengeForm.challengeTitle.$error.maxlength">Title
+													ng-show="addChallengeForm.challengTitle.$dirty && addChallengeForm.challengTitle.$error.maxlength">Title
 													cannot be more than 30 characters</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeTitle.$dirty && addChallengeForm.challengeTitle.$error.minlength">Title
+													ng-show="addChallengeForm.challengTitle.$dirty && addChallengeForm.challengTitle.$error.minlength">Title
 													should be more than 5 characters</div>
 </div>
 												<div class="col-xs-12">&nbsp;</div>
@@ -76,12 +72,12 @@
 																		<div class="col-xs-12">
 													<div class="input-group input-group-sm"><span class="input-group-addon" >Challenge
 															Type *</span> 
-													<input type="text" class="form-control" placeholder="Search Type" id="challengeTypeId2"
-														ng-model="challenge.searchTerm" ng-change="searchChallengeType()" value="" />
-												<select id="challengeTypeId" class="form-control" name="challengeTypeId"
+													<input type="text" class="form-control" placeholder="Search Type" id="challengeTypeId2" name="challengTypeId"
+														ng-model="challenge.challengTypeId" class="form-control"  value="" />
+											<!-- 	<select id="challengeTypeId" class="form-control" name="challengeTypeId"
 														ng-model="challenge.challengeTypeId"
 														ng-options="item.challengTypeId as item.challengTypeDesc for item in data">
-													</select>
+													</select> -->
 												</div>	
 												
 												<!-- 	<div class="input-group input-group-sm">
@@ -104,10 +100,10 @@
 
 												<div class="col-xs-12 ">
 													<div class="input-group input-group-sm">
-														<span class="input-group-addon">Start date *</span> <input id="challengStartDate"
+														<span class="input-group-addon" >Start date *</span> <input id="challengStartDate"
 															name="challengStartDate" type="text" class="form-control"
 															placeholder="Challenge Start date" ng-model="challenge.challengStartdate" 
-															datepicker-angular /><span class="input-group-addon">YYYY-MM-DD</span>
+															datepicker-angular /><span class="input-group-addon">DD-MMM-YYYY</span>
 
 														<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 															ng-show="addChallengeForm.challengStartDate.$dirty && addChallengeForm.challengStartDate.$error.required">Challenge
@@ -123,7 +119,7 @@
 														<span class="input-group-addon">End date *</span> <input id="challengCloseDate"
 															name="challengCloseDate" type="text" class="form-control"
 															placeholder="Challenge End date" ng-model="challenge.challengCloseDate" 
-															datepicker-angular /><span class="input-group-addon">YYYY-MM-DD</span>
+															datepicker-angular /><span class="input-group-addon">DD-MMM-YYYY</span>
 
 														<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 															ng-show="addChallengeForm.challengCloseDate.$dirty && addChallengeForm.challengCloseDate.$error.required">Challenge
@@ -138,17 +134,17 @@
 												<div class="col-xs-12">
 												<div class="input-group input-group-sm">
 														<span class="input-group-addon">Challenge Source Fund *</span> <input id="challengeSourceFund"
-														name="challengeSourceFund" type="text" class="form-control" placeholder="Challenge Source Fund"
-														ng-model="challenge.challengeSourceFund" required ng-maxlength="30" ng-minlength="5" />
+														name="challengSourceFund" type="text" class="form-control" placeholder="Challenge Source Fund"
+														ng-model="challenge.challengSourceFund" required ng-maxlength="30" ng-minlength="5" />
 												</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeSourceFund.$dirty && addChallengeForm.challengeSourceFund.$error.required">Challenge source fund
+													ng-show="addChallengeForm.challengSourceFund.$dirty && addChallengeForm.challengSourceFund.$error.required">Challenge source fund
 													is required</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeSourceFund.$dirty && addChallengeForm.challengeSourceFund.$error.maxlength">Challenge source fund
+													ng-show="addChallengeForm.challengSourceFund.$dirty && addChallengeForm.challengSourceFund.$error.maxlength">Challenge source fund
 													cannot be more than 30 characters</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeSourceFund.$dirty && addChallengeForm.challengeSourceFund.$error.minlength">Challenge source fund
+													ng-show="addChallengeForm.challengSourceFund.$dirty && addChallengeForm.challengSourceFund.$error.minlength">Challenge source fund
 													should be more than 5 characters</div>
 												</div>	
 											
@@ -158,7 +154,7 @@
 										<!-- USER INFO END -->
 									</div>
 								</div>
-										<div class="col-xs-12">
+										<div class="col-xs-12 col-md-6">
 									<!-- USER INFO START -->
 									<div class="panel panel-default">
 										<div class="panel-heading">Additional Information</div>
@@ -167,72 +163,81 @@
 										<div class="col-xs-12">
 												<div class="input-group input-group-sm">
 														<span class="input-group-addon">Challenge Impact *</span> <input id="challengeImpact"
-														name="challengeImpact" type="text" class="form-control" placeholder="Challenge Impact"
-														ng-model="challenge.challengeImpact" required ng-maxlength="30" ng-minlength="5" />
+														name="challengImpact" type="text" class="form-control" placeholder="Challenge Impact"
+														ng-model="challenge.challengImpact" required ng-maxlength="30" ng-minlength="5" />
 												</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeImpact.$dirty && addChallengeForm.challengeImpact.$error.required">Challenge Impact
+													ng-show="addChallengeForm.challengImpact.$dirty && addChallengeForm.challengImpact.$error.required">Challenge Impact
 													is required</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeImpact.$dirty && addChallengeForm.challengeImpact.$error.maxlength">Challenge Impact
+													ng-show="addChallengeForm.challengImpact.$dirty && addChallengeForm.challengImpact.$error.maxlength">Challenge Impact
 													cannot be more than 30 characters</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeImpact.$dirty && addChallengeForm.challengeImpact.$error.minlength">Challenge Impact
+													ng-show="addChallengeForm.challengImpact.$dirty && addChallengeForm.challengImpact.$error.minlength">Challenge Impact
 													should be more than 5 characters</div>
 												</div>	
 												<div class="col-xs-12">&nbsp;</div>
 												<div class="col-xs-12">
 												<div class="input-group input-group-sm">
-														<span class="input-group-addon">Challenge Incentive *</span> <input id="challengeIncentive"
-														name="challengeIncentive" type="text" class="form-control" placeholder="Challenge Incentive"
-														ng-model="challenge.challengeIncentive" required ng-maxlength="30" ng-minlength="5" />
+														<span class="input-group-addon">Challenge Incentive *</span> <!-- <input id="challengeIncentive"
+														name="challengIsIncentiv" type="text" class="form-control" placeholder="Challenge Incentive"
+														ng-model="challenge.challengIsIncentiv" required ng-maxlength="1" ng-minlength="1" /> -->
+														
+														<select name="challengIsIncentiv" class="form-control" id="challengeIncentive" ng-model="challenge.challengIsIncentiv"  required >
+														   <option >Y</option>
+															<option >N</option>
+														</select>
+														
+														
 												</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeIncentive.$dirty && addChallengeForm.challengeIncentive.$error.required">Challenge Incentive
+													ng-show="addChallengeForm.challengIsIncentiv.$dirty && addChallengeForm.challengeIncentive.$error.required">Challenge Incentive
 													is required</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeIncentive.$dirty && addChallengeForm.challengeIncentive.$error.maxlength">Challenge Incentive
+													ng-show="addChallengeForm.challengIsIncentiv.$dirty && addChallengeForm.challengeIncentive.$error.maxlength">Challenge Incentive
 													cannot be more than 30 characters</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeIncentive.$dirty && addChallengeForm.challengeIncentive.$error.minlength">Challenge Incentive
+													ng-show="addChallengeForm.challengIsIncentiv.$dirty && addChallengeForm.challengeIncentive.$error.minlength">Challenge Incentive
 													should be more than 5 characters</div>
 												</div>	
 												<div class="col-xs-12">&nbsp;</div>
 												<div class="col-xs-12">
 												<div class="input-group input-group-sm">
 														<span class="input-group-addon">Challenge Delivery Expectation *</span> <input id="challengeDeliveryExpectation"
-														name="challengeDeliveryExpectation" type="text" class="form-control" placeholder="Challenge Delivery Expectation"
-														ng-model="challenge.challengeDeliveryExpectation" required ng-maxlength="30" ng-minlength="5" />
+														name="challengDelivExpctatn" type="text" class="form-control" placeholder="Challenge Delivery Expectation"
+														ng-model="challenge.challengDelivExpctatn" required ng-maxlength="30" ng-minlength="5" />
 												</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeDeliveryExpectation.$dirty && addChallengeForm.challengeDeliveryExpectation.$error.required">Challenge Delivery Expectation
+													ng-show="addChallengeForm.challengDelivExpctatn.$dirty && addChallengeForm.challengDelivExpctatn.$error.required">Challenge Delivery Expectation
 													is required</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeDeliveryExpectation.$dirty && addChallengeForm.challengeDeliveryExpectation.$error.maxlength">Challenge Delivery Expectation
+													ng-show="addChallengeForm.challengDelivExpctatn.$dirty && addChallengeForm.challengDelivExpctatn.$error.maxlength">Challenge Delivery Expectation
 													cannot be more than 30 characters</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeDeliveryExpectation.$dirty && addChallengeForm.challengeDeliveryExpectation.$error.minlength">Challenge Delivery Expectation
+													ng-show="addChallengeForm.challengDelivExpctatn.$dirty && addChallengeForm.challengDelivExpctatn.$error.minlength">Challenge Delivery Expectation
 													should be more than 5 characters</div>
 												</div>	
 												<div class="col-xs-12">&nbsp;</div>
 												<div class="col-xs-12">
 												<div class="input-group input-group-sm">
 														<span class="input-group-addon">Challenge Benchmark *</span> <input id="challengeBenchmark"
-														name="challengeBenchmark" type="text" class="form-control" placeholder="Challenge Benchmark"
-														ng-model="challenge.challengeBenchmark" required ng-maxlength="30" ng-minlength="5" />
+														name="challengBenchmark" type="text" class="form-control" placeholder="Challenge Benchmark"
+														ng-model="challenge.challengBenchmark" required ng-maxlength="30" ng-minlength="5" />
 												</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challenge.challengeBenchmark.$dirty && addChallengeForm.challenge.challengeBenchmark.$error.required">Challenge Benchmark
+													ng-show="addChallengeForm.challengBenchmark.$dirty && addChallengeForm.challengeBenchmark.$error.required">Challenge Benchmark
 													is required</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challenge.challengeBenchmark.$dirty && addChallengeForm.challenge.challengeBenchmark.$error.maxlength">Challenge Benchmark
+													ng-show="addChallengeForm.challengBenchmark.$dirty && addChallengeForm.challengBenchmark.$error.maxlength">Challenge Benchmark
 													cannot be more than 30 characters</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challenge.challengeBenchmark.$dirty && addChallengeForm.challenge.challengeBenchmark.$error.minlength">Challenge Benchmark
+													ng-show="addChallengeForm.challengBenchmark.$dirty && addChallengeForm.challengBenchmark.$error.minlength">Challenge Benchmark
 													should be more than 5 characters</div>
 												</div>	
 												<div class="col-xs-12">&nbsp;</div>
-								<div class="col-xs-12 col-md-6">
+												</div>
+													</div></div>
+								<div class="col-xs-12 col-md-12">
 									<!-- USER INFO START -->
 									<div class="panel panel-default">
 										<div class="panel-heading">Challenge Abstract *</div>
@@ -241,11 +246,11 @@
 												<div class="input-group input-group-sm">
 
 													<textarea id="challengeAbstract" placeholder="Challenge abstract..."
-														class="textarea-text" style="resize: none; " name="challengAbstract"
-														rows="4" cols="32" ng-model="challenge.challengeAbstract" required></textarea>
+														class="textarea-text form-control" style="resize: none; " name="challengAbstract"
+														rows="4" cols="32" ng-model="challenge.challengAbstract" required></textarea>
 												</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="addChallengeForm.challengeAbstract.$dirty && addChallengeForm.challengeAbstract.$error.required">Challenge
+													ng-show="addChallengeForm.challengAbstract.$dirty && addChallengeForm.challengAbstract.$error.required">Challenge
 													Abstract is required</div>
 											</div>
 										</div>
@@ -253,7 +258,7 @@
 
 									</div>
 
-									<div class="col-xs-12 col-md-6 ">
+									<div class="col-xs-12 col-md-12 ">
 										<div class="panel panel-default">
 											<div class="panel-heading">Challenge Description *</div>
 											<div class="panel-body challenge-state-info">
@@ -261,11 +266,11 @@
 													<div class="input-group input-group-sm">
 
 														<textarea id="challengeDescription" placeholder="Challenge description..."
-															class="textarea-text" style="resize: none;" name="challengDescription" rows="4" cols="32"
-															ng-model="challenge.challengeDescription" required></textarea>
+															class="textarea-text form-control" style="resize: none;" name="challengDescription" rows="4" cols="32"
+															ng-model="challenge.challengDescription" required></textarea>
 													</div>
 													<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-														ng-show="addChallengeForm.challengeDescription.$dirty && addChallengeForm.challengeDescription.$error.required">Challenge
+														ng-show="addChallengeForm.challengDescription.$dirty && addChallengeForm.challengDescription.$error.required">Challenge
 														description is required</div>
 											
 												
@@ -278,9 +283,13 @@
 											
 									
 									
-									
+									<!-- 
 									<div class="col-xs-12">
-										<div class="panel panel-default" ng-controller="ChangePhotoController" ng-init="InitLoad()">
+									
+									
+									
+									
+										 <div class="panel panel-default" ng-controller="ChangePhotoController" ng-init="InitLoad()">
 											<div class="panel-heading">
 												<div class="btn-group">Challenge Image</div>
 											</div>
@@ -317,7 +326,7 @@
 													</div>
 												</div>
 											</div>
-										</div>
+										</div> 
 										
 										
 										<div class="col-xs-17">
@@ -325,7 +334,7 @@
 													<span class="input-group-addon" style="border-right: 1px solid #ccc">
 														Documents</span> <input placeholder="Project Image" id="projectPhoto" name="projImage"
 														type="file" style="display: none;" />
-													<button class="projectPhoto btn btn-info btn-sm">Upload Documents</button>
+													<button class="projectPhoto btn btn-info btn-sm" ng-click="uploadChallengeDocument()">Upload Documents</button>
 												</div>
 											
 											</div>
@@ -334,7 +343,7 @@
 										
 										
 										</div>
-										
+										 -->
 										
 										
 										
@@ -345,7 +354,7 @@
 										
 										
 								
-								</div></div></div>
+							
 								<div class="col-xs-12">
 										<a href="#" class="btn btn-primary continue-addChallenge"
 											ng-disabled="addChallengeForm.$invalid">Continue</a>
@@ -375,7 +384,7 @@
 							</div>
 								<div class="col-xs-12 col-md-4">
 									<a href="manageChallenge" id="add-challenge-button" id="challenge"><input type="button"
-										class="btn  btn-info add-challenge-button" value="Add Challenge"> </a>
+										class="btn  btn-info add-challenge-button" value="Add Challenge" > </a>
 								</div>
 							</div>
 						</div>
@@ -394,6 +403,7 @@
 		</div>
 	</div>
 </div>
+</div>
 <!-- END FOOTER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
@@ -405,3 +415,36 @@
 </html>
 <jsp:include page="template/footer.jsp" />
 <script src="js/webrtc.js"></script>
+<link rel="stylesheet" href="css/select2-bootstrap.css">
+<link rel="stylesheet" href="css/select2.css">
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link rel="stylesheet" href="css/customStyle.css">
+
+<script src="js/webrtc.js"></script>
+<script src="js/jquery.autocomplete.js"></script>
+<script src="js/logo.js"></script>
+<!-- js 
+================================================== -->
+<!-- Javascript files placed here for faster loading -->
+<!-- <script src="js/foundation.min.js"></script> -->
+<script src="js/jquery-ui.js"></script>
+<script src="js/angular.min.js"></script>
+<script src="js/Controller.js"></script>
+<script src="js/swfobject.js"></script>
+<script src="js/jquery.FileReader.min.js"></script>
+<!-- <script src="js/elasticslideshow.js"></script> -->
+<!-- <script src="js/jquery.cycle.js"></script> -->
+<!-- <script src="js/slidepanel.js"></script> -->
+<!-- <script src="js/responsivemenu.js"></script> -->
+<link rel="stylesheet" href="css/select2-bootstrap.css">
+<link rel="stylesheet" href="css/select2.css">
+<!-- <link rel="stylesheet" href="css/components.css"> -->
+<link rel="stylesheet" href="css/jquery-ui.css">
+<link rel="stylesheet" href="css/customStyle.css">
+<script src="js/jquery.isotope.min.js"></script>
+<script src="js/jquery.prettyPhoto.js"></script>
+<script src="js/custom.js"></script>
+<!-- <script src="js/bootstrap.min.js"></script> -->
+<script src="js/select2.min.js"></script>
+<script src="js/script.min.js"></script>
+</html>

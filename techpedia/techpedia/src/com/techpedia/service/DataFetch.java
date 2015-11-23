@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
@@ -26,11 +28,12 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.techpedia.bean.Challenge;
-import com.techpedia.bean.ChangePassword;
-import com.techpedia.bean.Login;
+import com.techpedia.bean.PasswordResetVo;
 import com.techpedia.bean.Mentor;
 import com.techpedia.bean.Project;
+import com.techpedia.bean.SignInVo;
 import com.techpedia.bean.UserProfileVO;
+import com.techpedia.util.TechpediaConstants;
 
 @SuppressWarnings("unchecked")
 // Using legacy API
@@ -38,6 +41,7 @@ import com.techpedia.bean.UserProfileVO;
 public class DataFetch {
 
 	private static final Logger logger = Logger.getLogger(DataFetch.class);
+	public String RegisterID;
 
 	public String fetchJson(String serviceURL, String id) {
 		return restServiceClient(serviceURL, id, "application/json");
@@ -103,6 +107,12 @@ public class DataFetch {
 		return restServiceClient(serviceURL, registerId, "application/json");
 	}
 
+	public String activateProfile(String serviceURL, String registerId) {
+		return restServiceClient(serviceURL, registerId, "application/json");
+	}
+
+	
+	
 	public String doesUserFollowProject(String serviceURL, String json) {
 		return restServiceClient(serviceURL, json, "application/json");
 	}
@@ -189,6 +199,7 @@ public class DataFetch {
 	}
 
 	public String fetchEditProfile(String serviceURL, ModelMap model, String registerID) throws Exception {
+		RegisterID=registerID;
 		String jsonResponse = restServiceClient(serviceURL, registerID, "application/json");
 		return jsonResponse;
 	}
@@ -201,6 +212,7 @@ public class DataFetch {
 		try {
 			String json = mapper.writeValueAsString(editProfile);
 			logger.debug(json);
+			System.out.println(json);
 			response = restServiceClient(serviceURL, json, "application/json");
 			logger.debug(response);
 		} catch (Exception e) {
@@ -209,16 +221,86 @@ public class DataFetch {
 		return response;
 	}
 
-	public String changePassword(String serviceURL, ChangePassword changePassword) {
-		String jsonResponse = restServiceClient(serviceURL + "?userName=" + changePassword.getUsername() + "&oldpassword=" + changePassword.getOldPassword() + "&newpassword=" + changePassword.getNewPassword(), "", "application/json");
+	
+	public String newFacultyRequest(UserProfileVO editProfile, String serviceURL) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_EMPTY);
+		String response = "";
+		try {
+			String json = mapper.writeValueAsString(editProfile);
+			System.err.println("for new service for new Faculty"+json);
+			logger.debug(json);
+			System.err.println(json);
+			response = restServiceClient(serviceURL, json, "application/json");
+			logger.debug(response);
+		} catch (Exception e) {
+			logger.debug("Exception in newFacultyRequest@DataFetch.java - " + e.toString());
+		}
+		return response;
+	}
+	
+	
+	public String changePassword(String serviceURL, PasswordResetVo changePassword) {
+		//String jsonResponse = restServiceClient(serviceURL + "?userName=" + changePassword.getUserName() + "&oldpassword=" + changePassword.getOldPassword() + "&newpassword=" + changePassword.getNewPassword(), "", "application/json");
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_EMPTY);
+		String jsonResponse="";
+		try {
+			String json = mapper.writeValueAsString(changePassword);
+			logger.debug(json);
+			jsonResponse = restServiceClient(serviceURL,json,"application/json");
+			logger.debug(jsonResponse);
+		} catch (Exception e) {
+			
+		}
+		
 		System.err.println("changePassword Response - " + jsonResponse);
 		return jsonResponse;
 	}
 
-	public String signIn(String serviceURL, Login login) {
-		String hitURL = serviceURL + "?userName=" + login.getUsername() + "&" + "password=" + login.getPassword();
-		System.err.println("SI1: " + hitURL);
-		String jsonResponse = restServiceClient(hitURL, "", "application/json");
+	
+	
+	
+	public String setPasswordFac(String serviceURL, PasswordResetVo changePassword) {
+		//String jsonResponse = restServiceClient(serviceURL + "?userName=" + changePassword.getUserName() + "&oldpassword=" + changePassword.getOldPassword() + "&newpassword=" + changePassword.getNewPassword(), "", "application/json");
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_EMPTY);
+		String jsonResponse="";
+		try {
+			String json = mapper.writeValueAsString(changePassword);
+			logger.debug(json);
+			jsonResponse = restServiceClient(serviceURL,json,"application/json");
+			logger.debug(jsonResponse);
+		} catch (Exception e) {
+			
+		}
+		
+		
+		System.err.println("setPassswordFac Response - " + jsonResponse);
+		return jsonResponse;
+	}
+	
+	
+	
+	public String signIn(String serviceURL,SignInVo login) {
+		//String hitURL = serviceURL + "?userName=" + login.getUsername() + "&" + "password=" + login.getPassword();
+		//System.err.println("SI1: " + hitURL);
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_EMPTY);
+		String jsonResponse="";
+		try {
+			String json = mapper.writeValueAsString(login);
+			logger.debug(json);
+			jsonResponse = restServiceClient(serviceURL,json,"application/json");
+			logger.debug(jsonResponse);
+		} catch (Exception e) {
+			logger.debug("Exception in signIn@DataFetch.java - " + e.toString());
+		}
+		
 		System.err.println("SI2: " + jsonResponse);
 		return jsonResponse;
 	}
@@ -253,15 +335,218 @@ public class DataFetch {
 		String jsonResponse = restServiceClient(serviceURL, jsonRequest, "application/json");
 		return jsonResponse;
 	}
-
-	public String addProjectRequest(Project project, String serviceURL) {
+	public String addProjectRequest(Project project, String serviceURL,String registerID) {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
-		if ("undefined".equalsIgnoreCase(project.getChallengId()))
+		
+		
+		if (("undefined".equalsIgnoreCase(project.getChallengId())) || (project.getChallengId() == null ))
+		{
 			project.setChallengId(null);
+		   project.setProjIsForChallenge("N");
+		   }
+
+		   else{
+		    project.setProjIsForChallenge("Y");
+		    
+		}    
+		String response = "";
+		try {
+
+		//ProjectTeamLead Id set...........
+		long projectTeamLeadId=Long.parseLong(registerID);
+		project.setProjTeamLeaderId(projectTeamLeadId);
+		// PART OF FIX
+		String[] parts = project.getProjBranchesString().split(",");
+		Integer[] intArray = new Integer[parts.length];
+		System.err.println("Length 1 : " + parts.length);
+		for (int n = 0; n < parts.length; n++) {
+		intArray[n] = Integer.parseInt(parts[n]);
+		}
+		ArrayList<Integer> intArrList = new ArrayList<Integer>();
+		Collections.addAll(intArrList, intArray);
+		project.setProjBranches(intArrList);
+		// ------------------------------------------
+		ArrayList<String> strArrList = new ArrayList<String>();
+		Collections.addAll(strArrList, project.getProjKeywordsString().split(","));
+		
+		project.setProjKeywords(strArrList);
+		// ------------------------------------------
+				String[] parts2 = project.getProjTeamMembersString().split(",");
+				String[] subPrts2=parts2;
+
+		for(int i=0;i<parts2.length;i++){
+			String newValue=parts2[i];
+			subPrts2[i]=newValue.substring(newValue.lastIndexOf("-") + 1).trim();
+			
+		}
+	/*Long[] longArray = new Long[parts2.length];
+
+		System.err.println("Length 2 : " + parts2.length);
+		for (int n = 0; n < parts2.length; n++) {
+		longArray[n] = Long.parseLong(parts2[n]);
+		}*/
+		/*System.err.println("Length 2 : " + parts2.length);
+		for (int n = 0; n < parts2.length; n++) {
+		longArray[n] = Long.parseLong(parts2[n]);
+		}*/
+		Long[] longArray = new Long[subPrts2.length];
+
+		System.err.println("Length 2 of subprts : " + subPrts2.length);
+		for (int n = 0; n < subPrts2.length; n++) {
+		longArray[n] = Long.parseLong(subPrts2[n]);
+		}
+		ArrayList<Long> longArrList = new ArrayList<Long>();
+		longArrList.add(project.getProjTeamLeaderId());
+		Collections.addAll(longArrList, longArray);
+		project.setProjTeamMembers(longArrList);
+		// END PART OF FIX
+
+		System.err.println(project.getProjTeamId());
+		String json = mapper.writeValueAsString(project);
+		System.err.println(json);
+		response = restServiceClient(serviceURL, json, "application/json");
+		logger.debug(response);
+		} catch (Exception e) {
+		logger.debug("Exception in addProjectRequest@DataFetch.java - " + e.toString());
+		e.printStackTrace();
+		}
+		return response;
+		}
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public String editProjectRequest(Project edit, String serviceURL,String registerID) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_EMPTY);
+
+		
+		String response = "";
+		try {
+
+		//ProjectTeamLead Id set...........
+		long projectTeamLeadId=Long.parseLong(registerID);
+		edit.setProjTeamLeaderId(projectTeamLeadId);
+	    
+		
+		
+		
+		// PART OF FIX
+	/*	String[] parts = edit.getProjBranchesString().split(",");
+		Integer[] intArray = new Integer[parts.length];
+		System.err.println("Length 1 : " + parts.length);
+		for (int n = 0; n < parts.length; n++) {
+		intArray[n] = Integer.parseInt(parts[n]);
+		}
+		ArrayList<Integer> intArrList = new ArrayList<Integer>();
+		Collections.addAll(intArrList, intArray);
+		edit.setProjBranches(intArrList);*/
+		// ------------------------------------------
+		ArrayList<String> strArrList = new ArrayList<String>();
+		Collections.addAll(strArrList, edit.getProjKeywordsString().split(","));
+		
+		edit.setProjKeywords(strArrList);
+		// ------------------------------------------
+				/*String[] parts2 = edit.getProjTeamMembersString().split(",");
+				String[] subPrts2=parts2;*/
+
+		/*for(int i=0;i<parts2.length;i++){
+			String newValue=parts2[i];
+			subPrts2[i]=newValue.substring(newValue.lastIndexOf("-") + 1).trim();
+			
+		}*/
+	/*Long[] longArray = new Long[parts2.length];
+
+		System.err.println("Length 2 : " + parts2.length);
+		for (int n = 0; n < parts2.length; n++) {
+		longArray[n] = Long.parseLong(parts2[n]);
+		}*/
+		/*System.err.println("Length 2 : " + parts2.length);
+		for (int n = 0; n < parts2.length; n++) {
+		longArray[n] = Long.parseLong(parts2[n]);
+		}*/
+	/*	Long[] longArray = new Long[subPrts2.length];
+
+		System.err.println("Length 2 of subprts : " + subPrts2.length);
+		for (int n = 0; n < subPrts2.length; n++) {
+		longArray[n] = Long.parseLong(subPrts2[n]);
+		}
+		ArrayList<Long> longArrList = new ArrayList<Long>();
+		longArrList.add(edit.getProjTeamLeaderId());
+		Collections.addAll(longArrList, longArray);
+		edit.setProjTeamMembers(longArrList);
+		// END PART OF FIX
+*/
+		System.err.println(edit.getProjTeamId());
+		String json1 = mapper.writeValueAsString(edit.getProjTeamId());
+		String json = mapper.writeValueAsString(edit);
+		System.err.println(json1);
+		System.err.println(json);
+		response = restServiceClient(serviceURL, json, "application/json");
+		System.out.println(response+"---sdfsdf----");
+		logger.debug(response);
+		} catch (Exception e) {
+		logger.debug("Exception in editProjectRequest@DataFetch.java - " + e.toString());
+		e.printStackTrace();
+		}
+		return response;
+		}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+/*	public String addProjectRequest(Project project, String serviceURL,long registerID) {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
+		long regID = Long.parseLong(RegisterID);
+	   System.out.println("uuuuuuuuuu"+regID);
+		project.setProjTeamLeaderId(regID);
+		if ("undefined".equalsIgnoreCase(project.getChallengId()))
+			{project.setChallengId(null);
+		    project.setProjIsForChallenge("N");
+		    }
+		
+		    else{
+		    	 project.setProjIsForChallenge("Y");
+		    	 
+	}		    
 		String response = "";
 		try {
 			// PART OF FIX
+			//set Team Leader ID
+			
+			long projectTeamLeadId=Long.parseLong(registerID);
+			project.setProjTeamLeaderId(projectTeamLeadId);
 			String[] parts = project.getProjBranchesString().split(",");
 			Integer[] intArray = new Integer[parts.length];
 			System.err.println("Length 1 : " + parts.length);
@@ -283,6 +568,7 @@ public class DataFetch {
 				longArray[n] = Long.parseLong(parts2[n]);
 			}
 			ArrayList<Long> longArrList = new ArrayList<Long>();
+			longArrList.add(project.getProjTeamLeaderId());
 			Collections.addAll(longArrList, longArray);
 			project.setProjTeamMembers(longArrList);
 			// END PART OF FIX
@@ -295,7 +581,7 @@ public class DataFetch {
 			e.printStackTrace();
 		}
 		return response;
-	}
+	}*/
 
 	public String acceptChallengeRequest(Project project, String serviceURL) {
 		ObjectMapper mapper = new ObjectMapper();
@@ -354,8 +640,8 @@ public class DataFetch {
 	}
 
 	public ModelMap fetchFooter(ModelMap model, String url) throws Exception {
-		model = fetchHomePageEntrepreneurs(url + "/fakejson/homeEntrepreneurs.abc", model);
-		model = fetchHomePagePartners(url + "/fakejson/homePartners.abc", model);
+		/*model = fetchHomePageEntrepreneurs(url + "/fakejson/homeEntrepreneurs.abc", model);
+		model = fetchHomePagePartners(url + "/fakejson/homePartners.abc", model);*/
 		return model;
 	}
 
@@ -378,7 +664,7 @@ public class DataFetch {
 		return model;
 	}
 
-	public ModelMap fetchHomePageEntrepreneurs(String serviceURL, ModelMap model) throws Exception {
+/*	public ModelMap fetchHomePageEntrepreneurs(String serviceURL, ModelMap model) throws Exception {
 		JSONParser parser = new JSONParser();
 		JSONObject jsonObject = (JSONObject) parser.parse(readURL(serviceURL));
 		JSONArray dataArray = (JSONArray) jsonObject.get("array");
@@ -391,7 +677,7 @@ public class DataFetch {
 		}
 		model.addAttribute("entrepreneurs", actualData);
 		return model;
-	}
+	}*/
 
 	public String fetchProjects(String serviceURL, ModelMap model, String set) throws Exception {
 		String response = restServiceClient(serviceURL, set, "application/json");
@@ -675,6 +961,7 @@ public class DataFetch {
 	}
 
 	public String fetchSuggestedTeamMembersOld(String serviceURL, UserProfileVO search) throws Exception {
+		ModelMap model= new ModelMap();
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setSerializationInclusion(JsonSerialize.Inclusion.NON_NULL);
 		String json = mapper.writeValueAsString(search);
@@ -684,13 +971,34 @@ public class DataFetch {
 		System.err.println(jsonResponse);
 		JSONArray dataArray = (JSONArray) parser.parse(jsonResponse);
 		Iterator<JSONArray> iterator = dataArray.iterator();
+		ArrayList<Project>actualData=new ArrayList<Project>();
+		Project projbj=new Project();
 		String responseHTML = "";
 		while (iterator.hasNext()) {
 			JSONArray loopObject = (JSONArray) iterator.next();
 			Long memberID = (Long) loopObject.get(0);
 			String memberName = (String) loopObject.get(1);
-			responseHTML += "<option value=\"" + memberID + "\">" + memberName + " - " + memberID + "</option>";
+			//responseHTML += "<option value=\"" + memberID + "\">" + memberName + " - " + memberID + "</option>";
+			responseHTML += "<option value=\"" + memberName +"-"+ memberID+ "\">" + memberName + " - " + memberID + "</option>";
+			
+			System.out.println("response of fetched TEam from DB"+responseHTML);
 		}
+		/*while (iterator.hasNext()) {
+			
+			JSONArray loopObject = (JSONArray) iterator.next();
+			Long memberID = (Long) loopObject.get(0);
+			String memberName = (String) loopObject.get(1);
+			//responseHTML += "<option value=\"" + memberID + "\">" + memberName + " - " + memberID + "</option>";
+			responseHTML += "<option value=\"" + memberName + "\">" + memberName + " - " + memberID + "</option>";
+
+projbj.setProjTeamId(memberID);
+projbj.setProjTeamMembersString(memberName);
+actualData.add(projbj);
+			System.out.println("response of fetched TEam from DB"+responseHTML);
+		}
+		
+		model.addAttribute("addedTeamMembers", actualData);
+		return model;*/
 		return responseHTML;
 	}
 
@@ -778,14 +1086,16 @@ public class DataFetch {
 		return model;
 	}
 
-	public ModelMap fetchProjectDetail(String serviceURL, ModelMap model, String id) throws Exception {
+	public String fetchProjectDetail(String serviceURL, String id) throws Exception {
 		// TODO Auto-generated method stub
 		JSONParser parser = new JSONParser();
-		JSONObject jsonObject = (JSONObject) parser.parse(restServiceClient(serviceURL, id, "application/json"));
-		ObjectMapper mapper = new ObjectMapper();
+		String model1 = restServiceClient(serviceURL, id, "application/json");
+		/*ObjectMapper mapper = new ObjectMapper();
 		Project project = mapper.readValue(jsonObject.toJSONString(), Project.class);
-		model.addAttribute("projectdetails", project);
-		return model;
+		System.out.println(project);
+		model1.addAttribute("projectdetails", project);*/
+		System.out.println("project details are: " + model1);
+		return model1;
 	}
 
 	public String getSuggestedBranches(String serviceURL, String post) {
@@ -794,6 +1104,24 @@ public class DataFetch {
 		return jsonResponse;
 	}
 
+	public String getUniversityList(String serviceURL, String post) {
+		String jsonResponse = restServiceClient(serviceURL, post, "application/json");
+		logger.info(jsonResponse);
+		return jsonResponse;
+	}
+	
+	public String getCollegeList(String serviceURL, String postParams){
+		String jsonResponse = restServiceClient(serviceURL, postParams, TechpediaConstants.SERVICE_RETURN_TYPE);
+		logger.info(jsonResponse);
+		return jsonResponse;
+	}
+	
+	
+	
+	
+	
+	
+	
 	public ModelMap fetchprojectComments(String serviceURL, ModelMap model) throws Exception {
 		JSONParser parser = new JSONParser();
 		JSONObject jsonObject = (JSONObject) parser.parse(readURL(serviceURL));

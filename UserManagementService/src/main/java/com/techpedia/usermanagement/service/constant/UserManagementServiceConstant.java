@@ -22,5 +22,6 @@ public class UserManagementServiceConstant {
 	public static String PHOTO_UPDATE_SUCCESS = "Photo Updated Successfully.";
 	public static String PROFILE_ACTIVATE_SUCCESS = "Profile Activated Successfully.";
 	public static String PASSWORD_SENT_SUCCESS = "Password sent Successfully to User Email ID.";
+	public static String EMAIL_URL = "http://128.199.156.151:8080/techpediaNewUI/activateProfile?userID=";
 }
 

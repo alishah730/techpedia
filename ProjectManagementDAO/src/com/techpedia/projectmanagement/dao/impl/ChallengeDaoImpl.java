@@ -25,6 +25,7 @@ import org.hibernate.criterion.Subqueries;
 import sun.misc.BASE64Decoder;
 
 import com.techpedia.projectmanagement.bean.Challenge;
+import com.techpedia.projectmanagement.bean.ChallengeType;
 import com.techpedia.projectmanagement.bean.ChallengeTypeMasterVO;
 import com.techpedia.projectmanagement.bean.DeleteChallDocVO;
 import com.techpedia.projectmanagement.bean.DownChallengeDocVO;
@@ -50,6 +51,7 @@ import com.techpedia.projectmanagement.exception.DownloadChallengeDocException;
 import com.techpedia.projectmanagement.exception.GetAllChallengeException;
 import com.techpedia.projectmanagement.exception.GetChallengeDetailException;
 import com.techpedia.projectmanagement.exception.GetChallengeException;
+import com.techpedia.projectmanagement.exception.GetChallengeTypeException;
 import com.techpedia.projectmanagement.exception.SearchChallengeException;
 import com.techpedia.projectmanagement.exception.SuggestedChallengeNotFoundException;
 import com.techpedia.projectmanagement.exception.UploadChallengeDocException;
@@ -282,7 +284,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 			for(ChallengeMaster challengeMaster:challengeMasters){
 				challenge = new Challenge();
 				
-				//challenge.setChallengId(challengeMaster.getChallengId());
+				challenge.setChallengId(challengeMaster.getChallengId());
 				challenge.setChallengTitle(challengeMaster.getChallengTitle());
 				challenge.setChallengDescription(challengeMaster.getChallengDescription());
 				//challenge.setChallengImgPath(challengeMaster.getChallengImgPath());
@@ -367,7 +369,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 			InputStream inputStream = new ByteArrayInputStream(decodedBytes);				
 			fileSize = FileUploadDownload.saveFile(inputStream, SERVER_UPLOAD_FOLDER_LOCATION, challId, regstrId, docName);
 			
-			/*Start Adding into TB_TECH001_MAST_PROJECTS_DETAIL here*/	
+			/*Start Adding into tb_tech001_txn_challng_doc_path here*/	
 			session = HibernateUtil.getSessionFactory().openSession();
 			tx = session.beginTransaction();
 			Criteria criteria = session.createCriteria(ChallengeDocPathTxn.class);
@@ -417,9 +419,9 @@ public class ChallengeDaoImpl implements ChallengeDao {
 			for(ChallengeDocPathTxn docPathTxn:challengeDocPathTxns){
 				projectDocument = new ProjectDocument();
 				String docPath = docPathTxn.getChallengPath();
-				String docName = docPath.substring(docPath.lastIndexOf("/"), docPath.length());
+				String docName = docPath.substring(docPath.lastIndexOf("/")+1, docPath.length());
 				projectDocument.setDocName(docName);
-				projectDocument.setDocLink(SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION+docPath);
+				projectDocument.setDocLink(SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION+"/"+docPath);
 				
 				projectDocuments.add(projectDocument);
 			}
@@ -491,11 +493,8 @@ public class ChallengeDaoImpl implements ChallengeDao {
 			int projectYear = project.getProjYear();
 			int projectDuration = project.getProjDuration();
 			String projectCollegeState = project.getProjCollegeState();
-		//	Date projectStartDate = ProjectDaoHelper.getMillisecondsToDate(project.getProjStartDate());
-		//	Date projectEndDate = ProjectDaoHelper.getMillisecondsToDate(project.getProjEndDate());
-			
-			Date projectStartDate = null;
-			Date projectEndDate = null;
+			Date projectStartDate = getMillisecondsToDate(project.getProjStartDate());
+			Date projectEndDate = getMillisecondsToDate(project.getProjEndDate());						
 			long projMentor1Id = project.getProjMentor1Id();
 			long projMentor2Id = project.getProjMentor2Id();
 			long projectTeamId = project.getProjTeamId();
@@ -653,10 +652,10 @@ public class ChallengeDaoImpl implements ChallengeDao {
 					          .add(Restrictions.eq("challengPath", docPath)));
 					challengeDocPathTxn = (ChallengeDocPathTxn) criteria.uniqueResult();
 					session.delete(challengeDocPathTxn);
-					returnVal = FileUploadDownload.deleteFile(SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION+docPath);
+					returnVal = FileUploadDownload.deleteFile(SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION+"/"+docPath);
 					tx.commit();					
 					if(returnVal=="N")
-						throw new DeleteDocumentException("No documents uploaded by given user for given challenge");		
+						throw new DeleteDocumentException("Unable to delete document");		
 					} catch (Exception e) {
 						//log.error("Error while retriving the all followed projects : " + e.getMessage());
 						throw new DeleteDocumentException("Error while deleting challenge documents : "+ e.getMessage());
@@ -668,6 +667,35 @@ public class ChallengeDaoImpl implements ChallengeDao {
 					}
 					//log.debug("ChallengeDaoImpl.deleteChallengeDocument :End");				
 				return returnVal;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ArrayList<ChallengeType> getChallengeType()
+			throws GetChallengeTypeException {
+		//log.debug("ChallengeDaoImpl.getChallengeType :Start");
+		ChallengeType challengeType = null;
+		ArrayList<ChallengeType> challengeTypes = new ArrayList<ChallengeType>();
+		Session session = HibernateUtil.getSessionFactory().openSession();		
+		try{
+			Criteria criteria = session.createCriteria(ChallengeTypeMaster.class);
+			criteria.addOrder(Order.asc("challengTypeId"));
+			ArrayList<ChallengeTypeMaster> challengeTypeMasters = (ArrayList<ChallengeTypeMaster>) criteria.list();
+			for(ChallengeTypeMaster challengeTypeMaster:challengeTypeMasters){
+				challengeType = new ChallengeType();
+				challengeType.setChallengeTypeId(challengeTypeMaster.getChallengTypeId());
+				challengeType.setChallengeTypeDesc(challengeTypeMaster.getChallengTypeDesc());			
+				challengeTypes.add(challengeType);
+			}
+			}catch (Exception e) {
+				//log.debug("Error while deleting project : "+ e.getMessage());
+				throw new GetChallengeTypeException("Error while getting challenge types : "+ e.getMessage());
+			}finally{
+				if(session!=null)
+					session.close();
+			}
+		//log.debug("ChallengeDaoImpl.getChallengeType :End");
+		return challengeTypes;
 	}
 }
 

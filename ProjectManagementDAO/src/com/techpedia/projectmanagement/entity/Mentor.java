@@ -30,8 +30,10 @@ public class Mentor {
 
 	@Column(name="DESIGNATION")
 	private String designation;
-
-	//private  byte[] mentorImage;
+	
+	@Column(name = "PHOTO")
+	private String photo;
+	
 
 	/**
 	 * @return the rgstrId
@@ -103,19 +105,13 @@ public class Mentor {
 		this.designation = designation;
 	}
 
-	/**
-	 * @return the mentorImage
-	 *//*
-	public byte[] getMentorImage() {
-		return mentorImage;
+	public String getPhoto() {
+		return photo;
 	}
 
-	*//**
-	 * @param mentorImage the mentorImage to set
-	 *//*
-	public void setMentorImage(byte[] mentorImage) {
-		this.mentorImage = mentorImage;
-	}*/
+	public void setPhoto(String photo) {
+		this.photo = photo;
+	}
 	
 	
 

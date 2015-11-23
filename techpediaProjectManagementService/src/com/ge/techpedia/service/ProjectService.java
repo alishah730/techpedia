@@ -46,6 +46,7 @@ import com.techpedia.projectmanagement.exception.GetDetailOfTeamException;
 import com.techpedia.projectmanagement.exception.GetPopularityException;
 import com.techpedia.projectmanagement.exception.GetProjectDetailsException;
 import com.techpedia.projectmanagement.exception.GetProjectFollowersException;
+import com.techpedia.projectmanagement.exception.GetProjectTypeException;
 import com.techpedia.projectmanagement.exception.OtherCommentsNotFoundException;
 import com.techpedia.projectmanagement.exception.ProjectByLoggedInUserException;
 import com.techpedia.projectmanagement.exception.RemoveCommentException;
@@ -72,7 +73,7 @@ public class ProjectService {
 	@POST
 	@Path("createproject")
 	@Consumes({"application/json"})
-	public Response createProject(Project project) throws CreateProjectException{
+	public Response createProject(Project project) throws CreateProjectException, EmailServiceException{
 		return Response.ok().status(200).entity(ProjectServiceHelper.createProject(project)).type("application/json").build();
 	}
 
@@ -474,6 +475,14 @@ public class ProjectService {
 	@Produces({"application/json"})
 	public Response facultyClosedProject(FacInitProjVO facInitProjVO) throws FacultyClosedProjectException{
 		return Response.ok().status(200).entity(ProjectServiceHelper.facultyClosedProject(facInitProjVO)).type("application/json").build();
-	}		
+	}	
+	
+	@POST
+	@Path("getprojecttype")
+	@Consumes("application/json")
+	@Produces({"application/json"})
+	public Response getProjectType() throws GetProjectTypeException{
+		return Response.ok().status(200).entity(ProjectServiceHelper.getProjectType()).type("application/json").build();
+	}
 	
 }

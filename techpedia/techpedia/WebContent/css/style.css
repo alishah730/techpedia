@@ -7,7 +7,7 @@ body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,p,blockquote,th,td
 	{
 	margin: 0;
 	padding: 0;
-	font-size: 13px;
+	/*font-size: 13px;*/
 	direction: ltr;
 }
 
@@ -2770,7 +2770,7 @@ a:focus {
 }
 
 #footer h1 {
-	font-size: 16px;
+	font-size: 22px;
 	color: #ccc;
 	margin-bottom: 20px;
 }
@@ -2787,7 +2787,7 @@ a:focus {
 	color: #999;
 	cursor: pointer;
 	display: inline-block;
-	font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif;
+	/*font-family: "Helvetica Neue", "Helvetica", Helvetica, Arial, sans-serif; */
 	font-size: 13px;
 	font-weight: bold;
 	line-height: 1;
@@ -3471,9 +3471,9 @@ input[type=text],input[type=password],input[type=email] {
 	padding-right: 10px;
 }
 
-html * {
+/* html * {
 	font-family: Verdana, Arial, sans-serif;
-}
+} */
 
 .hoverable:hover {
 	background-size: 35px 15px;
@@ -3670,7 +3670,7 @@ fieldset.scheduler-border {
 }
 
 .welcome {
-	color: #ffffff;
+	color: #0F0D0D;
 }
 
 .heading1 {
@@ -3814,4 +3814,35 @@ form[novalidate] input.ng-pristine {
 .accept-style{
 	text-align: center;
 	margin-left:50%; 	 	
+}
+img {
+  vertical-align: middle;
+}
+.img-responsive,
+.thumbnail > img,
+.thumbnail a > img,
+.carousel-inner > .item > img,
+.carousel-inner > .item > a > img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.img-rounded {
+  border-radius: 6px;
+}
+.img-thumbnail {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  padding: 4px;
+  line-height: 1.42857143;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  -webkit-transition: all .2s ease-in-out;
+       -o-transition: all .2s ease-in-out;
+          transition: all .2s ease-in-out;
+}
+.img-circle {
+  border-radius: 70%;
 }

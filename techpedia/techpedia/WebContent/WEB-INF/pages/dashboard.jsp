@@ -1,24 +1,37 @@
+<jsp:include page="template/NewHeader.jsp" />
 <html ng-app="techpedia">
-<jsp:include page="template/dashboardHeader.jsp" />
+<style>
+.breadcrumb>li+li:before {
+padding: 0 5px;
+color: #ccc;
+content: none;
+} 
+
+.row {
+margin-right: -1px;
+margin-left: -1px;
+}
+img { max-width: 100%; }
+
+</style>
 <div class="clearfix"></div>
+
+
+<div class="container customFont borderRadius style" >
+
 <div class="page-container">
 	<div class="page-sidebar-wrapper">
-		<jsp:include page="template/dashboardMenu.jsp" />
+	
 	</div>
 	<div class="page-content-wrapper" ng-controller="DashboardController" ng-init="initLoad()">
 		<div class="page-content">
 			<div class="row">
 				<div class="col-md-12">
 					<h3 class="page-title">Dashboard</h3>
-					<ul class="page-breadcrumb breadcrumb">
-						<li><a href="./">Home</a> &raquo;</li>
-						<li><a href="dashboard">Dashboard</a></li>
-						<li class="pull-right">
-							<div id="dashboard-report-range" class="dashboard-date-range tooltips"
-								data-placement="bottom" data-original-title="Change dashboard date range">
-								<i class="icon-calendar"></i> <span></span> <i class="fa fa-angle-down"></i>
-							</div>
-						</li>
+					<ul class="page-breadcrumb breadcrumb" >
+						<li ><a href="./">Home</a> <font  style="font-weight: bold; color: black; font-size:18px;">&raquo;</font></li>
+						<li style="content:none !important;">Dashboard</li>
+					
 					</ul>
 				</div>
 			</div>
@@ -53,7 +66,7 @@
 								<div class="panel-heading">{{project.projTitle}}</div>
 								<div class="panel-body">
 									<div class="col-md-4">
-										<img src="{{project.projImage||'images/no_project.png'}}" />
+										<img src="{{project.projImage||'images/art/project.png'}}" />
 									</div>
 									<div class="col-md-6">
 										<p>{{project.projDescription}}</p>
@@ -81,7 +94,7 @@
 								<div class="panel-heading">{{project.projTitle}}</div>
 								<div class="panel-body">
 									<div class="col-md-4">
-										<img src="{{project.projImage||'images/no_project.png'}}" />
+										<img src="{{project.projImage||'images/art/project.png'}}" />
 									</div>
 									<div class="col-md-6">
 										<p>{{project.projDescription}}</p>
@@ -103,6 +116,7 @@
 		
 		</div>
 	</div>
+</div>
 </div>
 <!-- END FOOTER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->

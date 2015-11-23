@@ -24,7 +24,7 @@ public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
 		restrictedPages.add("mentorDetails");
 		restrictedPages.add("ideate");
 		restrictedPages.add("addMentor");
-
+		restrictedPages.add("logout");
 		restrictedPages.add("editProject");
 		restrictedPages.add("manageProjects");
 		restrictedPages.add("teamDetails");
@@ -35,15 +35,18 @@ public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
 			System.out.println("Inside interceptor Evaluation - " + url);
 			HttpSession session = request.getSession(false);
 			if (session == null) {
+				System.err.println("Tejesh .. session is null");
 				System.err.println("Redirecting to index");
 				response.sendRedirect("loginagain");
 				return false;
 			} else {
 				if (session.getAttribute("username") == null) {
+					System.err.println("Tejesh .. index loop");
 					System.err.println("Redirecting to index");
 					response.sendRedirect("loginagain");
 					return false;
 				} else {
+					System.err.println("Tejesh .. inside valid session");
 					return true;
 				}
 			}

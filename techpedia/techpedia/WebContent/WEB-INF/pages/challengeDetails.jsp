@@ -1,10 +1,12 @@
 <%@page import="java.util.ArrayList"%>
 <html ng-app="techpedia">
-<jsp:include page="template/dashboardHeader.jsp" />
+<jsp:include page="template/NewHeader.jsp" />
 <div class="clearfix"></div>
+
+<div class="container customFont borderRadius style" >
 <div class="page-container">
 	<div class="page-sidebar-wrapper">
-		<jsp:include page="template/dashboardMenu.jsp" />
+		<%-- <jsp:include page="template/dashboardMenu.jsp" /> --%>
 	</div>
 
 	<div class="page-content-wrapper" ng-controller="ChallengeDetailsController" ng-init="InitLoad()">
@@ -93,7 +95,7 @@
 									<div class="panel-body"></div>
 									<ul class="list-group">
 										<li class="list-group-item" ng-repeat="document in challengeDocumentList">{{document.docName}}
-											<button ng-click=downloadDocument(document) class="btn btn-sm btn-info">Download</button>
+											<button ng-click=downloadDocumentLink(document) class="btn btn-sm btn-info">Download</button>
 											<button ng-click=deleteDocument(document) class="btn btn-sm btn-info">Delete</button>
 										</li>
 									</ul>
@@ -102,9 +104,9 @@
 						</div>
 					</div>
 
-					<div class="col-xs-6">
+					<!-- <div class="col-xs-6">
 						<img src="{{challenge.challengImgPath||'images/no_project.png'}}" />
-					</div>
+					</div> -->
 					<!-- Table -->
 
 				</div>
@@ -115,6 +117,7 @@
 		</div>
 	</div>
 </div>
+</div>
 <!-- END FOOTER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
 <!-- BEGIN CORE PLUGINS -->
@@ -123,7 +126,7 @@
 <script src="../../assets/global/plugins/excanvas.min.js"></script> 
 <![endif]-->
 
-<jsp:include page="template/loginModal.jsp" />
+
 </body>
 <!-- END BODY -->
 </html>
