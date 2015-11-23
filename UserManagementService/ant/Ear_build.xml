@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+
+<project name="EAR Build" default="build" basedir="../">
+
+	<property name="name" value="techpediaportal" />
+	<property name="version" value="1.0" />
+	
+	<property name="proj.dir" 	value="D:\gegdc\AC340221\Local_GitRepository\V2_Git\techpedia" />
+	<property name="src.dir" 	value="${basedir}/src" />
+	<property name="bin.dir" 	value="${basedir}/bin" />
+	<property name="lib.dir" 	value="${basedir}/lib" />
+	<property name="build.dir" 	value="${basedir}/build" />
+	<property name="ear.dir" 	value="${basedir}/ear" />
+	
+	<property name="deploy.dir" value="${basedir}"></property>	
+
+	<!-- The Classpath  -->
+	<path id="build.classpath">
+		<fileset dir="${basedir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	
+
+	<!-- Cleans up generated stuff -->
+	<target name="clean" description="Removes generated files.">
+		<delete>
+			<fileset dir="${ear.dir}">
+	    		<include name="**/*.ear"/>
+			</fileset>
+		</delete>
+	</target>
+	
+	<!-- Cleans up generated stuff -->
+	<target name="prepare" description="prepare all modules to build ear.">
+		
+		<ant antfile="${proj.dir}/TechPediaUtil/build/Util_build.xml" inheritall="false" inheritrefs="false" target="deploy"></ant>
+			<ant antfile="${proj.dir}/TechPediaLogger/build/Logger_build.xml" inheritall="false" inheritrefs="false" target="deploy"></ant>
+		<ant antfile="${proj.dir}/TechPediaEmailService/build/EmailSvc_build.xml" inheritall="false" inheritrefs="false" target="deploy"></ant>
+		<ant antfile="${proj.dir}/UserManagementDAO/build/UsrMgtDAO_build.xml" inheritall="false" inheritrefs="false" target="deploy"></ant>
+		
+		
+		<!-- <ant antfile="${proj.dir}/ProjectManagementDAO/build/ProjMgtDAO_build.xml"  inheritall="false" inheritrefs="false" target="deploy"></ant> -->
+			<ant antfile="${proj.dir}/techpediaProjectManagementService/build/ProjMgtSvc_build.xml"  inheritall="false" inheritrefs="false" target="deploy"></ant>
+		
+		<ant antfile="${proj.dir}/techpedia/techpedia/build/UI_build.xml" inheritall="false" inheritrefs="false" target="deploy"></ant> 
+		
+		
+		<ant antfile="${proj.dir}/UserManagementService/ant/UsrMgtSvc_build.xml" inheritall="false" inheritrefs="false" target="deploy"></ant>
+		
+	</target>
+	
+	<!-- Build EAR file -->
+	<target name="build" depends="prepare">
+		<ear earfile="${ear.dir}/${name}.ear" appxml="${ear.dir}/conf/application.xml" >
+			<fileset dir="${build.dir}">
+				<include name="*.war" />
+			</fileset>
+			<fileset dir="${basedir}/dist">
+				<include name="*.war" />
+			</fileset>
+		</ear>
+	</target>
+	
+	<!-- Copy EAR file -->
+	<target name="deploy" depends="build">
+		<delete file="${deploy.dir}/${name}.ear"></delete>
+		<copy  file="${ear.dir}/${name}.ear" todir="${deploy.dir}"/>
+	</target>
+</project>

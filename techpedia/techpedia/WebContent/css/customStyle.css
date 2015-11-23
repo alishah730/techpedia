@@ -1,0 +1,32 @@
+
+form[novalidate] input.ng-invalid {
+	border: 1px solid red;
+	border-left: 8px solid red;
+}
+
+form[novalidate] input.ng-valid {
+	border: 1px solid green;
+	border-left: 8px solid green;
+}
+
+form[novalidate] input.ng-pristine {
+	border: 1px solid gray;
+	border-left: 8px solid gray;
+}
+
+/*.ui-accordion-header {
+	color: black;
+	background-color: #505f72;
+} */
+#modal_modl{
+
+
+width: 600px; 
+height: 600px; 
+overflow-y:scroll; 
+overflow-x:hidden;
+margin-left: auto;
+ margin-right: auto;
+ 
+
+}

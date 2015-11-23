@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+
+<project name="UserManagementService" default="deploy" basedir="../">
+
+	<property name="name" value="UserManagementService" />
+	<property name="version" value="1.0" />
+
+	<property name="src.dir" 	value="${basedir}/src" />
+	<property name="bin.dir" 	value="${basedir}/bin" />
+	<property name="lib.dir" 	value="${basedir}/lib" />
+	<property name="build.dir" 	value="${basedir}/build" />
+	<property name="webinf.dir" 	value="${basedir}/src/main/webapp/WEB-INF" />
+	
+	
+	<property name="deploy.dir" value="${build.dir}"></property>	
+
+	<!-- The Classpath  -->
+	<path id="build.classpath">
+		<fileset dir="${basedir}">
+			<include name="**/*.jar" />
+		</fileset>
+	</path>
+	
+
+	<!-- Cleans up generated stuff -->
+	<target name="clean" description="Removes generated files.">
+		
+		<delete>
+			<fileset dir="${build.dir}">
+	    		<include name="**/*.war"/>
+			</fileset>
+		</delete>
+		
+		<delete dir="${webinf.dir}/classes" />
+	</target>
+
+	<!-- Compiles the source code -->
+	<target name="compile" depends="clean" description="Compiles the class files">
+		<mkdir dir="${webinf.dir}/classes" />
+		<javac srcdir="${src.dir}" destdir="${webinf.dir}/classes" debug="on" deprecation="on">
+			<classpath refid="build.classpath" />
+		</javac>
+		
+	</target>
+
+	<!-- Build WAR file -->
+	<target name="build" depends="compile">
+		
+		<copy todir="${webinf.dir}/lib">
+			<fileset  dir="${lib.dir}">
+				<include name="**/*.jar"/>
+			</fileset>
+		</copy>
+		<war destfile="${build.dir}/${name}.war" basedir="${basedir}/src/main/webapp" webxml="${webinf.dir}/web.xml">
+			
+		</war>
+	</target>
+	
+	<!-- Copy WAR file -->
+	<target name="deploy" depends="build">
+	
+	</target>
+</project>
