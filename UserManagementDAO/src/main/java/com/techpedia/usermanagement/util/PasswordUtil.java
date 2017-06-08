@@ -7,9 +7,10 @@ import java.util.List;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.techpedia.chiper.ChiperUtils;
-import com.techpedia.logger.TechPediaLogger;
 import com.techpedia.usermanagement.entity.UsrMngtPassword;
 import com.techpedia.usermanagement.exception.PasswordResetException;
 import com.techpedia.usermanagement.exception.UserNotFoundException;
@@ -17,7 +18,7 @@ import com.techpedia.util.HibernateUtil;
 
 public class PasswordUtil {
 	
-	private static TechPediaLogger log = TechPediaLogger.getLogger(PasswordUtil.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(PasswordUtil.class.getName());
 	
 	public String passwordReset(String userId, String oldPwd,String newPwd) throws PasswordResetException, UserNotFoundException {
 		String updateMessage = null;
@@ -28,21 +29,21 @@ public class PasswordUtil {
 			try {
 				String currentPassword = getCurrentPassword(userId);
 				if(!currentPassword.equals(oldPwd)) {
-					log.error("The current password entered was wrong");
+					LOGGER.error("The current password entered was wrong");
 					throw new PasswordResetException("UM-Ex005","PasswordResetException", "The current password entered was wrong");
 				}
 				
 				if(oldPwd.equals(newPwd)) {
-					log.error("old password and new passwords are same");
+					LOGGER.error("old password and new passwords are same");
 					throw new PasswordResetException("UM-Ex005","PasswordResetException", "old password and new passwords are same");
 					
 				} else 	if(userId.equals(newPwd)) {
-					log.error("new password and user id are same");
+					LOGGER.error("new password and user id are same");
 					throw new PasswordResetException("UM-Ex005","PasswordResetException", "new password and user id are same");
 					
 				} else {
 				tx = ss.beginTransaction();
-				log.debug("Password Reset : Start");
+				LOGGER.debug("Password Reset : Start");
 				Query queryPassword = ss.createQuery("from UsrMngtPassword where USR_ID = :userid order by CREATED_DATE desc");
 				queryPassword.setParameter("userid", userId);
 				queryPassword.setMaxResults(5);
@@ -53,7 +54,7 @@ public class PasswordUtil {
 					pwdObj = (UsrMngtPassword) passwords.get(i);
 					String lastPassword = ChiperUtils.decrypt2(pwdObj.getUsrPasswd());
 					if(lastPassword.equals(newPwd)) {
-						log.error("New password entered is one of the last 5 passwords");
+						LOGGER.error("New password entered is one of the last 5 passwords");
 						throw new PasswordResetException("UM-Ex005","PasswordResetException", "New password entered is one of the last 5 passwords");
 					} 
 					
@@ -82,19 +83,19 @@ public class PasswordUtil {
 			}
 			
 		} catch (Exception e) {
-				log.error((new StringBuilder("Error while commiting the transaction :")).append(e.getMessage()).toString());
+				LOGGER.error((new StringBuilder("Error while commiting the transaction :")).append(e.getMessage()).toString());
 				
 				try {
 					tx.rollback();
 				} catch (Exception e1) {
-					log.error((new StringBuilder("Error while Roll back the transaction :")).append(e.getMessage()).toString());
+					LOGGER.error((new StringBuilder("Error while Roll back the transaction :")).append(e.getMessage()).toString());
 				}
 			} 
 			finally {
 				tx = null;
 				ss.close();
 			}
-			log.debug("Password Reset : End");
+			LOGGER.debug("Password Reset : End");
 		return updateMessage;
 		
 	}
@@ -114,12 +115,12 @@ public class PasswordUtil {
 		queryPassword.setMaxResults(1);
 		UsrMngtPassword passwords = (UsrMngtPassword) queryPassword.uniqueResult();
 		if(passwords == null) {
-			log.error("Entered User Id is not Existed in the database");
+			LOGGER.error("Entered User Id is not Existed in the database");
 			throw new UserNotFoundException("UM-Ex006","UserNotFoundException","Entered User Id is not Existed in the database");
 		}
 		currentPassword = ChiperUtils.decrypt2(passwords.getUsrPasswd());
 		} catch (Exception e) {
-			log.error("Password Reset Exception" + e.getMessage());
+			LOGGER.error("Password Reset Exception" + e.getMessage());
 			throw new PasswordResetException("UM-Ex-005","PasswordResetException",e.getMessage());
 		}finally{
 			ss.close();
@@ -138,15 +139,15 @@ public class PasswordUtil {
 		queryPassword.setMaxResults(1);
 		UsrMngtPassword passwords = (UsrMngtPassword) queryPassword.uniqueResult();
 		if(passwords == null) {
-			log.error("Entered Email Id is not Existed in the database");
+			LOGGER.error("Entered Email Id is not Existed in the database");
 			throw new UserNotFoundException("UM-Ex006","UserNotFoundException","Entered Email ID does not exist in Techpedia database");
 		}
 		currentPassword = ChiperUtils.decrypt2(passwords.getUsrPasswd());
 		}catch (UserNotFoundException e) {
-			log.error("User Not Found Exception" + e);
+			LOGGER.error("User Not Found Exception" + e);
 			throw e;
 		}catch (Exception e) {
-			log.error("Password Reset Exception" + e);
+			LOGGER.error("Password Reset Exception" + e);
 			throw new PasswordResetException("UM-Ex-005","PasswordResetException",e.getMessage());
 		}finally{
 			ss.close();
@@ -158,15 +159,15 @@ public class PasswordUtil {
 		// TODO Auto-generated method stub
 		PasswordUtil putil = new PasswordUtil();
 		
-		String Result = null;
+		String result = null;
 		try {
-			Result = putil.passwordReset("Ronoldino7102014", "prakash1234", "prakash1234");
+			result = putil.passwordReset("Ronoldino7102014", "prakash1234", "prakash1234");
 		} catch (PasswordResetException  | UserNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		System.out.println("Result : " + Result);
+		//System.out.println("Result : " + result);
 		/*UserProfileDO uprofiledo = null;
 		long num = 25;
 		try {

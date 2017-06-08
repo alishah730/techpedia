@@ -24,6 +24,21 @@ public class MacroBranchMaster{
 	
 	@Column(name="MACRO_BRANCH_NAME")
 	private String macroBranchName;
+	
+	
+	//photo path added by habibul ali shah
+	@Column(name="PHOTOPATH")
+	private String photoPath;
+
+	
+
+	public String getPhotoPath() {
+		return photoPath;
+	}
+
+	public void setPhotoPath(String photoPath) {
+		this.photoPath = photoPath;
+	}
 
 	/**
 	 * 
@@ -57,6 +72,10 @@ public class MacroBranchMaster{
 	public void setMacroBranchName(String macroBranchName) {
 		this.macroBranchName = macroBranchName;
 	}
-	
+	@Override
+	public String toString() {
+		return "MacroBranchMaster [macroBranchId=" + macroBranchId + ", macroBranchName=" + macroBranchName
+				+ ", photoPath=" + photoPath + "]";
+	}
 	
 }

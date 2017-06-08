@@ -39,12 +39,12 @@ public class BulkUploadCVS {
 	int lstNmOfStudPos = 6;
 	int eMailOfStudPos = 7;
 	int contNoOfStuPos = 8;
-	int ProjTitlePos = 9;
+	int projTitlePos = 9;
 	int projAbtrPos = 10;
 	int projExtAbstrPos = 11;
 	int projYearPos = 12;
 	int projStartDatePos = 13;
-	int ProjEndDatePos = 14;
+	int projEndDatePos = 14;
 	int projBranchId1Pos = 15;
 	int projBranchId2Pos = 16;
 	int projBranchId3Pos = 17;
@@ -135,12 +135,12 @@ public class BulkUploadCVS {
 					    projectXLSVO.setContactNo(Long.valueOf(sheet.getCell(contNoOfStuPos, i).getContents().trim()));					     
 				   }
 				   
-				   if(sheet.getCell(ProjTitlePos, i).getContents().trim()=="")
+				   if(sheet.getCell(projTitlePos, i).getContents().trim()=="")
 				   { 					    										   
 					   throw new BulkUploadException("Error while project bulk uploading: Please provide Project Title at row no:"+i);
 				   }
 				   else{
-					   projectXLSVO.setProjTitle(sheet.getCell(ProjTitlePos, i).getContents().trim());
+					   projectXLSVO.setProjTitle(sheet.getCell(projTitlePos, i).getContents().trim());
 				   }
 				   
 				   if(sheet.getCell(projAbtrPos, i).getContents().trim()=="")
@@ -166,20 +166,20 @@ public class BulkUploadCVS {
 				   
 				   if(sheet.getCell(projStartDatePos, i).getContents().trim()!=""){ 
 					  
-					    SimpleDateFormat ProjEndDate = new SimpleDateFormat("dd/MM/yyyy");
+					    SimpleDateFormat projEndDate = new SimpleDateFormat("dd/MM/yyyy");
     					try {    		
-    						Date date = ProjEndDate.parse(sheet.getCell(projStartDatePos, i).getContents().trim());
+    						Date date = projEndDate.parse(sheet.getCell(projStartDatePos, i).getContents().trim());
     						projectXLSVO.setProjStartDate(date);    				
     					}catch (ParseException e) {
     						e.printStackTrace();
     					}
 				    }
 				   
-				    if(sheet.getCell(ProjEndDatePos, i).getContents().trim()!=""){ 
+				    if(sheet.getCell(projEndDatePos, i).getContents().trim()!=""){ 
 					    
-					    SimpleDateFormat ProjEndDate = new SimpleDateFormat("dd/MM/yyyy");
+					    SimpleDateFormat projEndDate = new SimpleDateFormat("dd/MM/yyyy");
     					try {    						
-    						Date date = ProjEndDate.parse(sheet.getCell(ProjEndDatePos, i).getContents().trim());
+    						Date date = projEndDate.parse(sheet.getCell(projEndDatePos, i).getContents().trim());
     						projectXLSVO.setProjEndDate(date);    						
     					}catch (ParseException e) {
     						e.printStackTrace();

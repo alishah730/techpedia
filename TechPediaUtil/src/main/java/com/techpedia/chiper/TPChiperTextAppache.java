@@ -5,8 +5,9 @@ package com.techpedia.chiper;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.techpedia.logger.TechPediaLogger;
 
 
 
@@ -16,7 +17,7 @@ import com.techpedia.logger.TechPediaLogger;
 	public class TPChiperTextAppache
 	{
 
-		  private static TechPediaLogger log = TechPediaLogger.getLogger(TPChiperTextAppache.class.getName());
+		  private static final Logger LOGGER = LoggerFactory.getLogger(TPChiperTextAppache.class.getName());
 		    private static byte key[] = {
 		        116, 104, 105, 115, 73, 115, 65, 83, 101, 99, 114, 101, 116, 75, 101, 121
 		    };
@@ -39,7 +40,7 @@ import com.techpedia.logger.TechPediaLogger;
         	   }
                return encryptedString.toString();
 	        }catch(Exception e){ 
-	         log.error(e.toString());
+	         LOGGER.error(e.toString());
 	         throw new ChiperEncryptException("Unable to Encrypt message!");
 	        }	    }
 
@@ -55,7 +56,7 @@ import com.techpedia.logger.TechPediaLogger;
 	        decryptedString = new String(cipher.doFinal(Hex.decodeHex(strToDecrypt.toCharArray() )));
 	        return decryptedString;
 	        }catch(Exception e){
-	                log.error(e.toString());
+	                LOGGER.error(e.toString());
 	                throw new ChiperDencryptException("Unable to Decrypt message!");
 	        }
 	    }
@@ -64,12 +65,12 @@ import com.techpedia.logger.TechPediaLogger;
 	        throws Exception
 	    {
 	        String msg = "Venugopal Drushetty";
-	        System.out.println("Actual Message :" + msg);
+	        LOGGER.info("Actual Message :" + msg);
 	        String encryptedStr = encrypt(msg);
-	        System.out.println((new StringBuilder("Encrypted : ")).append(encryptedStr).toString());
+	        LOGGER.info((new StringBuilder("Encrypted : ")).append(encryptedStr).toString());
 	        String decryptedStr = decrypt(encryptedStr.trim());
-	        System.out.println((new StringBuilder("String To Decrypt : ")).append(encryptedStr).toString());
-	        System.out.println((new StringBuilder("Decrypted : ")).append(decryptedStr).toString());
+	        LOGGER.info((new StringBuilder("String To Decrypt : ")).append(encryptedStr).toString());
+	        LOGGER.info((new StringBuilder("Decrypted : ")).append(decryptedStr).toString());
 		    }
 
 	    

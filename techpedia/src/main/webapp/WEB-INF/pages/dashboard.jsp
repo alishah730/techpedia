@@ -1,6 +1,27 @@
 <body style="background-color: white !important">
 	<jsp:include page="template/NewHeader.jsp" />
-	<img src="images/DASHBOARD-BANNER.jpg" class="img-responsive" style="width:100%; height:154px;">
+	<div >
+			<img src="images/DASHBOARD-BANNER.jpg" class="img-responsive" style="width:100%; height:154px;">
+
+		<%
+								String typeofuser = (String)session.getAttribute("usertype");
+								if(typeofuser.equals("student")){
+		%>
+
+		<div class="col-md-3" 
+			style="margin-left: 75%; margin-top: -4%;">
+
+			<a href="addProject" class="btn btn-success btn-responsive"
+				type="button"><span class="glyphicon glyphicon-plus "></span>Add
+				New Project</a> <a href="newInnovation"
+				class="btn btn-success btn-responsive" type="button"><span
+				class="glyphicon glyphicon-plus "></span>Submit Innovation</a>
+		</div>
+		<%} %>
+			
+</div>
+	
+	
 <html ng-app="techpedia">
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
 	rel="stylesheet">
@@ -58,13 +79,13 @@ img {
 							<li><a style="color: white !important;" href="./">Home</a> <font
 								style="font-weight: bold; color: white; font-size: 18px;">&raquo;</font></li>
 							<li style="content: none !important;">Dashboard</li>
-
+							
 						</ul>
 					</div>
 				</div>
 				<div class="col-xs-6" style="margin-left: 33%;">
 					<ul class="nav nav-pills" style="color: white;">
-						<li class="active"><a class="hov" data-toggle="tab" href="#"
+						<li ><a class="hov" data-toggle="tab" href="#"
 							style="color: #ffffff;  font-weight: bold;"
 							ng-click="clickFilter('my')"><i class="fa fa-user custom"></i>&nbsp;MY
 								PROJECT</a></li>
@@ -102,7 +123,7 @@ img {
 							<div style="float: left; padding-left: 12px;">
 								<img
 									style="height: 185px; width: 235px; padding-top: 15px; position: absolute; z-index: 0;"
-									src="${pageContext.request.contextPath}/image/{{project.photo1Path ||'defaultImage/placeholder.png'}}" alt="" />
+									src="${pageContext.request.contextPath}/image/{{project.photo1Path ||'/usr/Techpedia/Project/placeholders/placeholder.png'}}" alt="" />
 								<div
 									style="margin-top: 56%; padding-top: 13px; bottom: 0; left: 0; width: 235px; height: 54px; position: relative; text-align: center; color: black; font-weight: bolder; opacity: 0.7; filter: alpha(opacity = 70); z-index: 4; background-color: white;">{{project.projTitle}}</div>
 							</div>
@@ -150,7 +171,7 @@ img {
 						<div style="float: left; padding-left: 12px;">
 							<img
 								style="height: 185px; width: 235px; padding-top: 15px; position: absolute; z-index: 0;"
-								src="${pageContext.request.contextPath}/image/{{project.photo1Path || 'defaultImage/placeholder.png'}}" alt="" />
+								src="${pageContext.request.contextPath}/image/{{project.photo1Path || '/usr/Techpedia/Project/placeholders/placeholder.png'}}" alt="" />
 							<div
 								style="margin-top: 56%; padding-top: 13px; bottom: 0; left: 0; width: 235px; height: 54px; position: relative; text-align: center; color: black; font-weight: bolder; opacity: 0.7; filter: alpha(opacity = 70); z-index: 4; background-color: white;">{{project.projTitle}}</div>
 						</div>

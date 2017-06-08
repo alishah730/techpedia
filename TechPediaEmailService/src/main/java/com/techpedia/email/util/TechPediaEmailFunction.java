@@ -1,5 +1,8 @@
 package com.techpedia.email.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -12,12 +15,10 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
 import com.techpedia.email.exception.EmailServiceException;
-import com.techpedia.logger.TechPediaLogger;
 
 public class TechPediaEmailFunction {
 
-	private static TechPediaLogger LOGGER = TechPediaLogger
-			.getLogger(TechPediaEmailFunction.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(TechPediaEmailFunction.class.getName());
 
 	private TechPediaEmailFunction() {
 		LOGGER.info("this is a constructor");
@@ -64,8 +65,8 @@ public class TechPediaEmailFunction {
 
 		} catch (MessagingException e) {
 			//LOGGER.info("inside the catch block of MessagingException tbr");
-			e.printStackTrace();
-			throw new EmailServiceException("UM-EX013","EmailServiceException", " Error while sending Email");
+			LOGGER.error("An Unexpected error occured while sending email Ex :: ", e);
+			throw new EmailServiceException("UM-EX013","EmailServiceException", " Error while sending Email:"+e.fillInStackTrace());
 			// throw new RuntimeException(e);
 		/*	if ("TechPedia Registration".equalsIgnoreCase(subject)) {
 			//	LOGGER.info("inside the if block tbr");

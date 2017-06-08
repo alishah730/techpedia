@@ -121,7 +121,7 @@
 						
 				 <div style="float: left; padding-left: 12px;">
 						<img
-							src="${pageContext.request.contextPath}/image/{{challenge.photo1Path ||'defaultImage/placeholder.png'}}"
+							src="${pageContext.request.contextPath}/image/{{challenge.photo1Path ||'/usr/Techpedia/Project/placeholders/placeholder.png'}}"
 							alt=""
 							style="height: 222px; width: 235px; padding-top: 15px; position: absolute; z-index: 0;" />
 						<div
@@ -210,7 +210,7 @@
 						
 					<div style="float: left; padding-left: 12px;">
 						<img
-							src="${pageContext.request.contextPath}/image/{{challenge.photo1Path ||'defaultImage/placeholder.png'}}"
+							src="${pageContext.request.contextPath}/image/{{challenge.photo1Path ||'/usr/Techpedia/Project/placeholders/placeholder.png'}}"
 							alt=""
 							style="height: 222px; width: 235px; padding-top: 15px; position: absolute; z-index: 0;" />
 						<div

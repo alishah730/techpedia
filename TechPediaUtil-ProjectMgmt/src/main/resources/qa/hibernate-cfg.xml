@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory>
+		<property name="hibernate.connection.datasource">java:jboss/datasources/techpediaDataSource</property>
+		<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>
+		<property name="hibernate.current_session_context_class">thread</property>
+		<property name="hibernate.connection.autocommit">false</property>
+		<property name="hibernate.show_sql">true</property>
+
+		<!-- project management entities start -->
+		<mapping package="com.techpedia.projectmanagement.entity" />
+		<mapping class="com.techpedia.projectmanagement.entity.ProjectMaster" />
+		<mapping class="com.techpedia.projectmanagement.entity.MacroBranchMaster" />
+		<mapping class="com.techpedia.projectmanagement.entity.ProjectBranchMaster" />
+		<mapping class="com.techpedia.projectmanagement.entity.ProjectKeywordMaster" />
+		<mapping class="com.techpedia.projectmanagement.entity.ProjectTeamMaster" />
+		<mapping class="com.techpedia.projectmanagement.entity.ProjectTeamTxn" />
+		<mapping class="com.techpedia.projectmanagement.entity.ProjectCommentTxn" />
+		<mapping class="com.techpedia.projectmanagement.entity.ProjectFollowTxn" />
+		<mapping class="com.techpedia.projectmanagement.entity.ProjectTeamDetail" />
+		<mapping class="com.techpedia.projectmanagement.entity.ProjectDocPathTxn" />
+		<mapping class="com.techpedia.projectmanagement.entity.ProjectTypeMaster" />
+		<mapping class="com.techpedia.projectmanagement.entity.BranchMaster" />
+		<mapping class="com.techpedia.projectmanagement.entity.UsrMngtMaster" />
+		<mapping class="com.techpedia.projectmanagement.entity.UsrMngtStudent" />
+		<mapping class="com.techpedia.projectmanagement.entity.UsrMngtFaculty" />
+		<mapping class="com.techpedia.projectmanagement.entity.UsrMngtMentor" />
+		<mapping class="com.techpedia.projectmanagement.entity.Mentor" />
+		<mapping class="com.techpedia.projectmanagement.entity.TeamComment" />
+		<mapping class="com.techpedia.projectmanagement.entity.TopFiveProjFollowers" />
+		<mapping class="com.techpedia.projectmanagement.entity.ChallengeMaster" />
+		<mapping class="com.techpedia.projectmanagement.entity.ChallengeTeamTxn" />
+		<mapping class="com.techpedia.projectmanagement.entity.ChallengeTypeMaster" />
+		<mapping class="com.techpedia.projectmanagement.entity.ChallengeDocPathTxn" />
+		<mapping class="com.techpedia.projectmanagement.entity.ChallengeFollowTxn" />
+		<mapping class="com.techpedia.projectmanagement.entity.UsrMngtAddress" />
+		<mapping class="com.techpedia.projectmanagement.entity.UsrMngtContactInfo" />
+		<mapping class="com.techpedia.projectmanagement.entity.UsrMngtPassword" />
+		<mapping class="com.techpedia.projectmanagement.entity.ProjectUser" /> 
+		<mapping class="com.techpedia.projectmanagement.entity.ChallengeCommentTxn" />
+		<!-- project management entities end -->
+
+	</session-factory>
+</hibernate-configuration>

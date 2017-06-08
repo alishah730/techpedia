@@ -1,6 +1,8 @@
 package com.ge.techpedia.service.helper;
 
-import org.apache.log4j.Logger;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -8,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.ge.techpedia.constant.ProjectManagementServiceConstant;
 import com.ge.techpedia.service.response.ProjectServiceResponse;
 import com.google.gson.Gson;
-import com.techpedia.logger.TechPediaLogger;
 import com.techpedia.projectmanagement.dao.ProjectDao;
 import com.techpedia.projectmanagement.exception.BulkUploadException;
 
@@ -19,22 +20,17 @@ public class BulkUploadServiceHelper {
 	@Qualifier("projectDao")
 	ProjectDao projectDao;
 	
-	private static final Logger logger = Logger.getLogger(BulkUploadServiceHelper.class.getName());
-	
-	/*@Autowired
-	@Qualifier("springTestDao")
-	SpringTestDao springTestDao;*/
+	private static final Logger LOGGER = LoggerFactory.getLogger(BulkUploadServiceHelper.class.getName());
 	
 	public String bulkUploadProject(String fileName) throws BulkUploadException{
 		
 		String result = null;
 		ProjectServiceResponse response = new ProjectServiceResponse();
 		try {
-			logger.info("Calling the bulkUploadProject method in projectDao : start");
+			LOGGER.info("Calling the bulkUploadProject method in projectDao : start");
 			result = projectDao.bulkUploadProjectAsXLS(fileName);
-			logger.info("Calling the bulkUploadProject method in projectDao : end");
-			logger.info("Result :: "+result);
-			//springTestDao.springTest();
+			LOGGER.info("Calling the bulkUploadProject method in projectDao : end");
+			LOGGER.info("Result :: "+result);
 			
 			if(result == "Y"){				
 				Gson gson = new Gson();
@@ -45,10 +41,16 @@ public class BulkUploadServiceHelper {
 				Gson gson = new Gson();
 				response.setStatus(ProjectManagementServiceConstant.FAILURE);
 				response.setDescription(ProjectManagementServiceConstant.PROJECT_UPLOAD_FAILURE);
+				response.setExceptionMessage(result);
 				return gson.toJson(response);
 			}
 		} catch (Exception e) {			
-			throw new BulkUploadException(e.getMessage());
+			LOGGER.error("An unexpected error occured while bulkUploadProject Ex :: ", e);
+			Gson gson = new Gson();
+			response.setStatus(ProjectManagementServiceConstant.FAILURE);
+			response.setDescription(ProjectManagementServiceConstant.PROJECT_UPLOAD_FAILURE);
+			response.setExceptionMessage(e.getMessage());
+			return gson.toJson(response);
 		}		
 	}
 }

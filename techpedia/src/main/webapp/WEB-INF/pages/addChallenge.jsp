@@ -8,6 +8,24 @@
 	color: #ccc;
 	content: none;
 }
+
+.loaderBody {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url('images/cubebox.gif') 50% 50% no-repeat
+		rgb(249, 249, 249);
+	text-align: center;
+	font-size: 18px;
+	padding-top: 120px;
+}
+
+.ui-icon {
+	background-color: white;
+}
 </style>
 <div class="clearfix"></div>
 <div class="container customFont borderRadius style">
@@ -52,7 +70,7 @@
 						commandName="challenge" novalidate>
 						<div id="accordion" class="col-xs-12">
 							<h3 class="addChallenge-accordion-1 acc-hover"
-								style="background-color: #217690; color: white;">Challenge
+								style="background-color: #217690; color: black; font-weight: bold;">Challenge
 								Information</h3>
 							<div>
 								<div>
@@ -506,14 +524,59 @@
 								</div>
 							</div>
 							<h3 class="addChallenge-accordion-2 acc-hover"
-								ng-class="addChallengeForm.$invalid?'ui-state-disabled':'ui-state-default'">Captcha</h3>
+								ng-class="addChallengeForm.$invalid?'ui-state-disabled':'ui-state-default'"
+								style="background-color: #217690; color: black; font-weight: bold;">Captcha</h3>
 							<div>
 								<div class="col-xs-12">
-									<div class="col-xs-12 col-md-8">
+									<div class="col-xs-12 form-control "
+										style="height: 85px !important">
+										<div class="col-xs-4"
+											style="padding-left: 0%; padding-right: 0%">
+											<img src="jcaptcha.jpg" id="captcha_image"
+												style="box-shadow: 0 0 2em #b2b2b2;" />
+										</div>
+										<div class="col-xs-4" style="margin-left: -120px;">
+											<div class="col-xs-12">
+												<a href="" onclick="reloadCaptcha()" alt="reload"><i
+													style="" class="fa fa-refresh fa-2x"></i></a>
+												<div id="addProjectCaptchaError1" style="color: red"
+													role="alert">
+													<i class="fa fa-exclamation-triangle"></i> <strong>Invalid
+														Captcha!</strong>&nbsp;Please Try Again...
+												</div>
+											</div>
+
+											<div class="col-xs-12">
+												<input class="form-control" id="addChallengejCaptchaId"
+													placeholder="Enter the text here" type="text"
+													name="jcaptcha" value="" ng-model="jCaptcha"
+													style="width: 100%; margin-top: 8px" />
+											</div>
+
+
+										</div>
+										<div class="col-xs-12 col-md-4">
+											<!-- <a class="btn btn-primary reg-ctn-3" id="register"
+											style="margin-left: 91%; margin-top: 14%; background-color: #5cb85c;"
+											ng-click="registerSubmit()">Register</a> -->
+
+											<button class="btn btn-primary add-challenge-button"
+												id="add-challenge-button" data-toggle="modal"
+												data-target="#addChallengeAlertModal"
+												style="margin-left: 91%; margin-top: 14%; background-color: #5cb85c;"
+												ng-disabled="(!jCaptcha)">
+												<i class="fa fa-cart-plus" aria-hidden="true"></i>&nbsp;Add
+												Challenge
+											</button>
+										</div>
+									</div>
+
+
+									<%-- <div class="col-xs-12 col-md-8">
 										<div class="input-group input-group-sm" id="captchavalue">
 											<div class="g-recaptcha"
 												data-sitekey="6LcgrRQTAAAAALPL-I3d-X4mXCcCy-F22emjwxS3"></div>
-											<%-- <span id="captchaVal" class="input-group-addon" style="border-right: 1px solid #ccc" >
+											<span id="captchaVal" class="input-group-addon" style="border-right: 1px solid #ccc" >
 										<%
 											Random aRandom = new Random();
 											long aStart = 1000;
@@ -524,7 +587,7 @@
 											System.err.println("RANDOM NUMBER: " + randomNumber);
 											out.write(String.valueOf(randomNumber));
 										%>
-									</span> <input name="captcha" type="text" class="form-control" id="captcha" placeholder="Captcha" /> --%>
+									</span> <input name="captcha" type="text" class="form-control" id="captcha" placeholder="Captcha" />
 										</div>
 
 									</div>
@@ -533,14 +596,91 @@
 											id="challenge"><input type="button"
 											class="btn  btn-success add-challenge-button"
 											value="Add Challenge"></a>
-									</div>
+									</div> --%>
 								</div>
 							</div>
 						</div>
 					</form>
 				</div>
+
+				<!--add challenge alert -->
+				<div class="modal fade" id="addChallengeAlertModal" tabindex="-1"
+					role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-header"
+								style="background-color: #31b0d5; color: white; text-align: center">
+								<button type="button" class="close" data-dismiss="modal">
+									<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+								</button>
+								<h4 class="modal-title" id="myModalLabel">Add New Challenge</h4>
+							</div>
+
+							<div classs="modal-body" id="addProjectCaptchaError"
+								style="text-align: center;">
+								<div class="col-xs-12" style="height: 70px;">
+									<div style="color: red; padding-top: 25px;" role="alert">
+										<i class="fa fa-exclamation-triangle"></i> <strong>Invalid
+											Captcha!</strong>&nbsp;Please Try Again...
+									</div>
+								</div>
+								<a data-dismiss="modal" type="button" class="btn btn-info"
+									id="ExitfunctionScript">Try Again</a>
+								<div class="clearfix">&nbsp;</div>
+							</div>
+
+							<div id="addProjectResponse">
+
+								<div class="modal-body" id="loaderGIF">
+									<div class="loaderBody" id="addProjectloaderBody">Please
+										sit back and relax while we are saving your challenge
+										information...</div>
+								</div>
+								<div class="modal-body" id="addProjectSuccess"
+									style="text-align: center;">
+									<div>
+										<i id="effect" class="fa fa-check-circle-o"
+											style="color: green; font-size: 7em;"></i>
+									</div>
+									<div
+										class="addProjectSuccessMsg col-xs-12 xol-md-12 alert alert-success alert-dismissible"
+										style="color: black; text-align: center; font-family: arial;"
+										role="alert"></div>
+								</div>
+								<div class="modal-body" style="text-align: center;"
+									id="addProjectResponseEmailError">
+									<div style="text-align: center;">
+										<i id="effect" class="fa fa-check-circle-o"
+											style="color: #8a6d3b; font-size: 7em;"></i>
+									</div>
+									<div
+										class="addProjectResponseEmailErrorMsg col-xs-12 xol-md-12 alert alert-danger alert-dismissible"
+										style="color: black; text-align: center; font-family: arial;"></div>
+								</div>
+
+								<div class="modal-body" style="text-align: center;"
+									id="addProjectResponseError">
+									<div style="text-align: center;">
+										<i class="fa fa-exclamation-triangle"
+											style="color: #E84F63; font-size: 50px; text-align: center;"></i>
+									</div>
+									<div
+										class="addProjectResponseErrorMsg col-xs-12 xol-md-12 alert alert-danger alert-dismissible"
+										style="color: black; text-align: center; font-family: arial;"></div>
+								</div>
+								<div class="clearfix">&nbsp;</div>
+								<div class="modal-footer"
+									style="align: center; text-align: center;">
+									<a href="manageChallenge" onclick="clickExitChallenge()"
+										data-dismiss="modal" class="btn btn-info">Exit</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 				<div class="row">
-					<div class="panel panel-success challenge-response-panel">
+					<div ng-show="message.length>0"
+						class="panel panel-success challenge-response-panel">
 						<div class="panel-heading challenge-response"></div>
 						<div ng-repeat="msg in message">{{msg}}</div>
 					</div>
@@ -551,6 +691,11 @@
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript">
+		$(".loaderBody").load(function() {
+			$(".loaderBody").fadeOut("slow");
+		})
+	</script>
 </div>
 <!-- END FOOTER -->
 <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->

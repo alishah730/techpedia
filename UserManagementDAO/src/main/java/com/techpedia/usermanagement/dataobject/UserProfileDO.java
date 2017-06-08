@@ -17,6 +17,9 @@ public class UserProfileDO {
 	private String email;
 	private String twitterId;
 	private String linkedinId;
+	private String isMobile;
+	private String gender;
+	private String age;
 
 	//USR_MNGT_ADDR
 	private String address;
@@ -32,9 +35,10 @@ public class UserProfileDO {
 	private String mobile;
 	private String homePhoneNo;
 	private String photo;
-	private String photopath;
+	private String photoPath;
 	private String imgName;
 	private String imgByteArray;
+	private String isPhoto;
 
 	//USR_MNGT_STUDENT
 	private String collegeState;
@@ -70,6 +74,7 @@ public class UserProfileDO {
 	private String prinicipalEmail;
 	private String facilitiesOffrdToStudents;
 	private String cntctInfoForNatnlInnovnClub;
+	private String collegeInfoForCollege;
 	private String affltUniversityOfCollege;
 	private String techpdaFactlyCoordtr;
 	
@@ -288,6 +293,49 @@ public class UserProfileDO {
 		this.linkedinId = linkedinId;
 	}
 	
+	/**
+	 * @return the isMobile
+	 */
+	public String getIsMobile() {
+		return isMobile;
+	}
+
+	/**
+	 * @param isMobile the isMobile to set
+	 */
+	public void setIsMobile(String isMobile) {
+		this.isMobile = isMobile;
+	}
+	
+
+	/**
+	 * @return the gender
+	 */
+	public String getGender() {
+		return gender;
+	}
+
+	/**
+	 * @param gender the gender to set
+	 */
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	/**
+	 * @return the age
+	 */
+	public String getAge() {
+		return age;
+	}
+
+	/**
+	 * @param age the age to set
+	 */
+	public void setAge(String age) {
+		this.age = age;
+	}
+
 	/**
 	 * @return the address
 	 */
@@ -1190,85 +1238,34 @@ public class UserProfileDO {
 
 	public void setProjectBranchDesc(String projectBranchDesc) {
 		this.projectBranchDesc = projectBranchDesc;
-	}
-
-	@Override
-	public String toString() {
-		return "UserProfileDO [rgstrId=" + rgstrId + ", firstName=" + firstName
-				+ ", midName=" + midName + ", lastName=" + lastName + ", dob="
-				+ dob + ", iSactive=" + iSactive + ", userType=" + userType
-				+ ", userName=" + userName + ", faceBookId=" + faceBookId
-				+ ", email=" + email + ", twitterId=" + twitterId
-				+ ", linkedinId=" + linkedinId + ", address=" + address
-				+ ", addrLn1=" + addrLn1 + ", addrLn2=" + addrLn2 + ", city="
-				+ city + ", pincode=" + pincode + ", country=" + country
-				+ ", state=" + state + ", district=" + district + ", mobile="
-				+ mobile + ", homePhoneNo=" + homePhoneNo + ", photo=" + photo
-				+ ", photopath=" + photopath + ", imgName=" + imgName
-				+ ", imgByteArray=" + imgByteArray + ", degreeOfStudent="
-				+ degreeOfStudent + ", collge=" + collge + ", studentID="
-				+ studentID + ", completionYear=" + completionYear
-				+ ", university=" + university + ", branchIdOfStudent="
-				+ branchIdOfStudent + ", projectBranchDescOfStudent="
-				+ projectBranchDescOfStudent + ", degreeOfMentor="
-				+ degreeOfMentor + ", designationOfMentor="
-				+ designationOfMentor + ", branchIdOfMentor="
-				+ branchIdOfMentor + ", institutionalAssctnInfo="
-				+ institutionalAssctnInfo + ", professionalExperience="
-				+ professionalExperience + ", timeUspaceForMentoringPerMnth="
-				+ timeUspaceForMentoringPerMnth + ", mentorProfile="
-				+ mentorProfile + ", expectationFromMentor="
-				+ expectationFromMentor + ", commitmentUBringIn="
-				+ commitmentUBringIn + ", intOnGrassrtInnovators="
-				+ intOnGrassrtInnovators + ", popularity=" + popularity
-				+ ", projectBranchDescOfMentor=" + projectBranchDescOfMentor
-				+ ", webpage=" + webpage + ", logo=" + logo
-				+ ", cntctPerNameofCollege=" + cntctPerNameofCollege
-				+ ", collgeContactEmail=" + collgeContactEmail
-				+ ", prinicipalName=" + prinicipalName + ", prinicipalEmail="
-				+ prinicipalEmail + ", facilitiesOffrdToStudents="
-				+ facilitiesOffrdToStudents + ", cntctInfoForNatnlInnovnClub="
-				+ cntctInfoForNatnlInnovnClub + ", affltUniversityOfCollege="
-				+ affltUniversityOfCollege + ", techpdaFactlyCoordtr="
-				+ techpdaFactlyCoordtr + ", fax=" + fax
-				+ ", contactNameOfIndustry=" + contactNameOfIndustry
-				+ ", contactEmailOfIndustry=" + contactEmailOfIndustry
-				+ ", operatnSectr=" + operatnSectr
-				+ ", kindOfSprtUProvideInnovtr=" + kindOfSprtUProvideInnovtr
-				+ ", prdRng=" + prdRng + ", associateIndustry="
-				+ associateIndustry + ", techngyExprtizOffrToOthers="
-				+ techngyExprtizOffrToOthers
-				+ ", solnReqrdForTechnlgicalChlngs="
-				+ solnReqrdForTechnlgicalChlngs
-				+ ", intrstToPoseInnovtnChlngAwrds="
-				+ intrstToPoseInnovtnChlngAwrds + ", degreeOfFaculty="
-				+ degreeOfFaculty + ", collgeOfFaculty=" + collgeOfFaculty
-				+ ", specializationOfFaculty=" + specializationOfFaculty
-				+ ", universityOfFaculty=" + universityOfFaculty + ", alumni="
-				+ alumni + ", memshipInAssocns=" + memshipInAssocns
-				+ ", psnlWebpgLink=" + psnlWebpgLink
-				+ ", proffesionalExpOfFaculty=" + proffesionalExpOfFaculty
-				+ ", affltUniversityOfFaculty=" + affltUniversityOfFaculty
-				+ ", branchIdOfFaculty=" + branchIdOfFaculty
-				+ ", projectBranchDescOfFaculty=" + projectBranchDescOfFaculty
-				+ ", password=" + password + ", collegeName=" + collegeName
-				+ ", collegeDesc=" + collegeDesc + ", branchId=" + branchId
-				+ ", projectBranchDesc=" + projectBranchDesc
-				+ ", usrAccessDetails=" + usrAccessDetails + "]";
+	}	
+	
+	/**
+	 * @return the isPhoto
+	 */
+	public String getIsPhoto() {
+		return isPhoto;
 	}
 
 	/**
-	 * @return the photopath
+	 * @param isPhoto the isPhoto to set
 	 */
-	public String getPhotopath() {
-		return photopath;
+	public void setIsPhoto(String isPhoto) {
+		this.isPhoto = isPhoto;
 	}
 
 	/**
-	 * @param photopath the photopath to set
+	 * @return the photoPath
 	 */
-	public void setPhotopath(String photopath) {
-		this.photopath = photopath;
+	public String getPhotoPath() {
+		return photoPath;
+	}
+
+	/**
+	 * @param photopath the photoPath to set
+	 */
+	public void setPhotoPath(String photoPath) {
+		this.photoPath = photoPath;
 	}
 
 	/**
@@ -1311,6 +1308,90 @@ public class UserProfileDO {
 	 */
 	public void setCollegeState(String collegeState) {
 		this.collegeState = collegeState;
+	}
+
+	/**
+	 * @return the collegeInfoForCollege
+	 */
+	public String getCollegeInfoForCollege() {
+		return collegeInfoForCollege;
+	}
+
+	/**
+	 * @param collegeInfoForCollege the collegeInfoForCollege to set
+	 */
+	public void setCollegeInfoForCollege(String collegeInfoForCollege) {
+		this.collegeInfoForCollege = collegeInfoForCollege;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "UserProfileDO [rgstrId=" + rgstrId + ", firstName=" + firstName
+				+ ", midName=" + midName + ", lastName=" + lastName + ", dob="
+				+ dob + ", iSactive=" + iSactive + ", userType=" + userType
+				+ ", userName=" + userName + ", faceBookId=" + faceBookId
+				+ ", email=" + email + ", twitterId=" + twitterId
+				+ ", linkedinId=" + linkedinId +",isMobile="+isMobile+",gender="+gender+",age="+age+", address=" + address
+				+ ", addrLn1=" + addrLn1 + ", addrLn2=" + addrLn2 + ", city="
+				+ city + ", pincode=" + pincode + ", country=" + country
+				+ ", state=" + state + ", district=" + district + ", mobile="
+				+ mobile + ", homePhoneNo=" + homePhoneNo + ", photo=" + photo
+				+ ", photoPath=" + photoPath + ", imgName=" + imgName
+				+ ", imgByteArray=" + imgByteArray + ", isPhoto=" + isPhoto
+				+ ", collegeState=" + collegeState + ", degreeOfStudent="
+				+ degreeOfStudent + ", collge=" + collge + ", studentID="
+				+ studentID + ", completionYear=" + completionYear
+				+ ", university=" + university + ", branchIdOfStudent="
+				+ branchIdOfStudent + ", projectBranchDescOfStudent="
+				+ projectBranchDescOfStudent + ", degreeOfMentor="
+				+ degreeOfMentor + ", designationOfMentor="
+				+ designationOfMentor + ", branchIdOfMentor="
+				+ branchIdOfMentor + ", institutionalAssctnInfo="
+				+ institutionalAssctnInfo + ", professionalExperience="
+				+ professionalExperience + ", timeUspaceForMentoringPerMnth="
+				+ timeUspaceForMentoringPerMnth + ", mentorProfile="
+				+ mentorProfile + ", expectationFromMentor="
+				+ expectationFromMentor + ", commitmentUBringIn="
+				+ commitmentUBringIn + ", intOnGrassrtInnovators="
+				+ intOnGrassrtInnovators + ", popularity=" + popularity
+				+ ", projectBranchDescOfMentor=" + projectBranchDescOfMentor
+				+ ", webpage=" + webpage + ", logo=" + logo
+				+ ", cntctPerNameofCollege=" + cntctPerNameofCollege
+				+ ", collgeContactEmail=" + collgeContactEmail
+				+ ", prinicipalName=" + prinicipalName + ", prinicipalEmail="
+				+ prinicipalEmail + ", facilitiesOffrdToStudents="
+				+ facilitiesOffrdToStudents + ", cntctInfoForNatnlInnovnClub="
+				+ cntctInfoForNatnlInnovnClub + ", collegeInfoForCollege="
+				+ collegeInfoForCollege + ", affltUniversityOfCollege="
+				+ affltUniversityOfCollege + ", techpdaFactlyCoordtr="
+				+ techpdaFactlyCoordtr + ", fax=" + fax
+				+ ", contactNameOfIndustry=" + contactNameOfIndustry
+				+ ", contactEmailOfIndustry=" + contactEmailOfIndustry
+				+ ", operatnSectr=" + operatnSectr
+				+ ", kindOfSprtUProvideInnovtr=" + kindOfSprtUProvideInnovtr
+				+ ", prdRng=" + prdRng + ", associateIndustry="
+				+ associateIndustry + ", techngyExprtizOffrToOthers="
+				+ techngyExprtizOffrToOthers
+				+ ", solnReqrdForTechnlgicalChlngs="
+				+ solnReqrdForTechnlgicalChlngs
+				+ ", intrstToPoseInnovtnChlngAwrds="
+				+ intrstToPoseInnovtnChlngAwrds + ", degreeOfFaculty="
+				+ degreeOfFaculty + ", collgeOfFaculty=" + collgeOfFaculty
+				+ ", specializationOfFaculty=" + specializationOfFaculty
+				+ ", universityOfFaculty=" + universityOfFaculty + ", alumni="
+				+ alumni + ", memshipInAssocns=" + memshipInAssocns
+				+ ", psnlWebpgLink=" + psnlWebpgLink
+				+ ", proffesionalExpOfFaculty=" + proffesionalExpOfFaculty
+				+ ", affltUniversityOfFaculty=" + affltUniversityOfFaculty
+				+ ", branchIdOfFaculty=" + branchIdOfFaculty
+				+ ", projectBranchDescOfFaculty=" + projectBranchDescOfFaculty
+				+ ", password=" + password + ", collegeName=" + collegeName
+				+ ", collegeDesc=" + collegeDesc + ", branchId=" + branchId
+				+ ", projectBranchDesc=" + projectBranchDesc
+				+ ", usrAccessDetails=" + usrAccessDetails + "]";
 	}
 
 		

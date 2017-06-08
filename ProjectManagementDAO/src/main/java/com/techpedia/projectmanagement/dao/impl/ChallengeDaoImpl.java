@@ -13,6 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
 
+import org.apache.commons.codec.binary.Base64;
 import org.hibernate.Criteria;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.SQLQuery;
@@ -25,10 +26,10 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import sun.misc.BASE64Decoder;
 
-import com.techpedia.logger.TechPediaLogger;
 import com.techpedia.projectmanagement.bean.AddCommChallengeVO;
 import com.techpedia.projectmanagement.bean.AddCommVO;
 import com.techpedia.projectmanagement.bean.Branch;
@@ -106,7 +107,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 	 * @see com.techpedia.projectmanagement.dao.ChallengeManagementDAO#createChallenge(com.techpedia.projectmanagement.dataobject.ChallengeDAO)
 	 */
 	
-	private static TechPediaLogger log = TechPediaLogger.getLogger(ChallengeDaoImpl.class.getName());
+	private static final Logger LOGGER = LoggerFactory.getLogger(ChallengeDaoImpl.class.getName());
 	
 	
 	
@@ -168,14 +169,14 @@ public class ChallengeDaoImpl implements ChallengeDao {
 			
 		    returnVal = "Y";
 		} catch (Exception e) {
-			//log.debug("Unable to add to challenge to DB : " + e);
+			//LOGGER.debug("Unable to add to challenge to DB : " + e);
 			try 
 			{
 				tx.rollback();
 				session.createSQLQuery("delete from tb_tech001_mast_challeng_detail where CHALLENG_ID = :challengId").setParameter("challengId", challengId).executeUpdate();
 			} catch (Exception e1) 
 			{
-				//log.debug("deleted Record from usr_mngt_master table : " + e1);
+				//LOGGER.debug("deleted Record from usr_mngt_master table : " + e1);
 				throw new CreateChallengeException("Error while doing rollback to the failed transaction : "+ e1.getMessage());
 			}
 			throw new CreateChallengeException("Error while creating new challenge : "+ e.getMessage());
@@ -183,7 +184,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 			tx=null;
 			session.close();
 		}
-		//log.debug("ChallengeDaoImpl.createChallenge :End");
+		//LOGGER.debug("ChallengeDaoImpl.createChallenge :End");
 		return returnVal;
    }
 
@@ -214,7 +215,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 				challenges.add(challenge);
 			}
 		} catch (Exception e) {
-			//log.error("Error while retrieving the all Challenges :" + e.getMessage());
+			//LOGGER.error("Error while retrieving the all Challenges :" + e.getMessage());
 			throw new GetAllChallengeException("Error while retriving the all Challenges : "+ e.getMessage());
 		}finally{
 			if(session!=null)
@@ -227,7 +228,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 	@Override
 	public ArrayList<ChallengeTypeMasterVO> getSuggestedChallenges(String term)
 			throws SuggestedChallengeNotFoundException {
-		//log.debug("ChallengeDaoImpl.getSuggestedChallenges :Start");
+		//LOGGER.debug("ChallengeDaoImpl.getSuggestedChallenges :Start");
 		ArrayList<ChallengeTypeMasterVO> suggestedChallenges = new ArrayList<ChallengeTypeMasterVO>();
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		
@@ -236,13 +237,13 @@ public class ChallengeDaoImpl implements ChallengeDao {
 			criteria.add(Restrictions.ilike("challengTypeDesc", "%"+term+"%"));
 			suggestedChallenges = (ArrayList<ChallengeTypeMasterVO>) criteria.list();
 		} catch (Exception e) {
-			//log.error("Error while retrieving the Suggested Challenges :" + e.getMessage());
+			//LOGGER.error("Error while retrieving the Suggested Challenges :" + e.getMessage());
 			throw new SuggestedChallengeNotFoundException("Error while retriving the Suggested Challenges : "+ e.getMessage());
 		}finally{
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ChallengeDaoImpl.getSuggestedChallenges :End");
+		//LOGGER.debug("ChallengeDaoImpl.getSuggestedChallenges :End");
 		return suggestedChallenges;
 	}
 	
@@ -262,7 +263,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 	@Override
 	public ArrayList<Challenge> getChallenge(String rgstrId)
 			throws GetChallengeException {
-		//log.debug("ChallengeDaoImpl.getChallenge :Start");
+		//LOGGER.debug("ChallengeDaoImpl.getChallenge :Start");
 		ArrayList<Challenge> challenges = new ArrayList<Challenge>();
 		Challenge challenge;
 		ArrayList<ChallengeMaster> challengeMasters = new ArrayList<ChallengeMaster>();
@@ -282,20 +283,20 @@ public class ChallengeDaoImpl implements ChallengeDao {
 				challenges.add(challenge);
 			}
 		} catch (Exception e) {
-			//log.error("Error while retrieving the Suggested Challenges :" + e.getMessage());
+			//LOGGER.error("Error while retrieving the Suggested Challenges :" + e.getMessage());
 			throw new GetChallengeException("Error while retriving the Suggested Challenges : "+ e.getMessage());
 		}finally{
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ChallengeDaoImpl.getChallenge :End");
+		//LOGGER.debug("ChallengeDaoImpl.getChallenge :End");
 		return challenges;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<Challenge> searchChallengeByTitle(SearchByKeyVO searchByKeyVO) throws SearchChallengeException {
-		//log.debug("ChallengeDaoImpl.searchChallengeByTitle :Start");
+		//LOGGER.debug("ChallengeDaoImpl.searchChallengeByTitle :Start");
 		ArrayList<Challenge> challenges = new ArrayList<Challenge>();
 		Challenge challenge =null;
 		String term = searchByKeyVO.getTerm();
@@ -331,19 +332,19 @@ public class ChallengeDaoImpl implements ChallengeDao {
 			}
 
 		} catch (Exception e) {
-			//log.error("Error while searching the challenge :" + e.getMessage());
+			//LOGGER.error("Error while searching the challenge :" + e.getMessage());
 			throw new SearchChallengeException("Error while searching the challenge : "+ e.getMessage());
 		}finally{
 			if(session!=null)
 				session.close();				
 		}
-		//log.debug("ChallengeDaoImpl.searchChallengeByTitle :End");
+		//LOGGER.debug("ChallengeDaoImpl.searchChallengeByTitle :End");
 		return challenges;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Challenge getChallengeDetail(String ChallengeId)
+	public Challenge getChallengeDetail(String challengeId)
 			throws GetChallengeDetailException {		
 		
 		ChallengeMaster challengeMaster = new ChallengeMaster();
@@ -353,7 +354,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		try {
 			Criteria criteria = session.createCriteria(ChallengeMaster.class);
-			criteria.add(Restrictions.eq("challengId", Long.parseLong(ChallengeId)));
+			criteria.add(Restrictions.eq("challengId", Long.parseLong(challengeId)));
 			challengeMasters = (ArrayList<ChallengeMaster>) criteria.list();
 			if(challengeMasters.size()>0){
 				challengeMaster = challengeMasters.get(0);
@@ -383,7 +384,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 				}
 			}
 		} catch (Exception e) {
-			//log.error(Error while getting challenge details : " + e.getMessage());
+			//LOGGER.error(Error while getting challenge details : " + e.getMessage());
 			throw new GetChallengeDetailException("Error while getting challenge details : "+ e.getMessage());
 		}finally{
 			if(session!=null)
@@ -401,7 +402,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 		String returnVal = "N";
 		String fileSize = "";
 		ResourceBundle rbundle = ResourceBundle.getBundle("uploadDownload");
-		String SERVER_UPLOAD_FOLDER_LOCATION = rbundle.getString("SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION");		
+		String serverUploadFolderLocation = rbundle.getString("SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION");		
 		String challId = String.valueOf(uploadChallDocVO.getChallengeId());
 		String regstrId = String.valueOf(uploadChallDocVO.getRgstrId());
 		String docName = uploadChallDocVO.getDocName();	
@@ -411,10 +412,11 @@ public class ChallengeDaoImpl implements ChallengeDao {
 	    Transaction tx = null;
 		Session session = null;		
 		try {			
-			BASE64Decoder decoder = new BASE64Decoder();
-			byte[] decodedBytes = decoder.decodeBuffer(uploadChallDocVO.getDocByteArray());
+			/*BASE64Decoder decoder = new BASE64Decoder();
+			byte[] decodedBytes = decoder.decodeBuffer(uploadChallDocVO.getDocByteArray());*/
+			byte[] decodedBytes = Base64.decodeBase64(uploadChallDocVO.getDocByteArray().getBytes());
 			InputStream inputStream = new ByteArrayInputStream(decodedBytes);				
-			fileSize = FileUploadDownload.saveFile(inputStream, SERVER_UPLOAD_FOLDER_LOCATION, challId, regstrId, docName);
+			fileSize = FileUploadDownload.saveFile(inputStream, serverUploadFolderLocation, challId, regstrId, docName);
 			
 			/*Start Adding into tb_tech001_txn_challng_doc_path here*/	
 			session = HibernateUtil.getSessionFactory().openSession();
@@ -448,14 +450,14 @@ public class ChallengeDaoImpl implements ChallengeDao {
 	@Override
 	public ArrayList<ProjectDocument> downloadChallengeDocument(
 			DownChallengeDocVO challengeDocVO) throws DownloadChallengeDocException {
-		//log.debug("ChallengeDaoImpl.downloadChallengeDocument :Start");
+		//LOGGER.debug("ChallengeDaoImpl.downloadChallengeDocument :Start");
 		ArrayList<ProjectDocument> projectDocuments = new ArrayList<ProjectDocument>();
 		ProjectDocument projectDocument;
 		ArrayList<ChallengeDocPathTxn> challengeDocPathTxns = new ArrayList<ChallengeDocPathTxn>();
 		long challengeId = challengeDocVO.getChallengeId();
 		long regstrId = challengeDocVO.getRegstrId();
 		ResourceBundle rbundle = ResourceBundle.getBundle("uploadDownload");
-		String SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION = rbundle.getString("SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION");
+		String serverUploadChallengeFolderLocation = rbundle.getString("SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION");
 		Session session = HibernateUtil.getSessionFactory().openSession();	
 		try {							
 			Criteria criteria = session.createCriteria(ChallengeDocPathTxn.class);
@@ -468,20 +470,20 @@ public class ChallengeDaoImpl implements ChallengeDao {
 				String docPath = docPathTxn.getChallengPath();
 				String docName = docPath.substring(docPath.lastIndexOf("/")+1, docPath.length());
 				projectDocument.setDocName(docName);
-				projectDocument.setDocLink(SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION+"/"+docPath);
+				projectDocument.setDocLink(serverUploadChallengeFolderLocation+"/"+docPath);
 				
 				projectDocuments.add(projectDocument);
 			}
 			if(challengeDocPathTxns.size()==0)
 				throw new DownloadChallengeDocException("No documents uploaded by given user for given challenge");		
 		} catch (Exception e) {
-			//log.error("Error while retriving the all followed projects : " + e.getMessage());
+			//LOGGER.error("Error while retriving the all followed projects : " + e.getMessage());
 			throw new DownloadChallengeDocException("Error while downloading challenge documents : "+ e.getMessage());
 		}finally{
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ChallengeDaoImpl.downloadChallengeDocument :End");
+		//LOGGER.debug("ChallengeDaoImpl.downloadChallengeDocument :End");
 		return projectDocuments;
 	}
 
@@ -489,7 +491,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 	@Override
 	public ArrayList<Challenge> getChallengesByLoggedInUser(String rgstrId)
 			throws ChallengesByLoggedInUserException {
-		//log.debug("ChallengeDaoImpl.getChallenge :Start");
+		//LOGGER.debug("ChallengeDaoImpl.getChallenge :Start");
 				ArrayList<Challenge> challenges = new ArrayList<Challenge>();
 				Challenge challenge;
 				ArrayList<ChallengeMaster> challengeMasters = new ArrayList<ChallengeMaster>();
@@ -509,20 +511,20 @@ public class ChallengeDaoImpl implements ChallengeDao {
 						challenges.add(challenge);
 					}
 				} catch (Exception e) {
-					//log.error("Error while retrieving the Suggested Challenges :" + e.getMessage());
+					//LOGGER.error("Error while retrieving the Suggested Challenges :" + e.getMessage());
 					throw new ChallengesByLoggedInUserException("Error while retriving the Challenges : "+ e.getMessage());
 				}finally{
 					if(session!=null)
 						session.close();
 				}
-				//log.debug("ChallengeDaoImpl.getChallenge :End");
+				//LOGGER.debug("ChallengeDaoImpl.getChallenge :End");
 				return challenges;
 	}
 	
 	@Override
 	public String acceptChallenge(Project project) throws AcceptChallengeException{
 			
-			//log.debug("ChallengeDaoImpl.acceptChallenge :Start");
+			//LOGGER.debug("ChallengeDaoImpl.acceptChallenge :Start");
 			Transaction tx = null;
 			Session session = HibernateUtil.getSessionFactory().openSession();
 			String returnVal = "N";
@@ -560,15 +562,26 @@ public class ChallengeDaoImpl implements ChallengeDao {
 			String projIsForChallenge = project.getProjIsForChallenge();
 			long projectFaculty = project.getProjFaculty();
 			/*Parameters for Table: `TB_TECH001_MAST_PROJECTS_TEAM`*/
-			String projTeamDesc = project.getProjTeamDesc();
+			String projTeamDesc=null;
+			if(project.getProjTeamDesc() != null){
+			projTeamDesc = project.getProjTeamDesc();
+			}
+			else{
+				if(project.getProjTitle().length()>15){
+					projTeamDesc = project.getProjTitle().substring(0, 14).concat("_team");
+				}
+				else{
+					projTeamDesc = project.getProjTitle().concat("_team");
+				}
+			}
 			/*Parameters for Table: `TB_TECH001_MAST_PROJECTS_BRNCH`*/
 			ArrayList<Integer> projectBranches = project.getProjBranches();
 			/*Parameters for Table: `TB_TECH001_MAST_PROJECTS_KEYWRD`*/
 			ArrayList<String> projectKeywords = project.getProjKeywords();
 			/*Parameters for Table: `TB_TECH001_TXN_PROJECTS_TEAM`*/
 			ArrayList<Long> projectTeamMembers = project.getProjTeamMembers();
-			/*String projectCollege = project.getProjCollege();
-			String projectStudentId = project.getProjStudentId();			
+			String projectCollege = project.getProjCollege();
+			/*String projectStudentId = project.getProjStudentId();			
 			byte[] projectImage = project.getProjImage();*/
 			
 			ProjectMaster projectMaster = null;
@@ -580,11 +593,11 @@ public class ChallengeDaoImpl implements ChallengeDao {
 				ProjectTeamMaster projectTeamMaster = new ProjectTeamMaster(projTeamDesc);
 				Serializable sr = session.save(projectTeamMaster);
 				projectTeamId = Long.parseLong(sr.toString());
-				//log.debug("ProjectTeamMaster added is :" + projectTeamId);
+				//LOGGER.debug("ProjectTeamMaster added is :" + projectTeamId);
 				
 				/*Start Adding into TB_TECH001_MAST_PROJECTS_DETAIL here*/
 				projectMaster = new ProjectMaster(projTypeId, projectTitle, projectAbstract, projectDescription, projectUniversity, 
-						projCollegeRgstrIdUsr, userRgstrNo, projectYear, projectDuration, projectCollegeState, projectStartDate, 
+						projCollegeRgstrIdUsr, userRgstrNo, projectYear, projectDuration, projectCollege, projectCollegeState, projectStartDate, 
 						projectEndDate, projMentor1Id, projMentor2Id, projectTeamId, projGuideId, projStatusId, projToFloat, 
 						projectEstimationCost, projCommentsPublish, projGrade, projTeamLeaderId, projAwardWon, projAwardDesc, 
 						projIsMentorAvail, projIsFacApprove, projAdminComments, projIsForChallenge, "ACTIVE", projectFaculty);
@@ -592,7 +605,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 				sr = session.save(projectMaster);
 				projId = Long.parseLong(sr.toString());
 				projectMaster.setProjId(projId);
-				//log.debug("ProjectMaster added is :" + projId);
+				//LOGGER.debug("ProjectMaster added is :" + projId);
 							
 				/*Start Adding into TB_TECH001_MAST_PROJECTS_KEYWRD here*/
 				ProjectKeywordMaster projectKeywordMaster;		
@@ -656,12 +669,12 @@ public class ChallengeDaoImpl implements ChallengeDao {
 				tx.commit();
 				returnVal = "Y";
 			} catch (Exception e) {
-				//log.debug("Unable to add project to DB : " + e);
+				//LOGGER.debug("Unable to add project to DB : " + e);
 				try {
 					tx.rollback();
 					session.createSQLQuery("delete from tb_tech001_mast_projects_detail where PROJ_ID = :projId").setParameter("projId", projId).executeUpdate();
 				} catch (Exception e1) {
-					//log.debug("Couldn’t roll back transaction : " + e1);
+					//LOGGER.debug("Couldnï¿½t roll back transaction : " + e1);
 					throw new AcceptChallengeException("Error while doing rollback to the failed transection : "+ e1.getMessage());
 				}
 				throw new AcceptChallengeException("Error while accepting Challenge : "+ e.getMessage());
@@ -671,14 +684,14 @@ public class ChallengeDaoImpl implements ChallengeDao {
 				if(session!=null)
 					session.close();
 			}
-			//log.debug("ChallengeDaoImpl.acceptChallenge :End");
+			//LOGGER.debug("ChallengeDaoImpl.acceptChallenge :End");
 			return returnVal;
 	}
 
 	@Override
 	public String deleteChallengeDocument(DeleteChallDocVO deleteChallDocVO)
 			throws DeleteDocumentException {
-		//log.debug("ChallengeDaoImpl.deleteChallengeDocument :Start");
+		//LOGGER.debug("ChallengeDaoImpl.deleteChallengeDocument :Start");
 				String returnVal = "N";		
 				long challId = deleteChallDocVO.getChallengeId();
 				long regstrId = deleteChallDocVO.getRegstrId();
@@ -686,7 +699,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 				//String docLink = deleteDocVO.getDocLink();
 				String docPath = challId+"/"+regstrId+"/"+docName;
 				ResourceBundle rbundle = ResourceBundle.getBundle("uploadDownload");
-				String SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION = rbundle.getString("SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION");	
+				String serverUploadChallengeFolderLocation = rbundle.getString("SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION");	
 				Session session = HibernateUtil.getSessionFactory().openSession();
 				ChallengeDocPathTxn challengeDocPathTxn = new ChallengeDocPathTxn();
 				Transaction tx = null;
@@ -699,12 +712,12 @@ public class ChallengeDaoImpl implements ChallengeDao {
 					          .add(Restrictions.eq("challengPath", docPath)));
 					challengeDocPathTxn = (ChallengeDocPathTxn) criteria.uniqueResult();
 					session.delete(challengeDocPathTxn);
-					returnVal = FileUploadDownload.deleteFile(SERVER_UPLOAD_CHALLENGE_FOLDER_LOCATION+"/"+docPath);
+					returnVal = FileUploadDownload.deleteFile(serverUploadChallengeFolderLocation+"/"+docPath);
 					tx.commit();					
 					if(returnVal=="N")
 						throw new DeleteDocumentException("Unable to delete document");		
 					} catch (Exception e) {
-						//log.error("Error while retriving the all followed projects : " + e.getMessage());
+						//LOGGER.error("Error while retriving the all followed projects : " + e.getMessage());
 						throw new DeleteDocumentException("Error while deleting challenge documents : "+ e.getMessage());
 					}finally{
 						if(tx!=null)
@@ -712,7 +725,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 						if(session!=null)
 							session.close();
 					}
-					//log.debug("ChallengeDaoImpl.deleteChallengeDocument :End");				
+					//LOGGER.debug("ChallengeDaoImpl.deleteChallengeDocument :End");				
 				return returnVal;
 	}
 
@@ -720,7 +733,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 	@Override
 	public ArrayList<ChallengeType> getChallengeType()
 			throws GetChallengeTypeException {
-		//log.debug("ChallengeDaoImpl.getChallengeType :Start");
+		//LOGGER.debug("ChallengeDaoImpl.getChallengeType :Start");
 		ChallengeType challengeType = null;
 		ArrayList<ChallengeType> challengeTypes = new ArrayList<ChallengeType>();
 		Session session = HibernateUtil.getSessionFactory().openSession();		
@@ -735,13 +748,13 @@ public class ChallengeDaoImpl implements ChallengeDao {
 				challengeTypes.add(challengeType);
 			}
 			}catch (Exception e) {
-				//log.debug("Error while deleting project : "+ e.getMessage());
+				//LOGGER.debug("Error while deleting project : "+ e.getMessage());
 				throw new GetChallengeTypeException("Error while getting challenge types : "+ e.getMessage());
 			}finally{
 				if(session!=null)
 					session.close();
 			}
-		//log.debug("ChallengeDaoImpl.getChallengeType :End");
+		//LOGGER.debug("ChallengeDaoImpl.getChallengeType :End");
 		return challengeTypes;
 	}
 	
@@ -754,7 +767,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 	@Override
 	public String checkChallengeFollow(FollowChallengeVO followChallengeVO) throws CheckChallengeFollowException {	
 		
-		//log.debug("ProjectDaoImpl.checkProjectFollow :Start");
+		//LOGGER.debug("ProjectDaoImpl.checkProjectFollow :Start");
 	    String returnVal = "N";
 	    long challengeId = followChallengeVO.getChallengeId();
 		long userRgstrNo= followChallengeVO.getUserRgstrNo();
@@ -770,13 +783,13 @@ public class ChallengeDaoImpl implements ChallengeDao {
 			 returnVal = "Y";		 
 		 
 		} catch (Exception e) {
-			//log.debug("Check whether Project is followed or NOT: " + e);
+			//LOGGER.debug("Check whether Project is followed or NOT: " + e);
 			throw new CheckChallengeFollowException("Error in Check Challenge followed or not: "+ e.getMessage());
 		}finally{
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ProjectDaoImpl.checkProjectFollow :End");
+		//LOGGER.debug("ProjectDaoImpl.checkProjectFollow :End");
 		return returnVal;
 	 }
 
@@ -788,7 +801,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<Challenge> getAllFollowedChallenges(String rgstrId) throws GetAllFollowedChallengeException {
-		//log.debug("ProjectDaoImpl.getAllFollowedProject :Start");
+		//LOGGER.debug("ProjectDaoImpl.getAllFollowedProject :Start");
 				ArrayList<Challenge> challenges = new ArrayList<Challenge>();
 				ArrayList<ChallengeMaster> challengeMasters = new ArrayList<ChallengeMaster>();
 				Challenge challenge;
@@ -813,13 +826,13 @@ public class ChallengeDaoImpl implements ChallengeDao {
 						throw new GetAllFollowedChallengeException("No challenges are followed by this user");
 					
 				} catch (Exception e) {
-					//log.error("Error while retriving the all followed projects : " + e.getMessage());
+					//LOGGER.error("Error while retriving the all followed projects : " + e.getMessage());
 					throw new GetAllFollowedChallengeException("Error while retriving the all followed challenges : "+ e.getMessage());
 				}finally{
 					if(session!=null)
 						session.close();
 				}
-				//log.debug("ProjectDaoImpl.getAllFollowedProject :End");
+				//LOGGER.debug("ProjectDaoImpl.getAllFollowedProject :End");
 		return challenges;
 	}
 
@@ -829,15 +842,15 @@ public class ChallengeDaoImpl implements ChallengeDao {
 	 */
 	
     @Override
-    public String removeChallengeFollow(FollowChallengeVO FollowChallengeVO) throws RemoveChallengeFollowException {
+    public String removeChallengeFollow(FollowChallengeVO followChallengeVO) throws RemoveChallengeFollowException {
     	
-    	//log.debug("ProjectDaoImpl.removeProjectFollow :Start"); 
+    	//LOGGER.debug("ProjectDaoImpl.removeProjectFollow :Start"); 
     	String returnVal = "N";
 	     Transaction tx = null;	
 	     Session session = HibernateUtil.getSessionFactory().openSession();
 	     ChallengeFollowTxn followTxn = new ChallengeFollowTxn();
-	     followTxn.setChallengId(FollowChallengeVO.getChallengeId());
-	     followTxn.setRegstrId(FollowChallengeVO.getUserRgstrNo());     
+	     followTxn.setChallengId(followChallengeVO.getChallengeId());
+	     followTxn.setRegstrId(followChallengeVO.getUserRgstrNo());     
 	     try {	 	
 	    	 tx = session.beginTransaction();
 	    	 ChallengeFollowTxn challengeFollowTxn = new ChallengeFollowTxn();
@@ -851,7 +864,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 	     }catch(ObjectNotFoundException onfe){
 	    	 return returnVal;
 	     }catch (Exception e) {
-				//log.debug("Remove does NOT happened : " + e);
+				//LOGGER.debug("Remove does NOT happened : " + e);
 				throw new RemoveChallengeFollowException("Remove does NOT happened : "+ e.getMessage());
 	     }finally{
 	    	 if(tx!=null)
@@ -859,7 +872,7 @@ public class ChallengeDaoImpl implements ChallengeDao {
 	    	 if(session!=null)
 				session.close();
 			}
-	   //log.debug("ProjectDaoImpl.removeProjectFollow :End"); 
+	   //LOGGER.debug("ProjectDaoImpl.removeProjectFollow :End"); 
 	     return returnVal;
 	}
 	
@@ -869,13 +882,13 @@ public class ChallengeDaoImpl implements ChallengeDao {
 	 *
 	 */
 	@Override
-	public String followTheChallenge(FollowChallengeVO FollowChallengeVO)
+	public String followTheChallenge(FollowChallengeVO followChallengeVO)
 				throws FollowTheChallengeException {	
 		 
 		String returnVal = "N";
 		Transaction tx = null;
-		long challengeId = FollowChallengeVO.getChallengeId();
-		long userRgstrNo= FollowChallengeVO.getUserRgstrNo();
+		long challengeId = followChallengeVO.getChallengeId();
+		long userRgstrNo= followChallengeVO.getUserRgstrNo();
 		Session session = HibernateUtil.getSessionFactory().openSession();		
 		try {
 			    tx = session.beginTransaction();
@@ -1022,7 +1035,7 @@ public String deleteChallengeComment(DeleteChallengeCommVO deleteChallengeCommVO
 		tx.commit();
 		returnVal = "Y";
 	} catch (Exception e) {
-		//log.debug("Comments does NOT exist : " + e);
+		//LOGGER.debug("Comments does NOT exist : " + e);
 		throw new RemoveCommentException("Comments does NOT exist : "+ e.getMessage());
 	}finally{
 		if(tx!=null)
@@ -1030,7 +1043,7 @@ public String deleteChallengeComment(DeleteChallengeCommVO deleteChallengeCommVO
 		if(session!=null)
 			session.close();
 	}
-	//log.debug("ProjectDaoImpl.deleteComment :End");
+	//LOGGER.debug("ProjectDaoImpl.deleteComment :End");
 	return returnVal;
 }
 

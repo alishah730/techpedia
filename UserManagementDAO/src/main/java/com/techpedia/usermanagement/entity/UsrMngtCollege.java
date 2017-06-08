@@ -22,7 +22,11 @@ public class UsrMngtCollege {
 	@Column(name = "COLLEGE_NAME")
 	private String collegeName;
 	 
+	@Column( name = "CNTCT_PER_NAME_OF_COLLEGE")
+	private String cntctPerNameofCollege;
 	
+	@Column( name = "CNTCT_PER_EMAIL_ID")
+	private String cntctPerEmailId;
 
 	@Column(name = "COLLEGE_DESCRIPTION")
 	private String collegeDescription;
@@ -45,6 +49,36 @@ public class UsrMngtCollege {
 	
 	@Column(name = "TECPDA_FACLTY_COORDTR")
 	private String techpdaFactlyCoordtr;
+	
+	
+
+	/**
+	 * @return the cntctPerNameofCollege
+	 */
+	public String getCntctPerNameofCollege() {
+		return cntctPerNameofCollege;
+	}
+
+	/**
+	 * @param cntctPerNameofCollege the cntctPerNameofCollege to set
+	 */
+	public void setCntctPerNameofCollege(String cntctPerNameofCollege) {
+		this.cntctPerNameofCollege = cntctPerNameofCollege;
+	}
+
+	/**
+	 * @return the cntctPerEmailId
+	 */
+	public String getCntctPerEmailId() {
+		return cntctPerEmailId;
+	}
+
+	/**
+	 * @param cntctPerEmailId the cntctPerEmailId to set
+	 */
+	public void setCntctPerEmailId(String cntctPerEmailId) {
+		this.cntctPerEmailId = cntctPerEmailId;
+	}
 
 	/**
 	 * @param rgstrId
@@ -77,6 +111,42 @@ public class UsrMngtCollege {
 		this.cntctInfoForNatnlInnovnClub = cntctInfoForNatnlInnovnClub;
 		this.affltUniversity = affltUniversity;
 		this.techpdaFactlyCoordtr = techpdaFactlyCoordtr;
+	}
+	
+	/**
+	 * @param rgstrId
+	 * @param webpgLnk
+	 * @param logo
+	 * @param cntctPerNameofCollege
+	 * @param cntctPerEmailId
+	 * @param principalName
+	 * @param principalMailId
+	 * @param facilitiesOffrdToStudents
+	 * @param cntctInfoForNatnlInnovnClub
+	 * @param affltUniversity
+	 * @param techpdaFactlyCoordtr
+	 * @param collegeDescription 
+	 */
+	public UsrMngtCollege(long rgstrId, String webpgLnk, String logo,
+			String collegeName, String cntctPerNameofCollege,String cntctPerEmailId,
+			String principalName, String principalMailId,
+			String facilitiesOffrdToStudents,
+			String cntctInfoForNatnlInnovnClub, String affltUniversity,
+			String techpdaFactlyCoordtr, String collegeDescription) {
+		super();
+		this.rgstrId = rgstrId;
+		this.webpgLnk = webpgLnk;
+		this.logo = logo;
+		this.collegeName = collegeName;
+		this.cntctPerNameofCollege = cntctPerNameofCollege;
+		this.cntctPerEmailId = cntctPerEmailId;
+		this.principalName = principalName;
+		this.principalMailId = principalMailId;
+		this.facilitiesOffrdToStudents = facilitiesOffrdToStudents;
+		this.cntctInfoForNatnlInnovnClub = cntctInfoForNatnlInnovnClub;
+		this.affltUniversity = affltUniversity;
+		this.techpdaFactlyCoordtr = techpdaFactlyCoordtr;
+		this.collegeDescription = collegeDescription;
 	}
 
 	/**
@@ -140,13 +210,13 @@ public class UsrMngtCollege {
 		this.collegeName = collegeName;
 	}
 
-	public String getCollegeDescription() {
+	/*public String getCollegeDescription() {
 		return collegeDescription;
 	}
 
 	public void setCollegeDescription(String collegeDescription) {
 		this.collegeDescription = collegeDescription;
-	}
+	}*/
 
 	/**
 	 * @return the principalName
@@ -238,6 +308,23 @@ public class UsrMngtCollege {
 	@Override
 	public String toString() {
 		return "UsrMngtCollege [rgstrId=" + rgstrId + ", webpgLnk=" + webpgLnk
+				+ ", logo=" + logo + ", collegeName=" + collegeName
+				+ ", cntctPerNameofCollege=" + cntctPerNameofCollege
+				+ ", cntctPerEmailId=" + cntctPerEmailId + ", principalName="
+				+ principalName + ", principalMailId=" + principalMailId
+				+ ", facilitiesOffrdToStudents=" + facilitiesOffrdToStudents
+				+ ", cntctInfoForNatnlInnovnClub="
+				+ cntctInfoForNatnlInnovnClub + ", affltUniversity="
+				+ affltUniversity + ", techpdaFactlyCoordtr="
+				+ techpdaFactlyCoordtr + "]";
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 
+	@Override
+	public String toString() {
+		return "UsrMngtCollege [rgstrId=" + rgstrId + ", webpgLnk=" + webpgLnk
 				+ ", logo=" + logo + ", collegeName="
 				+ collegeName + ", collegeDescription="
 				+ collegeDescription + ", principalName=" + principalName
@@ -247,7 +334,7 @@ public class UsrMngtCollege {
 				+ cntctInfoForNatnlInnovnClub + ", affltUniversity="
 				+ affltUniversity + ", techpdaFactlyCoordtr="
 				+ techpdaFactlyCoordtr + "]";
-	}
+	}*/
 	
 	
 	

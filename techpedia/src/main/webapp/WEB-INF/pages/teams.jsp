@@ -1,5 +1,7 @@
 <html ng-app="techpedia">
 <head>
+
+
 </head>
 <jsp:include page="template/NewHeader.jsp" />
 <link rel="stylesheet"
@@ -48,21 +50,7 @@
 	margin-left: 20px;
 }
 </style>
-<script type="text/javascript">
-	$(document).ready(function() {
-		$('animate_div').mouseenter(function() {
-			$(this).animate({
-				height : '+=10px'
-			});
-		});
-		$('animate_div').mouseleave(function() {
-			$(this).animate({
-				height : '-=10px'
-			});
-		});
 
-	});
-</script>
 <div class="clearfix"></div>
 <div class="container customFont borderRadius style">
 	<div class="page-container">
@@ -86,12 +74,7 @@
 							<li><a href="dashboard">Dashboard</a> &raquo;</li>
 							<li>Teams</li>
 
-							<!-- <li class="pull-right">
-							<div id="dashboard-report-range" class="dashboard-date-range tooltips"
-								data-placement="bottom" data-original-title="Change dashboard date range">
-								<i class="icon-calendar"></i> <span></span> <i class="fa fa-angle-down"></i>
-							</div>
-						</li> -->
+							
 						</ul>
 
 					</div>
@@ -122,25 +105,7 @@
 						<div class="panel-body" ng-show="teams.length == null">This
 							user does not belong to any team</div>
 
-						<!-- List group -->
-						<!-- <div class="col s12" ng-show="teams.length>0"> -->
-						<%-- <div ng-show="teams.length>0" class="col s12 animate_div"
-							style="border-radius: 8px; height: 236px; background-color: #ffffff; margin-left: 20px; margin-top: 20px; display: inline-block; border-bottom-left-radius: 12px; border-top-right-radius: 12px;"
-							ng-repeat="team in teams | filter:filterSearch"
-							ng-click=clickTeam(team)>
-
-							<!-- <div style="float: left; padding-left: 12px;"> -->
-							<img
-										src="${pageContext.request.contextPath}/image/{{project.photo1Path ||'defaultImage/placeholder.png'}}"
-										alt=""
-										style="height: 222px; width: 235px; position: absolute; z-index: 0;" />
-							<img src="images/projec.jpg" alt=""
-								style="height: 222px; width: 235px; position: absolute; z-index: 0;" />
-							<div
-								style="margin-top: 167px; padding-top: 13px; bottom: 0; left: 0; width: 235px; height: 54px; position: relative; text-align: center; color: white; font-weight: bolder; opacity: 0.7; filter: alpha(opacity = 70); z-index: 4; background-color: black;">{{team.teamName}}
-							</div>
-							<!-- </div> -->
-						</div> --%>
+						
 
 						<div ng-init="showData()">
 
@@ -148,20 +113,12 @@
 								<li class="col s12" ng-click=clickTeam(team)
 									style="width: 210px; border-radius: 8px; height: 180px; background-color: #ffffff; margin-left: 20px; margin-top: 20px; display: inline-block; border-bottom-left-radius: 12px; border-top-right-radius: 12px;"
 									ng-repeat="team in teams | filter:filterSearch  | pagination : currentPage*itemsPerPage | limitTo: itemsPerPage">
-									<a href="#"><img src="images/projec.jpg" alt=""
+									<a href="#"><img src="${pageContext.request.contextPath}/image/{{team.photo1Path||'defaultImage/placeholder.png'}}" alt=""
 										style="height: 160px; width: 210px; position: absolute; z-index: 0; border-bottom-left-radius: 15px; border-top-right-radius: 15px;" />
 										
 										<%-- src="${pageContext.request.contextPath}/image/{{team.photo1Path||'defaultImage/placeholder'}}" --%>
 
-										<%-- <img ng-file="file"
-										ng-show="(member.photo=='data:undefined;base64,undefined')||(member.photo=='Photo path')"
-										src="images/profile_icon.png"
-										style="height: 175px; width: 235px; z-index: 0; border-radius: 8px; z-index: 0;"
-										width=100% /> 
-										<img ng-file="file"
-										ng-hide="(member.photo=='data:undefined;base64,undefined')||(member.photo=='Photo path')"
-										style="height: 175px; width: 235px; z-index: 0; border-radius: 8px; z-index: 0;"
-										src="${pageContext.request.contextPath}/image/{{project.photo1Path||'images/profile_icon.png'}}" width=100% /> --%>
+										
 
 
 										<div
@@ -213,51 +170,6 @@
 
 					</div>
 				</div>
-
-
-
-
-
-
-
-
-
-
-				<!-- </div> -->
-
-
-
-
-
-				<!-- <ul class="list-group" ng-show="teams.length>0">
-							<a class="random_color"
-								ng-repeat="team in teams | filter:filterSearch"
-								ng-click=clickTeam(team)
-								style="margin-top: 3px; margin-bottom: 3px; margin-left: 3px; margin-right: 3px;">{{team.teamName}}
-								<button style="float: right;" class="btn btn-sm btn-info" ng-click=clickTeam(team)>View
-								Team</button>
-							</a>
-
-
-						</ul> -->
-
-
-
-
-
-
-				<!-- 					<div class="module-body" >
-<div class="row-fluid">
-<div class="span12">
-<span id="likedUser"></span>
-<span><a class="btn btn-large btn-success" href="team details" target="_parent">Team NAme</a> </span>
-
-</div>
-</div>
-</div> -->
-
-
-
 			</div>
 		</div>
 		<div class="clearfix"></div>
@@ -287,8 +199,6 @@ BEGIN FOOTER -->
 
 
 <!-- END BODY -->
-<!-- <script>
-	jQuery.noConflict();
-</script> -->
+
 </html>
 <jsp:include page="template/footer.jsp" />

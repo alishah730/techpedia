@@ -78,6 +78,7 @@ content: none !important;
 .div1{
     display: none;
     color: white;
+    text-align:justify;
 }
 
 </style>
@@ -189,32 +190,32 @@ content: none !important;
 							<a href="#" ng-click="clickProject(project.projId)">
 							<div class="post col-xs-12 col-md-4" style="background-color:#ffffff;" >
          <span>{{entry.title}}</span> 
-            <div  class="project" onmouseenter="$(this).children('.div1').slideDown(300)" onmouseleave="$(this).children('.div1').slideUp(300)">
+            <div  class="project" onmouseenter="$(this).children('.div1').slideDown(600)" onmouseleave="$(this).children('.div1').slideUp(600)">
 				
 			
 				<table class="icon_table" >
 						<tr>
-							<img src="${pageContext.request.contextPath}/image/{{project.photo1Path ||'defaultImage/placeholder.png' }}" width="226px" height="182px" class="fourimage" alt="" />
+							<img src="${pageContext.request.contextPath}/image/{{project.photo1Path ||'/usr/Techpedia/Project/placeholders/placeholder.png'}}" width="226px" height="182px" class="fourimage" alt="" />
 						</tr>
 						
 						<tr>
 							<div align="center" style="font-size:15px;font-weight: bold;font-family: Corbel;">{{project.projTitle}}</div>
 						</tr>
 						<tr >
-							<td align="center" style="font-size:12px; font-family: Arial;" class="icon_td"><img id="" alt="" src="images/student-icon.png"/> <div style="text-overflow:ellipsis !important;overflow: hidden !important;">{{project.projTeamLeaderName}}</div></td>
-							<td align="center" style="font-size:12px;font-family: Arial;" class="icon_td"><img  alt="" src="images/faculty-icon.png"/><div>{{project.projFacultyName}}</div></td>
+							<td align="center" style="font-size:12px; font-family: Arial;" class="icon_td"><img id="" alt="" src="images/student-icon.png"/> <div style="text-overflow:ellipsis !important;overflow: hidden !important;">{{project.projTeamLeaderName | truncate:true:14:'...'}}</div></td>
+							<td align="center" style="font-size:12px;font-family: Arial;" class="icon_td"><img  alt="" src="images/faculty-icon.png"/><div>{{project.projFacultyName | truncate:true:14:'...'}}</div></td>
 						</tr>
 						<tr >
-							<td align="center" style="font-size:12px;font-family: Arial;" class="icon_td" ><img alt="" src="images/College-icon.png"/><div>{{project.projCollege}}</div> </td>
+							<td align="center" style="font-size:12px;font-family: Arial;" class="icon_td" ><img alt="" src="images/College-icon.png"/><div>{{project.projCollege | truncate:true:14:'...'}}</div> </td>
 							<td align="center" style="font-size:12px;font-family: Arial;" class="icon_td"><img alt="" src="images/branches-icon.png"/><div class="header-customize" font color="white" ng-model="project.projBranchList">
-								{{project.projBranchName}}			</div></td>
+								{{project.projBranchName | truncate:true:14:'...'}}			</div></td>
 						</tr>
 					
 				</table>
              <div class=" div1 food-box-transparentbg" >
              <span style="font-weight:bold;    padding-left: 6px;">Project  Abstract :</span>
             <div class="desc1">
-            <div style="font-size:12px;font-family: Arial,Regular;padding-left:5px;padding-right:10px;">{{project.projAbstract}}</div>
+            <div style="font-size:12px;font-family: Arial,Regular;padding-left:5px;padding-right:15px;">{{project.projAbstract}}</div>
             </div>
             </div>
             
@@ -257,7 +258,7 @@ content: none !important;
 							<div class="col-xs-12" style="height:220px;padding-top:10px; align:center;margin-left:20px; margin-right:10px; width:180px;margin-bottom:5px;margin-top:5px;background-color: #3f94ae;" ng-repeat="project in recentprojects">
 							
 										
-										<img src="${pageContext.request.contextPath}/image/{{project.photo1Path ||'defaultImage/placeholder.png'}}" class="fourimage" alt="" width="150px" height="100px" />
+										<img src="${pageContext.request.contextPath}/image/{{project.photo1Path ||'/usr/Techpedia/Project/placeholders/placeholder.png'}}" class="fourimage" alt="" width="150px" height="100px" />
 										<p style="font-size:15px;font-weight:bold; color:#ffffff;font-family: Corbel ;text-align:center;">{{project.projTitle}}</p> 
 										<hr>
 										<a class="btn btn-success btn-responsive" style="align:center; margin-left:20px;text-align:center;" ng-click="viewProject(project)" href=""><i class="fa fa-book fa-fw"></i>&nbsp;Read More</a>

@@ -22,13 +22,31 @@
 	margin-right: -1px;
 	margin-left: -1px;
 }
+
+.ui-icon {
+	background-color: white;
+}
+
+.loaderBody {
+	position: fixed;
+	left: 0px;
+	top: 0px;
+	width: 100%;
+	height: 100%;
+	z-index: 9999;
+	background: url('images/cubebox.gif') 50% 50% no-repeat
+		rgb(249, 249, 249);
+	text-align: center;
+	font-size: 18px;
+	padding-top: 120px;
+}
 </style>
 <div class="clearfix"></div>
-<div class="container customFont borderRadius style">
+<div class="container customFont borderRadius style"
+	ng-controller="RegisterController" ng-init="InitLoad()">
 	<div class="page-container">
 		<div class="page-sidebar-wrapper"></div>
-		<div class="page-content-wrapper" ng-controller="RegisterController"
-			ng-init="InitLoad()">
+		<div class="page-content-wrapper">
 			<div class="page-content">
 				<div class="row">
 					<div class="col-md-11">
@@ -38,13 +56,14 @@
 								String typeofuser = (String) request.getParameter("usertype");
 							%>
 							<i class="fa fa-book" id="icon-size"></i>&nbsp;<span
-								style="text-transform: capitalize; font-family: arial;">Register
+								style="text-transform: capitalize; font-family: arial; font-weight: bold;">Register
 								- <%=typeofuser%></span>
 						</h3>
 						<ul class="page-breadcrumb breadcrumb">
 							<li style="color: #262626 !important"><a
-								style="color: #262626 !important" href="./">Home</a> &raquo;</li>
-							<li>Register</li>
+								style="color: #262626 !important" href="./">&nbsp;Home</a> <font
+								style="color: black; font-size: 18px;">&raquo;</font></li>
+							<li style="color: #262626 !important">Register</li>
 
 
 						</ul>
@@ -82,13 +101,13 @@
 				</div>
 				<div class="clearfix"></div>
 				<div class="row">
-					<div id="accordion" class="col-xs-12">
+					<div id="accordion" class=" accordion col-xs-12">
 						<h3 class="reg-acc-1 acc-hover"
-							style="background-color: #217690; font-family: arial; color: #ffffff;">General
+							style="background-color: #217690; font-family: arial; color: black;font-weight: bold;">General
 							Information</h3>
 						<div>
 							<p>
-							<div>
+							<div class="accordion-group">
 								<form class="form-horizontal" id="registerBasicForm"
 									name="registerBasicForm" method="post" novalidate>
 									<div class="col-xs-12 col-md-6">
@@ -101,7 +120,8 @@
 												style="border-style: none; background-color: #f5f5f5;">
 												<div class="col-xs-12">
 													<div class="input-group input-group-sm">
-														<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 50px  !important; font-family: arial; color: #ffffff;"><i
+														<span class="input-group-addon"
+															style="border-right: 1px solid #ccc; background-color: #217690; width: 50px !important; font-family: arial; color: #ffffff;"><i
 															class="fa fa-envelope"></i></span> <input name="email"
 															type="email" id="email" style="width: 375px !important;"
 															maxlength=100 class="form-control remail email-input"
@@ -114,7 +134,7 @@
 													is required</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 													ng-show="registerBasicForm.email.$dirty && registerBasicForm.email.$error.email">Email
-													is not valid</div> -->
+													is not valid</div>  -->
 
 												</div>
 
@@ -122,7 +142,8 @@
 												<div class="col-xs-12">&nbsp;</div>
 												<div class="col-xs-12">
 													<div class="input-group input-group-sm">
-														<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 50px  !important; font-family: arial; color: #ffffff;"><i
+														<span class="input-group-addon"
+															style="border-right: 1px solid #ccc; background-color: #217690; width: 50px !important; font-family: arial; color: #ffffff;"><i
 															class="fa fa-lock"></i></span> <input name="password"
 															type="password" id="userPassword1"
 															style="width: 375px !important;" class="form-control"
@@ -157,7 +178,8 @@
 
 												<div class="col-xs-12">
 													<div class="input-group input-group-sm">
-														<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 50px  !important; font-family: arial; color: #ffffff;"><i
+														<span class="input-group-addon"
+															style="border-right: 1px solid #ccc; background-color: #217690; width: 50px !important; font-family: arial; color: #ffffff;"><i
 															class="fa fa-lock"></i></span> <input name="confirmPassword"
 															style="width: 375px !important;" type="password"
 															class="form-control" placeholder="Confirm password"
@@ -196,7 +218,8 @@
 											style="border-style: none; background-color: #f5f5f5;">
 											<div class="panel-heading"
 												style="border-style: none; font-family: arial; font-weight: bold;">
-												<div class="btn-group">Photograph</div>
+										 	<div class="btn-group" ng-hide="register.userType=='college'">Photograph</div> 
+												<div class="btn-group" ng-show="register.userType=='college'">College Logo</div>
 											</div>
 											<div class="panel-body photoRTC">
 												<input ng-model="register.photo" type="text" name="photo"
@@ -224,7 +247,9 @@
 														<div class="col-xs-12">&nbsp;</div>
 
 														<button class='btn btn-sm btn-info'
-															onclick="$('#hidden-photo-input').click();" style="background-color: #5cb85c;float: right;">Upload photo</button>
+															onclick="$('#hidden-photo-input').click();"
+															style="background-color: #5cb85c; float: right;">Upload
+															photo</button>
 														<div class="col-xs-12" ng-show="msg.size.length>0">File
 															size cannot be more than 10 KB</div>
 														<div class="col-xs-12" ng-show="message.length>0">
@@ -267,6 +292,28 @@
 												</div>
 
 												<div class="col-xs-12">&nbsp;</div>
+												
+												<div class="col-xs-12">
+													<div class="input-group input-group-sm">
+														<span class="input-group-addon"
+															style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Email ID</span> <input name="email1"
+															type="email" id="email1" style="width: 300px !important;"
+															maxlength=100 class="form-control remail email-input"
+															placeholder="Email" ng-model="register.email" readonly
+															data-toggle='tooltip' data-placement='right'
+															title="Please enter valid email as a@a.com" />
+													</div>
+													<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.email.$dirty && registerBasicForm.email.$error.required">Email
+													is required</div>
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.email.$dirty && registerBasicForm.email.$error.email">Email
+													is not valid</div> -->
+
+												</div>
+												
+												<div class="col-xs-12">&nbsp;</div>
+												
 
 												<div class="col-xs-12">
 													<div class="input-group input-group-sm ">
@@ -290,16 +337,16 @@
     </div> 
      <p ng-show="registerBasicForm.firstName.$invalid && !registerBasicForm.firstName.$pristine"  data-toggle="tooltip" data-original-title="Default tooltip">  -->
 
-													<!-- 		 <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 													ng-show="registerBasicForm.firstName.$dirty && registerBasicForm.firstName.$error.required">First
 													name is required</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 													ng-show="registerBasicForm.firstName.$dirty && registerBasicForm.firstName.$error.maxlength">First
-													name cannot be more than 30 characters</div>
+													name cannot be more than 50 characters</div>
 
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 													ng-show="registerBasicForm.firstName.$dirty && registerBasicForm.firstName.$error.pattern">Name
-													can only contain text</div>  -->
+													can only contain text</div>  
 												</div>
 
 
@@ -326,11 +373,14 @@
 
 													<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 													ng-show="registerBasicForm.midName.$dirty && registerBasicForm.midName.$error.maxlength">Mid
-													name cannot be more than 30 characters</div>
+													name cannot be more than 30 characters</div>-->
 
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 													ng-show="registerBasicForm.midName.$dirty && registerBasicForm.midName.$error.pattern">Name
-													can only contain text</div> -->
+													can only contain text</div> 
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.midName.$dirty && registerBasicForm.midName.$error.maxlength">Last
+													name cannot be more than 50 characters</div>
 
 												</div>
 												<div class="col-xs-12">&nbsp;</div>
@@ -339,10 +389,10 @@
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon"
 															style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Last
-															name *</span> <input name="lastName" type="text" id="lastName"
+															name </span> <input name="lastName" type="text" id="lastName"
 															style="width: 300px !important;"
-															class="form-control rname" placeholder="Last name"
-															ng-model="register.lastName" required ng-maxlength="50"
+															class="form-control rname" placeholder="Last name (Optional)"
+															ng-model="register.lastName" ng-maxlength="50"
 															ng-pattern="/^(\D)+$/" data-toggle='tooltip'
 															data-placement='right'
 															title='Please enter lastname without special characters' />
@@ -350,46 +400,64 @@
 
 													<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 													ng-show="registerBasicForm.lastName.$dirty && registerBasicForm.lastName.$error.required">Last
-													name is required</div>
+													name is required</div>-->
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 													ng-show="registerBasicForm.lastName.$dirty && registerBasicForm.lastName.$error.maxlength">Last
-													name cannot be more than 30 characters</div>
+													name cannot be more than 50 characters</div>
 
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 													ng-show="registerBasicForm.lastName.$dirty && registerBasicForm.lastName.$error.pattern">Name
-													can only contain text</div> -->
+													can only contain text</div> 
 												</div>
 
 												<div class="col-xs-12">&nbsp;</div>
-
-												<div class="col-xs-12">
+												
+													<div class="col-xs-12">
 
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon"
-															style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Mobile
-															*</span> <input name="mobile" type="text" id="mobile"
-															style="width: 300px !important;" class="form-control"
-															placeholder="Mobile" ng-model="register.mobile" required
-															ng-minlength=10 ng-maxlength=10 ng-pattern="/^(\d)+$/"
-															data-toggle='tooltip' data-placement='right'
-															title='Mobile number should be 10 digits' />
+															style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Gender *</span>
+														<div class="form-group" style="margin-left: 10px;">
+
+															
+																<label class="radio-inline"> <input type="radio"
+																	name="genderMale" id="gender" value="male" ng-model="register.gender" required>Male
+																</label> <label class="radio-inline"> <input
+																	type="radio" name="genderFemale" id="gender" ng-model="register.gender"  value="female">Female
+																</label>
+																<label class="radio-inline"> <input
+																	type="radio" name="genderTrans" id="gender" ng-model="register.gender"  value="trans">Trans
+																</label>
+																
+															
+														</div>
 													</div>
-													<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.mobile.$dirty && registerBasicForm.mobile.$error.required">Mobile
-													number is required</div>
-
-												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.mobile.$dirty && registerBasicForm.mobile.$error.minlength || registerBasicForm.mobile.$error.maxlength">Mobile
-													number must be 10 digit long.</div>
-
-												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-													ng-show="registerBasicForm.mobile.$dirty && registerBasicForm.mobile.$error.pattern">Mobile
-													number must contain only digits</div> -->
+												</div>
+											<div class="col-xs-12">&nbsp;</div>
+											
+											<div class="col-xs-12">
+												<div class="input-group input-group-sm">
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Age*</span>
+													<input name="age" type="text" id="age" style="width: 300px"
+														class="form-control" placeholder="Age" required
+														ng-model="register.age" ng-value="personAge"
+														ng-minlength=2 ng-maxlength=2 ng-pattern="/^(\d)+$/"
+														data-toggle='tooltip' data-placement='right'
+														title='Age should be in number only' />
 
 												</div>
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerBasicForm.age.$dirty && registerBasicForm.age.$error.maxlength && registerBasicForm.age.$error.minlength">age should be of only two digit number</div>
 
-												<div class="col-xs-12">&nbsp;</div>
-
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerBasicForm.age.$dirty && registerBasicForm.age.$error.pattern">Age should be number only</div>
+											</div>
+											
+											<div class="col-xs-12">&nbsp;</div>
+												
 												<div class="col-xs-12">
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon"
@@ -410,9 +478,90 @@
 													number must contain only digits</div> -->
 
 												</div>
+											<div class="col-xs-12">&nbsp;</div>
+												<div class="col-xs-12">
 
+													<div class="input-group input-group-sm">
+														<span class="input-group-addon"
+															style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Mobile
+															</span> <input name="mobile" type="text" id="mobile"
+															style="width: 300px !important;" class="form-control"
+															placeholder="Mobile" ng-model="register.mobile" 
+															ng-minlength=10 ng-maxlength=10 ng-pattern="/^(\d)+$/"
+															data-toggle='tooltip' data-placement='right'
+															title='Mobile number should be 10 digits' />
+													</div>
+													<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.mobile.$dirty && registerBasicForm.mobile.$error.required">Mobile
+													number is required</div>
+
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.mobile.$dirty && registerBasicForm.mobile.$error.minlength || registerBasicForm.mobile.$error.maxlength">Mobile
+													number must be 10 digit long.</div>
+
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.mobile.$dirty && registerBasicForm.mobile.$error.pattern">Mobile
+													number must contain only digits</div> -->
+
+												</div>
+											
+												
+
+												<!-- <div class="col-xs-12">
+													<div class="input-group input-group-sm">
+														<span class="input-group-addon"
+															style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Country
+															*</span> <input name="country" type="text" id="country"
+															style="width: 300px !important;" class="form-control"
+															placeholder="Country" ng-model="register.country"
+															required ng-maxlength="100" ng-pattern="/^(\D)+$/"
+															data-toggle='tooltip' data-placement='right'
+															title="Please enter a valid Country name" />
+													</div>
+													<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.country.$dirty && registerBasicForm.country.$error.required">Country
+													is required</div>
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.country.$dirty && registerBasicForm.country.$error.maxlength">Country
+													cannot be more than 100 characters</div>
+												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													ng-show="registerBasicForm.country.$dirty && registerBasicForm.country.$error.pattern">Country
+													can only contain text</div>
+												</div> -->
+											</div>
+										</div>
+										<!-- USER INFO END -->
+									</div>
+
+									<!-- PERSONAL INFO START -->
+									<div class="col-xs-12 col-md-6">
+										<div class="panel panel-default"
+											style="border-style: none; background-color: #f5f5f5;">
+											<div class="panel-heading"
+												style="border-style: none; font-family: arial; font-weight: bold;">Contact
+												Information</div>
+											<div class="panel-body personal-info"
+												style="border-style: none; background-color: #f5f5f5;">
+
+												<div class="col-xs-12">
+
+													<div class="input-group input-group-sm">
+														<label style="font-weight:500;">Do you want to display your number on your
+															profile?</label>
+														<div class="form-group">
+
+															<div class="col-sm-8">
+																<label class="radio-inline"> <input type="radio"
+																	name="mobileYesNo" id="mobileYesNo" value="Y" ng-model="register.isMobile">Yes
+																</label> <label class="radio-inline"> <input
+																	type="radio" name="mobileYesNo" id="mobileYesNo" ng-model="register.isMobile" ng-checked="true" value="N">No
+																</label>
+															</div>
+														</div>
+													</div>
+												</div>
+												
 												<div class="col-xs-12">&nbsp;</div>
-
 												<div class="col-xs-12">
 													<div class="input-group input-group-sm">
 														<span class="input-group-addon"
@@ -434,20 +583,8 @@
 													ng-show="registerBasicForm.country.$dirty && registerBasicForm.country.$error.pattern">Country
 													can only contain text</div> -->
 												</div>
-											</div>
-										</div>
-										<!-- USER INFO END -->
-									</div>
-
-									<!-- PERSONAL INFO START -->
-									<div class="col-xs-12 col-md-6">
-										<div class="panel panel-default"
-											style="border-style: none; background-color: #f5f5f5;">
-											<div class="panel-heading"
-												style="border-style: none; font-family: arial; font-weight: bold;">Contact
-												Information</div>
-											<div class="panel-body personal-info"
-												style="border-style: none; background-color: #f5f5f5;">
+												
+												<div class="col-xs-12">&nbsp;</div>
 
 												<div class="col-xs-12">
 													<div class="input-group input-group-sm">
@@ -626,9 +763,6 @@
 													can only contain digits</div> -->
 
 												</div>
-												<div class="col-xs-12">&nbsp;</div>
-
-												<div class="col-xs-12">&nbsp;</div>
 											</div>
 										</div>
 									</div>
@@ -649,7 +783,7 @@
 
 						<h3 class="reg-acc-2 acc-hover"
 							ng-class="registerBasicForm.$invalid?'ui-state-disabled':'ui-state-default'"
-							style="background-color: #217690; font-family: arial; color: #ffffff;">Additional
+							style="background-color: #217690; font-family: arial; color: black;font-weight: bold;">Additional
 							Information</h3>
 						<div>
 
@@ -669,12 +803,19 @@
 													<span class="input-group-addon"
 														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Degree
 														*</span> <input id="studentdegree" maxlength=100
-														style="width: 300px !important;" name="degreeOfStudent"
+														style="width: 188px !important;" name="degreeOfStudent"
 														type="text" class="form-control" placeholder="Degree"
 														ng-model="register.degreeOfStudent" required
-														ng-maxlength="100" ng-pattern="/^(\D)+$/" required
+														ng-maxlength="100" required
 														data-toggle='tooltip' data-placement='right'
 														title="Please enter valid degree" />
+														<input style="width: 188px !important;display:none;" class="form-control" required ng-model="register.degreeOfStudent" id="studentdegree1"
+														 />
+														
+														 <span
+															class="input-group-addon btn-success btn-responsive"
+															style="border-left: 1px solid #ccc; width: 10px;"  ng-click="enterDegree();"
+															>Other</span>
 												</div>
 
 												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -688,20 +829,20 @@
 												can only contain text</div> -->
 											</div>
 
-											<div class="col-xs-12 col-md-6">
+											<!-- <div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
 													<span class="input-group-addon"
 														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Date
-														of birth *</span> <input id="dateOfBirthDatePicker"
+														of birth</span> <input id="dateOfBirthDatePicker"
 														style="width: 300px !important;" name="dob" type="text"
 														class="form-control"
 														placeholder="Date of birth(YYYY-MM-DD)"
-														ng-model="register.dob" datepicker-angular required
-														style="width: 217px;" required data-toggle='tooltip'
+														ng-model="register.dob" datepicker-angular 
+														style="width: 217px;"  data-toggle='tooltip'
 														data-placement='right' title="Please enter date of Birth" />
-													<!-- <span class="input-group-addon">YYYY-MM-DD</span> -->
+													<span class="input-group-addon">YYYY-MM-DD</span>
 
-													<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+													<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 													ng-show="registerAdditionalStudentForm.dob.$dirty && registerAdditionalStudentForm.dob.$error.required">DOB
 													is required</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -709,12 +850,10 @@
 													a valid date</div>
 												<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 													ng-show="registerAdditionalStudentForm.dob.$dirty && registerAdditionalStudentForm.dob.$error.minlength || registerAdditionalStudentForm.dob.$error.maxlength">Improper
-													date format</div> -->
+													date format</div>
 												</div>
-											</div>
-
-											<div class="col-xs-12">&nbsp;</div>
-
+											</div> -->
+											
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
 													<span class="input-group-addon"
@@ -729,88 +868,55 @@
 												ng-show="registerAdditionalStudentForm.studentID.$dirty && registerAdditionalStudentForm.studentID.$error.required">Student
 												ID is required</div> -->
 											</div>
-
+											
+											<div class="col-xs-12">&nbsp;</div>
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
 													<span class="input-group-addon"
-														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Completion
-														Year *</span> <input id="studentCompletionYear"
-														name="completionYear" type="text" class="form-control"
-														style="width: 300px !important;"
-														placeholder="Completion year(YYYY-MM-DD)"
-														ng-model="register.completionYear" datepicker-angular
-														required style="width: 217px;" required
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Branch
+														*</span> <input style="width: 300px !important;" type="text"
+														class="form-control" placeholder="Search branches"
+														ng-model="register.branchIdOfStudent"
+														id="branchIdOfStudent2" value="" required
 														data-toggle='tooltip' data-placement='right'
-														title="Please enter degree completion year" />
-													<!-- <span
-													class="input-group-addon" >YYYY-MM-DD</span> -->
-												</div>
-												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-												ng-show="registerAdditionalStudentForm.completionYear.$dirty && registerAdditionalStudentForm.completionYear.$error.required">Student
-												ID is required</div>
-											<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-												ng-show="registerAdditionalStudentForm.completionYear.$dirty && registerAdditionalStudentForm.completionYear.$error.required">Improper
-												date format</div> -->
-											</div>
+														title="Please enter Branch">
 
-											<div class="col-xs-12">&nbsp;</div>
-
-
-											<div class="col-xs-12 col-md-6">
-												<div class="input-group input-group-sm">
-													<span class="input-group-addon"
-														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">State
-														*</span> <input style="width: 300px !important;"
-														name="collegeState" type="text" id="collegeState"
-														class="form-control" placeholder="State"
-														ng-model="register.collegeState" required
-														ng-maxlength="100" data-toggle='tooltip'
-														data-placement='right' title="Please enter a valid State" />
-												</div>
-
-											</div>
-
-
-											<div class="col-xs-12 col-md-6">
-												<div class="input-group input-group-sm">
-													<span class="input-group-addon"
-														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">College
-														name *</span>
-													<!--  <input id="CollegeNames"
-													name="collge" type="text" class="form-control" placeholder="College name"
-													ng-model="register.collge" required ng-maxlength="100" ng-pattern="/^(\D)+$/"
-													
-													required data-toggle='tooltip' data-placement='right' 
-														title="Please enter College Name" /> -->
-													<input style="width: 300px !important;" type="text"
-														class="form-control" placeholder="Search Colleges"
-														id="CollegeNames" ng-model="register.collge" value=""
-														required data-toggle='tooltip' data-placement='right'
-														title="Please enter your college name">
-												</div>
-
-
-												<!--   <div class="col-xs-12"> 
+													<!--  <div class="col-xs-12">
 													<input type="text" class="form-control" placeholder="Search branches" id="branchIdOfStudent2"
-														ng-model="register.branchIdOfStudent" ng-change="search()" value=""  required data-toggle='tooltip' data-placement='right' 
-														title="Please enter Branch"/>
+														ng-model="searchTerm" ng-change="search()" value="" />
+												</div> -->
+													<!-- 	 <div class="col-xs-12" >
+													<select id="branchIdOfStudent" class="form-control"
+														ng-model="register.branchIdOfStudent" 
+														ng-options="item.branchId as item.projBranchDesc for item in data" >
+													</select>
+												</div>  -->
 												</div>
-                                                 -->
-
-												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-												ng-show="registerAdditionalStudentForm.collge.$dirty && registerAdditionalStudentForm.collge.$error.required">College
-												is required</div>
-
-											<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-												ng-show="registerAdditionalStudentForm.collge.$dirty && registerAdditionalStudentForm.collge.$error.maxlength">College
-												cannot be more than 100 characters</div>
-
-											<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-												ng-show="registerAdditionalStudentForm.collge.$dirty && registerAdditionalStudentForm.collge.$error.pattern">College
-												can only contain text</div> -->
 											</div>
+											 
+									<!-- 		<div class="col-xs-12 col-md-6">
+												<div class="input-group input-group-sm">
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Age*</span>
+													<input name="age" type="text" id="age" style="width: 300px"
+														class="form-control" placeholder="Age" required
+														ng-model="register.age" ng-value="personAge"
+														ng-minlength=2 ng-maxlength=2 ng-pattern="/^(\d)+$/"
+														data-toggle='tooltip' data-placement='right'
+														title='Age should be in number only' />
 
-											<div class="col-xs-12">&nbsp;</div>
+												</div>
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerAdditionalStudentForm.age.$dirty && registerAdditionalStudentForm.age.$error.maxlength && registerAdditionalStudentForm.age.$error.minlength">age should be of only two digit number</div>
+
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerAdditionalStudentForm.age.$dirty && registerAdditionalStudentForm.age.$error.pattern">Age should be number only</div>
+											</div>
+											 -->
+
+											
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
@@ -835,76 +941,124 @@
 											<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 												ng-show="registerAdditionalStudentForm.university.$dirty && registerAdditionalStudentForm.university.$error.pattern">University
 												can only contain text</div> -->
+											</div> 
+											<div class="col-xs-12">&nbsp;</div>
+											
+											<div class="col-xs-12 col-md-6">
+												<div class="input-group input-group-sm">
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">State
+														*</span> <input style="width: 300px !important;"
+														name="collegeState" type="text" id="collegeState"
+														class="form-control collegeState" placeholder="State"
+														ng-model="register.collegeState" required
+														ng-maxlength="100" data-toggle='tooltip'
+														data-placement='right' title="Please enter a valid State" />
+												</div>
+
 											</div>
+											
+											<div class="col-xs-12 col-md-6">
+												<div class="input-group input-group-sm">
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">College
+														name *</span>
+													<!--  <input id="CollegeNames"
+													name="collge" type="text" class="form-control" placeholder="College name"
+													ng-model="register.collge" required ng-maxlength="100" ng-pattern="/^(\D)+$/"
+													
+													required data-toggle='tooltip' data-placement='right' 
+														title="Please enter College Name" /> -->
+													<input style="width: 300px !important;" type="text"
+														class="form-control CollegeNames"
+														placeholder="Search Colleges" id="CollegeNames"
+														ng-model="register.collge" value="" required
+														data-toggle='tooltip' data-placement='right'
+														title="Please enter your college name">
+												</div>
 
 
+												<!--   <div class="col-xs-12"> 
+													<input type="text" class="form-control" placeholder="Search branches" id="branchIdOfStudent2"
+														ng-model="register.branchIdOfStudent" ng-change="search()" value=""  required data-toggle='tooltip' data-placement='right' 
+														title="Please enter Branch"/>
+												</div>
+                                                 -->
+
+												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+												ng-show="registerAdditionalStudentForm.collge.$dirty && registerAdditionalStudentForm.collge.$error.required">College
+												is required</div>
+
+											<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+												ng-show="registerAdditionalStudentForm.collge.$dirty && registerAdditionalStudentForm.collge.$error.maxlength">College
+												cannot be more than 100 characters</div>
+
+											<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+												ng-show="registerAdditionalStudentForm.collge.$dirty && registerAdditionalStudentForm.collge.$error.pattern">College
+												can only contain text</div> -->
+											</div>
+												<div class="col-xs-12">&nbsp;</div>
+											
+											
+											<div class="col-xs-12 col-md-6">
+												<div class="input-group input-group-sm">
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Completion
+														Year *</span> <input id="studentCompletionYear"
+														name="completionYear" type="text" class="form-control"
+														style="width: 300px !important;"
+														placeholder="Completion year(YYYY-MM-DD)"
+														ng-model="register.completionYear" datepicker-angular
+														required style="width: 217px;" required
+														data-toggle='tooltip' data-placement='right'
+														title="Please enter degree completion year" />
+													<!-- <span
+													class="input-group-addon" >YYYY-MM-DD</span> -->
+												</div>
+												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+												ng-show="registerAdditionalStudentForm.completionYear.$dirty && registerAdditionalStudentForm.completionYear.$error.required">Student
+												ID is required</div>
+											<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+												ng-show="registerAdditionalStudentForm.completionYear.$dirty && registerAdditionalStudentForm.completionYear.$error.required">Improper
+												date format</div> -->
+											</div>
+											
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
 													<span class="input-group-addon"
 														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Facebook
-														Id</span> <input style="width: 300px !important;" type="text"
+														Id</span> <input style="width: 300px !important;" type="url"
 														class="form-control" placeholder="Facebook Id"
 														ng-model="register.faceBookId" id="facebookId" value=""
-														data-toggle='tooltip' data-placement='right'
+														data-toggle='tooltip' data-placement='right' http-prefixfb
 														title="Please enter Facebook Id">
 
 												</div>
 											</div>
-
-											<div class="col-xs-12">&nbsp;</div>
-
-											<div class="col-xs-12 col-md-6">
-												<div class="input-group input-group-sm">
-													<span class="input-group-addon"
-														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Branch
-														*</span> <input style="width: 300px !important;" type="text"
-														class="form-control" placeholder="Search branches"
-														ng-model="register.branchIdOfStudent"
-														id="branchIdOfStudent2" value="" required
-														data-toggle='tooltip' data-placement='right'
-														title="Please enter Branch">
-
-													<!--  <div class="col-xs-12">
-													<input type="text" class="form-control" placeholder="Search branches" id="branchIdOfStudent2"
-														ng-model="searchTerm" ng-change="search()" value="" />
-												</div> -->
-													<!-- 	 <div class="col-xs-12" >
-													<select id="branchIdOfStudent" class="form-control"
-														ng-model="register.branchIdOfStudent" 
-														ng-options="item.branchId as item.projBranchDesc for item in data" >
-													</select>
-												</div>  -->
-												</div>
-											</div>
-
+												<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
 													<span class="input-group-addon"
 														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Twitter
-														Id</span> <input style="width: 300px !important;" type="text"
+														Id</span> <input style="width: 300px !important;" type="url"
 														class="form-control" placeholder="Twitter Id"
 														ng-model="register.twitterId" id="twitterId" value=""
 														data-toggle='tooltip' data-placement='right'
-														title="Please enter Twitter Id">
+														title="Please enter Twitter Id" http-prefixtwit>
 
 												</div>
 											</div>
-
-											<div class="col-xs-12">&nbsp;</div>
-
-
-
-
+											
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
 													<span class="input-group-addon"
 														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">LinkedIn
-														Id</span> <input style="width: 300px !important;" type="text"
+														Id</span> <input style="width: 300px !important;" type="url"
 														class="form-control" placeholder="LinkedIn Id"
 														ng-model="register.linkedinId" id="LinkedInId" value=""
 														data-toggle='tooltip' data-placement='right'
-														title="Please enter LinkedIn Id">
+														title="Please enter LinkedIn Id" http-prefixlink>
 
 												</div>
 											</div>
@@ -925,9 +1079,12 @@
 										<div class="panel-body">
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon">Contact Person Name
-														*</span> <input name="cntctPerNameofCollege"
-														id="collegecontactname" type="text" class="form-control"
+													<span
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;"
+														class="input-group-addon">Contact Person Name *</span> <input
+														style="width: 300px !important;"
+														name="cntctPerNameofCollege" id="collegecontactname"
+														type="text" class="form-control"
 														placeholder="Contact Person Name"
 														ng-model="register.cntctPerNameofCollege" required
 														ng-pattern="/^(\D)+$/" required data-toggle='tooltip'
@@ -946,11 +1103,40 @@
 												name can only contain text</div> -->
 											</div>
 
+
+
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon">Principal name *</span> <input
-														name="prinicipalName" id="prinicipalName" type="text"
-														class="form-control" placeholder="Principal name"
+													<span
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;"
+														class="input-group-addon">Contact Person email *</span> <input
+														id="collgeContactEmail" style="width: 300px !important;"
+														name="collgeContactEmail" maxlength=100 type="email"
+														class="form-control" placeholder="Contact person email id"
+														ng-model="register.collgeContactEmail" required
+														data-toggle='tooltip' data-placement='right'
+														title="Please enter Contact person Email" />
+												</div>
+
+												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+												ng-show="registerAdditionalCollegeForm.collgeContactEmail.$dirty && registerAdditionalCollegeForm.collgeContactEmail.$error.required">Contact person
+												email is required</div>
+
+											<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+												ng-show="registerAdditionalCollegeForm.collgeContactEmail.$dirty && registerAdditionalCollegeForm.collgeContactEmail.$error.email">Not
+												a valid email</div> -->
+											</div>
+
+											<div class="col-xs-12">&nbsp;</div>
+
+											<div class="col-xs-12 col-md-6">
+												<div class="input-group input-group-sm">
+													<span
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 150px !important; font-family: arial; color: #ffffff;"
+														class="input-group-addon">Principal name *</span> <input
+														style="width: 300px !important;" name="prinicipalName"
+														id="prinicipalName" type="text" class="form-control"
+														placeholder="Principal name"
 														ng-model="register.prinicipalName" required
 														ng-pattern="/^(\D)+$/" required data-toggle='tooltip'
 														data-placement='right'
@@ -966,11 +1152,35 @@
 												name can only contain text</div> -->
 											</div>
 
-											<div class="col-xs-12">&nbsp;</div>
-
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon">University *</span> <input
+													<span
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 150px !important; font-family: arial; color: #ffffff;"
+														class="input-group-addon">Principal email *</span> <input
+														id="prinicipalEmail" style="width: 300px !important;"
+														name="prinicipalEmail" maxlength=100 type="email"
+														class="form-control" placeholder="Principal email id"
+														ng-model="register.prinicipalEmail" required
+														data-toggle='tooltip' data-placement='right'
+														title="Please enter Principal Email" />
+												</div>
+
+												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+												ng-show="registerAdditionalCollegeForm.prinicipalEmail.$dirty && registerAdditionalCollegeForm.prinicipalEmail.$error.required">Principal
+												email is required</div>
+
+											<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+												ng-show="registerAdditionalCollegeForm.prinicipalEmail.$dirty && registerAdditionalCollegeForm.prinicipalEmail.$error.email">Not
+												a valid email</div> -->
+											</div>
+
+											<div class="col-xs-12">&nbsp;</div>
+											<div class="col-xs-12 col-md-6">
+												<div class="input-group input-group-sm">
+													<span
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 150px !important; font-family: arial; color: #ffffff;"
+														class="input-group-addon">University *</span> <input
+														style="width: 300px !important;"
 														name="affltUniversityOfCollege"
 														id="affltUniversityOfCollege" type="text"
 														class="form-control" placeholder="University name"
@@ -992,8 +1202,11 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon">Techpedia faculty *</span>
-													<input id="techpdaFactlyCoordtr" maxlength=100
+													<span
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 150px !important; font-family: arial; color: #ffffff;"
+														class="input-group-addon">Techpedia faculty *</span> <input
+														id="techpdaFactlyCoordtr" maxlength=100
+														style="width: 300px !important;"
 														name="techpdaFactlyCoordtr" type="text"
 														class="form-control"
 														placeholder="Techpedia faculty co-ordinator"
@@ -1014,33 +1227,17 @@
 
 											<div class="col-xs-12">&nbsp;</div>
 
-											<div class="col-xs-12 col-md-6">
-												<div class="input-group input-group-sm">
-													<span class="input-group-addon">Principal email *</span> <input
-														id="prinicipalEmail" name="prinicipalEmail" maxlength=100
-														type="email" class="form-control"
-														placeholder="Principal email id"
-														ng-model="register.prinicipalEmail" required
-														data-toggle='tooltip' data-placement='right'
-														title="Please enter Principal Email" />
-												</div>
 
-												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-												ng-show="registerAdditionalCollegeForm.prinicipalEmail.$dirty && registerAdditionalCollegeForm.prinicipalEmail.$error.required">Principal
-												email is required</div>
-
-											<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-												ng-show="registerAdditionalCollegeForm.prinicipalEmail.$dirty && registerAdditionalCollegeForm.prinicipalEmail.$error.email">Not
-												a valid email</div> -->
-											</div>
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon">Website link *</span> <input
-														name="webpage" id="webpage" type="url"
-														class="form-control" placeholder="College url"
-														ng-model="register.webpage" required data-toggle='tooltip'
-														data-placement='right'
+													<span
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 150px !important; font-family: arial; color: #ffffff;"
+														class="input-group-addon">Website link *</span> <input
+														style="width: 300px !important;" name="webpage"
+														id="webpage" type="url" class="form-control"
+														placeholder="College url" ng-model="register.webpage"
+														required data-toggle='tooltip' data-placement='right'
 														title="Please enter Website link of college" />
 												</div>
 
@@ -1049,11 +1246,14 @@
 												enter a valid URL</div> -->
 											</div>
 
-											<div class="col-xs-12">&nbsp;</div>
+
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon">Facility offered *</span> <input
+													<span
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 150px !important; font-family: arial; color: #ffffff;"
+														class="input-group-addon">Facility offered *</span> <input
+														style="width: 300px !important;"
 														name="facilitiesOffrdToStudents"
 														id="facilitiesOffrdToStudents" type="text"
 														class="form-control"
@@ -1063,11 +1263,15 @@
 														title="Please enter Facility offered to students" />
 												</div>
 											</div>
+											<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon">Innovation club *</span> <input
+													<span
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 150px !important; font-family: arial; color: #ffffff;"
+														class="input-group-addon">Innovation club *</span> <input
 														id="cntctInfoForNatnlInnovnClub" maxlength=100
+														style="width: 300px !important;"
 														name="cntctInfoForNatnlInnovnClub" type="text"
 														class="form-control"
 														placeholder="Innovation club contact info"
@@ -1076,10 +1280,26 @@
 														title="Please enter innovation club contact information" />
 												</div>
 											</div>
+
+											<div class="col-xs-12 col-md-6">
+												<div class="input-group input-group-sm">
+													<span
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 150px !important; font-family: arial; color: #ffffff;"
+														class="input-group-addon">College Name*</span> <input
+														id="CollegeNames1" style="width: 300px !important;"
+														name="CollegeNames1" type="text"
+														class="form-control CollegeNames"
+														placeholder="College Name" ng-model="register.collegeName"
+														required data-toggle='tooltip' data-placement='right'
+														title="Please enter college name" />
+												</div>
+											</div>
 											<div class="col-xs-12">&nbsp;</div>
 											<div class="col-xs-12 col-md-12 ">
 												<div class="form-group">
-													<span class="input-group-addon">About College *</span>
+													<span
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 150px !important; font-family: arial; color: #ffffff;"
+														class="input-group-addon">About College *</span>
 													<textarea style="resize: none;" class="form-control"
 														ng-model="register.collegeInfoForCollege"
 														id="collegeInfoForCollege" name="collegeInfoForCollege"
@@ -1149,10 +1369,12 @@
 					
 										</div>
 									 -->
-											<div class="col-xs-12">
+											<!-- <div class="col-xs-12">
 												<div class="panel panel-default">
 													<div class="panel-heading">
-														<div class="btn-group">College Logo</div>
+														<div class="btn-group"
+															style="border-style: none; font-family: arial; font-weight: bold;">College
+															Logo</div>
 													</div>
 													<div class="panel-body photoRTC">
 														<input ng-model="register.logo" type="text" name="logo"
@@ -1170,9 +1392,9 @@
 
 															<div class="col-xs-9">
 																<div class="col-xs-12">
-																	<!-- <button class='takePhoto btn btn-info btn-sm'>Take photo</button> -->
-																	<!-- <button class='retakePhoto btn btn-info btn-sm' style="display: none;">Retake
-															photo</button> -->
+																	<button class='takePhoto btn btn-info btn-sm'>Take photo</button>
+																	<button class='retakePhoto btn btn-info btn-sm' style="display: none;">Retake
+															photo</button>
 																	<input id='hidden-photo1-input' type='file'
 																		accept='image*;capture=camera' style='display: none;'
 																		ng-file="file1" base64 />
@@ -1192,7 +1414,7 @@
 														</div>
 													</div>
 												</div>
-											</div>
+											</div> -->
 										</div>
 									</div>
 
@@ -1211,9 +1433,10 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Speciality *</span> <input
-														style="width: 300px !important;" type="text" class="form-control"
-														placeholder="Search branches"
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Speciality
+														*</span> <input style="width: 300px !important;" type="text"
+														class="form-control" placeholder="Search branches"
 														id="specializationOfFaculty2"
 														ng-model="register.specializationOfFaculty" value=""
 														required data-toggle='tooltip' data-placement='right'
@@ -1232,11 +1455,13 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">State *</span> <input
-														style="width: 300px !important;" name="collegeState1"
-														type="text" id="collegeState1" class="form-control"
-														placeholder="State" ng-model="register.collegeState"
-														required ng-maxlength="100" data-toggle='tooltip'
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">State
+														*</span> <input style="width: 300px !important;"
+														name="collegeState1" type="text" id="collegeState1"
+														class="form-control" placeholder="State"
+														ng-model="register.collegeState" required
+														ng-maxlength="100" data-toggle='tooltip'
 														data-placement='right' title="Please enter a valid State" />
 												</div>
 
@@ -1246,10 +1471,11 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">College name *</span> <input
-														style="width: 300px !important;" name="collgeOfFaculty"
-														id="collgeOfFaculty" type="text" class="form-control"
-														placeholder="College name"
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">College
+														name *</span> <input style="width: 300px !important;"
+														name="collgeOfFaculty" id="collgeOfFaculty" type="text"
+														class="form-control" placeholder="College name"
 														ng-model="register.collgeOfFaculty" required
 														ng-pattern="/^(\D)+$/" required required
 														data-toggle='tooltip' data-placement='right'
@@ -1270,13 +1496,22 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Degree *</span> <input
-														style="width: 300px !important;" id="facultydegree" maxlength=100
-														name="degreeOfFaculty" type="text" class="form-control"
-														placeholder="Degree" ng-model="register.degreeOfFaculty"
-														required ng-pattern="/^(\D)+$/" required
-														data-toggle='tooltip' data-placement='right'
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Degree
+														*</span> <input style="width: 300px !important;"
+														id="facultydegree" maxlength=100 name="degreeOfFaculty"
+														type="text" class="form-control" placeholder="Degree"
+														ng-model="register.degreeOfFaculty" required
+														ng-pattern="/^(\D)+$/" required data-toggle='tooltip'
+														data-placement='right'
 														title="Please enter degree of faculty" />
+														<input style="width: 188px !important;display:none;" class="form-control" required ng-model="register.degreeOfFaculty" id="degreeOfFaculty1"
+														 />
+														
+														 <span
+															class="input-group-addon btn-success btn-responsive"
+															style="border-left: 1px solid #ccc; width: 10px;"  ng-click="enterFacultyDegree();"
+															>Other</span>
 												</div>
 
 												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
@@ -1291,10 +1526,11 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">University *</span> <input
-														style="width: 300px !important;" name="universityOfFaculty"
-														id="universityOfFaculty" type="text" class="form-control"
-														placeholder="University"
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">University
+														*</span> <input style="width: 300px !important;"
+														name="universityOfFaculty" id="universityOfFaculty"
+														type="text" class="form-control" placeholder="University"
 														ng-model="register.universityOfFaculty" required
 														ng-pattern="/^(\D)+$/" required data-toggle='tooltip'
 														data-placement='right'
@@ -1312,8 +1548,10 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Experience *</span> <input
-														style="width: 300px !important;" name="proffesionalExpOfFaculty"
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Experience
+														*</span> <input style="width: 300px !important;"
+														name="proffesionalExpOfFaculty"
 														id="proffesionalExpOfFaculty" type="text"
 														class="form-control"
 														placeholder="Profeesional experience in months"
@@ -1332,8 +1570,10 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Webpage link *</span> <input
-														style="width: 300px !important;" name="psnlWebpgLink" id="psnlWebpgLink" type="url"
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Webpage
+														link *</span> <input style="width: 300px !important;"
+														name="psnlWebpgLink" id="psnlWebpgLink" type="url"
 														class="form-control" placeholder="Personal webpage link"
 														ng-model="register.psnlWebpgLink" required
 														data-toggle='tooltip' data-placement='right'
@@ -1349,11 +1589,13 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Alumni *</span> <input
-														style="width: 300px !important;" name="alumni" type="text"
-														id="alumni" class="form-control" placeholder="Alumni"
-														ng-model="register.alumni" ng-pattern="/^(\D)+$/" required
-														required data-toggle='tooltip' data-placement='right'
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Alumni
+														*</span> <input style="width: 300px !important;" name="alumni"
+														type="text" id="alumni" class="form-control"
+														placeholder="Alumni" ng-model="register.alumni"
+														ng-pattern="/^(\D)+$/" required required
+														data-toggle='tooltip' data-placement='right'
 														title="Please enter alumni of faculty" />
 												</div>
 
@@ -1367,10 +1609,11 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Association list *</span> <input
-														style="width: 300px !important;" id="facultycompletionyear"
-														maxlength=100 name="memshipInAssocns" type="text"
-														class="form-control"
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Association
+														list *</span> <input style="width: 300px !important;"
+														id="facultycompletionyear" maxlength=100
+														name="memshipInAssocns" type="text" class="form-control"
 														placeholder="Association or membership name list"
 														ng-model="register.memshipInAssocns" required required
 														data-toggle='tooltip' data-placement='right'
@@ -1380,11 +1623,13 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Facebook Id</span> <input
-														style="width: 300px !important;" type="text" class="form-control" placeholder="Facebook Id"
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Facebook
+														Id</span> <input style="width: 300px !important;" type="url"
+														class="form-control" placeholder="Facebook Id"
 														ng-model="register.faceBookId" id="faceBookId" value=""
 														data-toggle='tooltip' data-placement='right'
-														title="Please enter Facebook Id">
+														title="Please enter Facebook Id" http-prefixfb>
 
 												</div>
 											</div>
@@ -1393,7 +1638,8 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Affiliated
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Affiliated
 														university *</span> <input name="affltUniversityOfFaculty"
 														id="affltUniversityOfFaculty" type="text"
 														style="width: 300px !important;" class="form-control"
@@ -1411,11 +1657,13 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Twitter Id</span> <input
-														style="width: 300px !important;" type="text" class="form-control" placeholder="Twitter Id"
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Twitter
+														Id</span> <input style="width: 300px !important;" type="url"
+														class="form-control" placeholder="Twitter Id"
 														ng-model="register.twitterId" id="twitterId" value=""
 														data-toggle='tooltip' data-placement='right'
-														title="Please enter Twitter Id">
+														title="Please enter Twitter Id"  http-prefixtwit>
 
 												</div>
 											</div>
@@ -1423,14 +1671,16 @@
 
 
 											<div class="col-xs-12">&nbsp;</div>
-											
+
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">LinkedIn Id</span> <input
-														style="width: 300px !important;" type="text" class="form-control" placeholder="LinkedIn Id"
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">LinkedIn
+														Id</span> <input style="width: 300px !important;" type="url"
+														class="form-control" placeholder="LinkedIn Id"
 														ng-model="register.LinkedinId" id="LinkedInId" value=""
 														data-toggle='tooltip' data-placement='right'
-														title="Please enter LinkedIn Id">
+														title="Please enter LinkedIn Id" http-prefixlink>
 
 												</div>
 											</div>
@@ -1451,9 +1701,11 @@
 										<div class="panel-body">
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Speciality *</span> <input
-														style="width: 300px !important;" type="text" class="form-control"
-														placeholder="Search branches" id="branchIdOfMentor2"
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Speciality
+														*</span> <input style="width: 300px !important;" type="text"
+														class="form-control" placeholder="Search branches"
+														id="branchIdOfMentor2"
 														ng-model="register.branchIdOfMentor" value="" required
 														required data-toggle='tooltip' data-placement='right'
 														title="Please enter specialised branch of mentor" />
@@ -1470,9 +1722,11 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Designation *</span> <input
-														name="designationOfMentor" id="designationOfMentor"
-														style="width: 300px !important;" type="text" class="form-control" placeholder="Designation"
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Designation
+														*</span> <input name="designationOfMentor"
+														id="designationOfMentor" style="width: 300px !important;"
+														type="text" class="form-control" placeholder="Designation"
 														ng-model="register.designationOfMentor" required
 														ng-pattern="/^(\D)+$/" required data-toggle='tooltip'
 														data-placement='right'
@@ -1487,17 +1741,29 @@
 												can only contain text</div> -->
 											</div>
 
+
+
+
 											<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Degree *</span> <input
-														name="degreeOfMentor" id="degreeOfMentor" type="text"
-														style="width: 300px !important;" class="form-control" placeholder="Degree"
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Degree
+														*</span> <input name="degreeOfMentor" id="degreeOfMentor"
+														type="text" style="width: 300px !important;"
+														class="form-control" placeholder="Degree"
 														ng-model="register.degreeOfMentor" required
 														ng-pattern="/^(\D)+$/" required data-toggle='tooltip'
 														data-placement='right'
 														title="Please enter degree of mentor" />
+														<input style="width: 188px !important;display:none;" class="form-control" required ng-model="register.degreeOfMentor" id="degreeOfMentor1"
+														 />
+														
+														 <span
+															class="input-group-addon btn-success btn-responsive"
+															style="border-left: 1px solid #ccc; width: 10px;"  ng-click="enterMentorDegree();"
+															>Other</span>
 												</div>
 												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
 												ng-show="registerAdditionalMentorForm.degreeOfMentor.$dirty && registerAdditionalMentorForm.degreeOfMentor.$error.required">Degree
@@ -1509,44 +1775,60 @@
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Experience *</span> <input
-														name="professionalExperience" id="professionalExperience"
-														 style="width: 300px !important;" type="text" class="form-control"
-														placeholder="Professional experience in months"
-														ng-model="register.professionalExperience" required
-														ng-pattern="/^(\d)+$/" required required
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Facebook
+														Id</span> <input style="width: 300px !important;" type="url"
+														class="form-control" placeholder="Facebook Id"
+														ng-model="register.faceBookId" id="facebookId" value=""
 														data-toggle='tooltip' data-placement='right'
-														title="Please enter proffesional experience in months of mentor" />
+														title="Please enter Facebook Id" http-prefixfb>
+
+												</div>
+											</div>
+
+
+
+											<div class="col-xs-12">&nbsp;</div>
+
+											<div class="col-xs-12 col-md-6">
+												<div class="input-group input-group-sm">
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Webpage
+														link *</span> <input style="width: 300px !important;"
+														id="mentorwebpage" name="webpage" type="url"
+														class="form-control" placeholder="Personal webpage link"
+														ng-model="register.webpage" required data-toggle='tooltip'
+														data-placement='right'
+														title="Please enter personal webpage link  " />
 												</div>
 
 												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-												ng-show="registerAdditionalMentorForm.professionalExperience.$dirty && registerAdditionalMentorForm.professionalExperience.$error.required">Experience
-												is required</div>
-											<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-												ng-show="registerAdditionalMentorForm.professionalExperience.$dirty && registerAdditionalMentorForm.professionalExperience.$error.pattern">Experience
-												can only contain digits</div> -->
+												ng-show="registerAdditionalMentorForm.webpage.$dirty && registerAdditionalMentorForm.webpage.$error.url">Not
+												a valid URL</div> -->
+											</div>
+
+											<div class="col-xs-12 col-md-6">
+												<div class="input-group input-group-sm">
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Twitter
+														Id</span> <input style="width: 300px !important;" type="url"
+														class="form-control" placeholder="Twitter Id"
+														ng-model="register.twitterId" id="twitterId" value=""
+														data-toggle='tooltip' data-placement='right'
+														title="Please enter Twitter Id"  http-prefixtwit>
+
+												</div>
 											</div>
 
 											<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Association *</span> <input
-														maxlength=200 name="institutionalAssctnInfo"
-														 style="width: 300px !important;" id="institutionalAssctnInfo" type="text"
-														class="form-control"
-														placeholder="Institution association info"
-														ng-model="register.institutionalAssctnInfo" required
-														data-toggle='tooltip' data-placement='right'
-														title="Please enter Institutional Association Info" />
-												</div>
-											</div>
-
-											<div class="col-xs-12 col-md-6">
-												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Time spare *</span> <input
-														name="timeUspaceForMentoringPerMnth"
-														style="width: 300px !important;" id="timeUspaceForMentoringPerMnth" type="text"
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Time
+														spare *</span> <input name="timeUspaceForMentoringPerMnth"
+														style="width: 300px !important;"
+														id="timeUspaceForMentoringPerMnth" type="text"
 														class="form-control"
 														placeholder="Time spare for mentoring per month"
 														ng-pattern="/^(\d)+$/"
@@ -1559,98 +1841,204 @@
 												ng-show="registerAdditionalMentorForm.timeUspaceForMentoringPerMnth.$dirty && registerAdditionalMentorForm.timeUspaceForMentoringPerMnth.$error.url">Time
 												spare can only contain digits</div> -->
 											</div>
-											<div class="col-xs-12">&nbsp;</div>
+
+
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Commitment *</span> <input
-														style="width: 300px !important;" id="commitmentUBringIn" maxlength=100
-														name="commitmentUBringIn" type="text" class="form-control"
-														placeholder="Commitment you bring"
-														ng-model="register.commitmentUBringIn" required
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">LinkedIn
+														Id</span> <input style="width: 300px !important;" type="url"
+														class="form-control" placeholder="LinkedIn Id"
+														ng-model="register.LinkedinId" id="LinkedInId" value=""
 														data-toggle='tooltip' data-placement='right'
-														title="Please enter commitment you bring" />
+														title="Please enter LinkedIn Id" http-prefixlink>
+
 												</div>
 											</div>
 
 
+
+											<div class="col-xs-12">&nbsp;</div>
+
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Webpage link *</span> <input
-														style="width: 300px !important;" id="mentorwebpage" name="webpage" type="url"
-														class="form-control" placeholder="Personal webpage link"
-														ng-model="register.webpage" required data-toggle='tooltip'
-														data-placement='right'
-														title="Please enter personal webpage link  " />
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Mentor
+														profile *</span>
+													<textarea rows="3" cols="31" name="mentorProfile"
+														id="mentorProfile" placeholder="Mentor Profile"
+														ng-model="register.mentorProfile" style="resize: none;"
+														data-toggle='tooltip' data-placement='right'
+														title="Please enter mentor profile" ng-maxlength="1000"
+														required></textarea>
+
 												</div>
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerAdditionalMentorForm.mentorProfile.$dirty && registerAdditionalMentorForm.mentorProfile.$error.required">
+													Profile is required *</div>
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerAdditionalMentorForm.mentorProfile.$dirty && registerAdditionalMentorForm.mentorProfile.$error.maxlength">
+													Profile cannot be more than 1000 characters</div>
+											</div>
+
+
+
+											<div class="col-xs-12 col-md-6">
+												<div class="input-group input-group-sm">
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Experience
+														*</span>
+													<!-- <input
+														name="professionalExperience" id="professionalExperience"
+														 style="width: 300px !important;" type="text" class="form-control"
+														placeholder="Professional experience in months"
+														ng-model="register.professionalExperience" required
+														ng-pattern="/^(\d)+$/" required required
+														data-toggle='tooltip' data-placement='right'
+														title="Please enter proffesional experience in months of mentor" /> -->
+
+													<textarea rows="3" cols="31" name="professionalExperience"
+														id="professionalExperience"
+														placeholder="Professional experience"
+														ng-model="register.professionalExperience"
+														style="resize: none;" required data-toggle='tooltip'
+														data-placement='right'
+														title="Please enter proffesional experience"
+														ng-maxlength=1000;></textarea>
+
+												</div>
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerAdditionalMentorForm.professionalExperience.$dirty && registerAdditionalMentorForm.professionalExperience.$error.required">
+													Experience is required *</div>
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerAdditionalMentorForm.professionalExperience.$dirty && registerAdditionalMentorForm.professionalExperience.$error.maxlength">
+													Experience cannot be more than 1000 characters</div>
 
 												<!-- <div class="alert alert-sm alert-danger alert-dismissible" role="alert"
-												ng-show="registerAdditionalMentorForm.webpage.$dirty && registerAdditionalMentorForm.webpage.$error.url">Not
-												a valid URL</div> -->
+												ng-show="registerAdditionalMentorForm.professionalExperience.$dirty && registerAdditionalMentorForm.professionalExperience.$error.required">Experience
+												is required</div>
+											<div class="alert alert-sm alert-danger alert-dismissible" role="alert"
+												ng-show="registerAdditionalMentorForm.professionalExperience.$dirty && registerAdditionalMentorForm.professionalExperience.$error.pattern">Experience
+												can only contain digits</div> -->
 											</div>
+
+
+
 
 											<div class="col-xs-12">&nbsp;</div>
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Interest *</span> <input
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Interest
+														*</span>
+													<!-- <input
 														name="intOnGrassrtInnovators" id="intOnGrassrtInnovators"
 														style="width: 300px !important;" type="text" class="form-control"
 														placeholder="grass root innovators interest"
 														ng-model="register.intOnGrassrtInnovators" required
 														data-toggle='tooltip' data-placement='right'
-														title="Please enter grass root innovators interest" />
+														title="Please enter grass root innovators interest" /> -->
+
+													<textarea rows="3" cols="31" name="intOnGrassrtInnovators"
+														id="intOnGrassrtInnovators"
+														placeholder="grass root innovators interest"
+														ng-model="register.intOnGrassrtInnovators"
+														style="resize: none;" required data-toggle='tooltip'
+														data-placement='right'
+														title="Please enter grass root innovators interest"
+														ng-maxlength=1000;></textarea>
+
 												</div>
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerAdditionalMentorForm.intOnGrassrtInnovators.$dirty && registerAdditionalMentorForm.intOnGrassrtInnovators.$error.required">
+													Interest is required *</div>
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerAdditionalMentorForm.intOnGrassrtInnovators.$dirty && registerAdditionalMentorForm.intOnGrassrtInnovators.$error.maxlength">
+													Interest cannot be more than 1000 characters</div>
 											</div>
+
+
+
+
+
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Facebook Id</span> <input
-														style="width: 300px !important;" type="text" class="form-control" placeholder="Facebook Id"
-														ng-model="register.faceBookId" id="facebookId" value=""
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Commitment
+														*</span>
+													<!-- <input
+														style="width: 300px !important;" id="commitmentUBringIn" maxlength=100
+														name="commitmentUBringIn" type="text" class="form-control"
+														placeholder="Commitment you bring"
+														ng-model="register.commitmentUBringIn" required
 														data-toggle='tooltip' data-placement='right'
-														title="Please enter Facebook Id">
+														title="Please enter commitment you bring" /> -->
+
+													<textarea rows="3" cols="31" name="commitmentUBringIn"
+														id="commitmentUBringIn" placeholder="Commitment you bring"
+														ng-model="register.commitmentUBringIn"
+														style="resize: none;" required data-toggle='tooltip'
+														data-placement='right'
+														title="Please enter commitment you bring"
+														ng-maxlength=1000;></textarea>
 
 												</div>
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerAdditionalMentorForm.commitmentUBringIn.$dirty && registerAdditionalMentorForm.commitmentUBringIn.$error.required">
+													Commitment Description is required *</div>
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerAdditionalMentorForm.commitmentUBringIn.$dirty && registerAdditionalMentorForm.commitmentUBringIn.$error.maxlength">
+													Commitment Description cannot be more than 1000 characters</div>
 											</div>
+
 
 											<div class="col-xs-12">&nbsp;</div>
 
-											<div class="col-xs-12 col-md-6">
-												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Mentor profile *</span>
-													<textarea rows="3" cols="32" name="mentorProfile"
-														id="mentorProfile" placeholder="Mentor Profile"
-														ng-model="register.mentorProfile" style="resize: none;"
-														required data-toggle='tooltip' data-placement='right'
-														title="Please enter mentor profile"></textarea>
-												</div>
-											</div>
 
 											<div class="col-xs-12 col-md-6">
 												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Twitter Id</span> <input
-														style="width: 300px !important;" type="text" class="form-control" placeholder="Twitter Id"
-														ng-model="register.twitterId" id="twitterId" value=""
+													<span class="input-group-addon"
+														style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">Association
+														*</span>
+													<!-- <input
+														maxlength=200 name="institutionalAssctnInfo"
+														 style="width: 300px !important;" id="institutionalAssctnInfo" type="text"
+														class="form-control"
+														placeholder="Institution association info"
+														ng-model="register.institutionalAssctnInfo" required
 														data-toggle='tooltip' data-placement='right'
-														title="Please enter Twitter Id">
+														title="Please enter Institutional Association Info" /> -->
+
+													<textarea rows="3" cols="31" name="institutionalAssctnInfo"
+														id="institutionalAssctnInfo"
+														placeholder="Institution Association Info"
+														ng-model="register.institutionalAssctnInfo"
+														style="resize: none;" required data-toggle='tooltip'
+														data-placement='right'
+														title="Please enter Institutional Association Info"
+														ng-maxlength=1000;></textarea>
 
 												</div>
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerAdditionalMentorForm.institutionalAssctnInfo.$dirty && registerAdditionalMentorForm.institutionalAssctnInfo.$error.required">
+													Institution Association InfoDescription is required *</div>
+												<div class="alert alert-sm alert-danger alert-dismissible"
+													role="alert"
+													ng-show="registerAdditionalMentorForm.institutionalAssctnInfo.$dirty && registerAdditionalMentorForm.institutionalAssctnInfo.$error.maxlength">
+													Institution Association Info Description cannot be more
+													than 1000 characters</div>
 											</div>
-
-											<div class="col-xs-12">&nbsp;</div>
-											<div class="col-xs-12 col-md-6"></div>
-
-											<div class="col-xs-12 col-md-6">
-												<div class="input-group input-group-sm">
-													<span class="input-group-addon" style="border-right: 1px solid #ccc; background-color: #217690; width: 130px; font-family: arial; color: #ffffff;">LinkedIn Id</span> <input
-														style="width: 300px !important;" type="text" class="form-control" placeholder="LinkedIn Id"
-														ng-model="register.LinkedinId" id="LinkedInId" value=""
-														data-toggle='tooltip' data-placement='right'
-														title="Please enter LinkedIn Id">
-
-												</div>
-											</div>
-
 
 										</div>
 									</div>
@@ -1839,21 +2227,67 @@
 								style="color: white;">Continue</span></a> -->
 								<a href="#"><input type="submit"
 									class="btn btn-primary reg-ctn-2"
-									onclick="checkAdditionalEmpty()" style="margin-left: 91%; background-color: #5cb85c;" value="Continue"></a>
+									onclick="checkAdditionalEmpty()"
+									style="margin-left: 91%; background-color: #5cb85c;"
+									value="Continue"></a>
 							</div>
 						</div>
 
-						<h3 class="reg-acc-3 acc-hover" style="background-color: #217690; font-family: arial; color: #ffffff;"
-							ng-class="registerAdditionalStudentForm.$valid||registerAdditionalCollegeForm.$valid||registerAdditionalFacultyForm.$valid||registerAdditionalMentorForm.$valid?'ui-state-default':'ui-state-disabled'">Captcha</h3>
+						<h3 class="reg-acc-3 acc-hover"
+							style="background-color: #217690; font-family: arial; color: black; font-weight: bold;"
+							ng-class="(registerAdditionalStudentForm.$valid)||registerAdditionalCollegeForm.$valid||registerAdditionalFacultyForm.$valid||registerAdditionalMentorForm.$valid?'ui-state-default':'ui-state-disabled'">Captcha{{registerAdditionalStudentForm.$valid}}{{registerAdditionalStudentForm.age.$valid}}{{register.age}}</h3>
 						<div>
+
 							<div class="col-xs-12">
+								<div class="col-xs-12 form-control "
+									style="height: 85px !important">
+									<div class="col-xs-4"
+										style="padding-left: 0%; padding-right: 0%">
+										<img src="jcaptcha.jpg" id="captcha_image"
+											style="box-shadow: 0 0 2em #b2b2b2;" />
+									</div>
+									<div class="col-xs-4" style="margin-left: -120px;">
+										<div class="col-xs-12">
+											<a href="" onclick="reloadCaptcha()" alt="reload"><i
+												style="" class="fa fa-refresh fa-2x"></i></a> <span
+												style="color: red" role="alert"
+												ng-show="messageerrorCaptcha.length>0"
+												ng-repeat="msg in messageerrorCaptcha"><i
+												class="fa fa-exclamation-triangle"></i> <strong>Invalid
+													Captcha!</strong>&nbsp;Please Try Again... </span>
+										</div>
+
+										<div class="col-xs-12">
+											<input class="form-control" placeholder="Enter the text here"
+												type="text" name="jcaptcha" value="" ng-model="jCaptcha"
+												style="width: 100%; margin-top: 8px" />
+										</div>
+
+
+									</div>
+									<div class="col-xs-12 col-md-4">
+										<!-- <a class="btn btn-primary reg-ctn-3" id="register"
+											style="margin-left: 91%; margin-top: 14%; background-color: #5cb85c;"
+											ng-click="registerSubmit()">Register</a> -->
+
+										<button class="btn btn-primary reg-ctn-3" id="register"
+											style="margin-left: 91%; margin-top: 14%; background-color: #5cb85c;"
+											ng-click="registerSubmit(jCaptcha)" ng-disabled="(!jCaptcha)"
+											data-toggle="modal" data-target="#registrationAlertModal">Register</button>
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+						<%-- <div class="col-xs-12">
 								<div class="col-xs-12 col-md-8">
 									<div class="input-group input-group-sm" id="captchavalue">
 										<div class="g-recaptcha"
 											data-sitekey="6LcgrRQTAAAAALPL-I3d-X4mXCcCy-F22emjwxS3"></div>
 
-										<%-- 	 <span id="captchaVal" class="input-group-addon" style="border-right: 1px solid #ccc">
-										<%
+										<span id="captchaVal" class="input-group-addon"
+											style="border-right: 1px solid #ccc"> <%
 											Random aRandom = new Random();
 											long aStart = 1000;
 											long aEnd = 9999;
@@ -1863,31 +2297,114 @@
 											System.err.println("RANDOM NUMBER: " + randomNumber);
 											out.write(String.valueOf(randomNumber));
 										%>
-									</span> <input name="captcha" type="text" class="form-control" id="captcha" placeholder="Captcha" />  --%>
+										</span> <input name="captcha" type="text" class="form-control"
+											id="captcha" placeholder="Captcha" />
 									</div>
 
 								</div>
 								<div class="col-xs-12 col-md-4">
-									<a class="btn btn-primary reg-ctn-3" id="register" style="margin-left: 91%; margin-top: 14%; background-color: #5cb85c;"
+									<a class="btn btn-primary reg-ctn-3" id="register"
+										style="margin-left: 91%; margin-top: 14%; background-color: #5cb85c;"
 										ng-click="registerSubmit()">Register</a>
 								</div>
-							</div>
+							</div> --%>
+					</div>
+				</div>
+				<!-- ERROR MESSAGE -->
+				<div class="row error-place" style="display: none;">
+					<div class="col-xs-11">
+						<div class="panel panel-danger">
+							<div class="panel-heading">Error:</div>
+							<div class="panel-body error"></div>
 						</div>
 					</div>
-					<!-- ERROR MESSAGE -->
-					<div class="row error-place" style="display: none;">
-						<div class="col-xs-11">
-							<div class="panel panel-danger">
-								<div class="panel-heading">Error:</div>
-								<div class="panel-body error"></div>
-							</div>
+				</div>
+				<div class="col-xs-12">
+					<div class="panel panel-info reg-response-panel"
+						ng-show="message.length>0" ng-repeat="msg in message">
+						<div class="panel-heading reg-response">{{msg}}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Registration alert -->
+	<div class="modal fade" id="registrationAlertModal" tabindex="-1"
+		role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header"
+					style="background-color: #31b0d5; color: white; text-align: center">
+					<button type="button" class="close" data-dismiss="modal">
+						<span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">User Registration
+						System</h4>
+				</div>
+				<div classs="modal-body" ng-show="messageerrorCaptcha.length>0"
+					style="text-align: center;">
+					<div class="col-xs-12" style="height: 70px;">
+						<div style="color: red; padding-top: 25px;" role="alert"
+							ng-show="messageerrorCaptcha.length>0"
+							ng-repeat="msg in messageerrorCaptcha">
+							<i class="fa fa-exclamation-triangle"></i> <strong>Invalid
+								Captcha!</strong>&nbsp;Please Try Again...
 						</div>
 					</div>
-					<div class="col-xs-12">
-						<div class="panel panel-info reg-response-panel"
-							ng-show="message.length>0" ng-repeat="msg in message">
-							<div class="panel-heading reg-response">{{msg}}</div>
+					<button data-dismiss="modal" type="button" class="btn btn-info"
+						ng-click="Exitfunction()">Try Again</button>
+					<div class="clearfix">&nbsp;</div>
+				</div>
+				<div ng-hide="messageerrorCaptcha.length>0">
+					<div class="modal-body"
+						ng-hide="messageSuccess.length>0 || messageWarning.length>0 ||messageerrorCaptcha.length>0 || messageWarningEmail.length>0">
+						<div class="loaderBody"
+							ng-hide="messageWarning.length>0 || messageSuccess.length>0 ||messageerrorCaptcha.length>0|| messageWarningEmail.length>0">Please
+							sit back and relax while we are registering your information...</div>
+					</div>
+					<div class="modal-body" ng-show="messageSuccess.length>0"
+						style="text-align: center;">
+						<div>
+							<i id="effect" class="fa fa-check-circle-o"
+								style="color: green; font-size: 7em;"></i>
 						</div>
+						<div
+							class="col-xs-12 xol-md-12 alert alert-success alert-dismissible"
+							style="color: black; text-align: center; font-family: arial;"
+							role="alert" ng-repeat="msgSuccess in messageSuccess">
+							<p>{{msgSuccess}}</p>
+						</div>
+					</div>
+					<div class="modal-body" style="text-align: center;"
+						ng-show="messageWarningEmail.length>0">
+						<div style="text-align: center;">
+							<i id="effect" class="fa fa-check-circle-o"
+								style="color: #8a6d3b; font-size: 7em;"></i>
+						</div>
+						<div
+							class="col-xs-12 xol-md-12 alert alert-danger alert-dismissible"
+							style="color: black; text-align: center; font-family: arial;"
+							ng-repeat="msg in messageWarningEmail">{{msg}}</div>
+					</div>
+
+					<div class="modal-body" style="text-align: center;"
+						ng-show="messageWarning.length>0">
+						<div style="text-align: center;">
+							<i class="fa fa-exclamation-triangle"
+								style="color: #E84F63; font-size: 50px; text-align: center;"></i>
+						</div>
+						<div
+							class="col-xs-12 xol-md-12 alert alert-danger alert-dismissible"
+							style="color: black; text-align: center; font-family: arial;"
+							ng-repeat="msg in messageWarning">{{msg}}</div>
+					</div>
+					<div class="clearfix">&nbsp;</div>
+					<div class="modal-footer"
+						style="align: center; text-align: center;">
+						<a href="index" data-dismiss="modal" class="btn btn-info"
+							ng-click="forward()">Exit</a>
 					</div>
 				</div>
 			</div>
@@ -1912,11 +2429,12 @@
 				function() {
 					// empty = ($(this).val() == "") ? true : false;
 					if ($.trim($("#firstName").val()) === ""
-							|| $.trim($("#lastName").val()) === ""
+							/* || $.trim($("#lastName").val()) === "" */
 							|| $.trim($("#userName").val()) === ""
 							|| $.trim($("#userPassword1").val()) === ""
 							|| $.trim($("#confirmPassword").val()) === ""
-							|| $.trim($("#mobile").val()) === ""
+						    || $.trim($("#age").val()) === ""
+							/* || $.trim($("#mobile").val()) === "" */
 							|| $.trim($("#addrLn1").val()) === ""
 							|| $.trim($("#district").val()) === ""
 							|| $.trim($("#city").val()) === ""
@@ -1954,8 +2472,9 @@
 							function() {
 
 								if ($.trim($("#studentdegree").val()) === ""
-										|| $.trim($("#dateOfBirthDatePicker")
-												.val()) === ""
+										/* || $.trim($("#dateOfBirthDatePicker")
+												.val()) === "" 
+										|| $.trim($("#age").val()) === ""*/
 										|| $.trim($("#studentID").val()) === ""
 										|| $.trim($("#studentCompletionYear")
 												.val()) === ""
@@ -1988,6 +2507,7 @@
 								//if($(this).val() === ""){
 								if ($.trim($("#cntctInfoForNatnlInnovnClub")
 										.val()) === ""
+										|| $.trim($("#CollegeNames1").val()) === ""
 										|| $.trim($("#collegecontactname")
 												.val()) === ""
 										|| $.trim($("#prinicipalName").val()) === ""
@@ -2107,7 +2627,11 @@
 		}
 	}
 </script>
-
+<script type="text/javascript">
+	$(".loaderBody").load(function() {
+		$(".loaderBody").fadeOut("slow");
+	})
+</script>
 <!-- END BODY -->
 
 <jsp:include page="template/footer.jsp" />

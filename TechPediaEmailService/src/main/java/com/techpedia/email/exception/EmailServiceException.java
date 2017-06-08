@@ -56,7 +56,7 @@ public class EmailServiceException extends Exception{
 	 */
 	public EmailServiceException(String exceptionCode,
 			String exceptionMessage, String exceptionDetails) {
-		super();
+		super(exceptionDetails);
 		this.exceptionCode = exceptionCode;
 		this.exceptionMessage = exceptionMessage;
 		this.exceptionDetails = exceptionDetails;

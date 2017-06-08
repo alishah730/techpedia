@@ -28,8 +28,8 @@ public class RecentNewsTxn implements Serializable {
 	@Column (name ="NEWS_DATE")
 	private String newsDate;
 	
-	@Column(name="COLG_ID")
-	private long collegeId;
+	@Column(name="COLG_NAME")
+	private long collegeName;
 	
 	@Column(name="NEWS_HEADLINE")
 	private String newsHeadline;
@@ -45,12 +45,18 @@ public class RecentNewsTxn implements Serializable {
 		this.newsDate = newsDate;
 	}
 
-	public long getCollegeId() {
-		return collegeId;
+	/**
+	 * @return the collegeName
+	 */
+	public long getCollegeName() {
+		return collegeName;
 	}
 
-	public void setCollegeId(long collegeId) {
-		this.collegeId = collegeId;
+	/**
+	 * @param collegeName the collegeName to set
+	 */
+	public void setCollegeName(long collegeName) {
+		this.collegeName = collegeName;
 	}
 
 	public String getNewsHeadline() {

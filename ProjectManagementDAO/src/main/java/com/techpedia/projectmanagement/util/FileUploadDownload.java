@@ -28,7 +28,7 @@ public static String saveFile(InputStream uploadedInputStream, String serverLoca
 			outpuStream.flush();
 			outpuStream.close();
 			outpuStream = null;
-			System.gc();
+			//System.gc();
 			
 			returnVal = getFileSizeInMB(fileName);						
 		} catch (IOException e) {
@@ -54,7 +54,7 @@ public static String saveFile(InputStream uploadedInputStream, String serverLoca
 			outpuStream.flush();
 			outpuStream.close();
 			outpuStream = null;
-			System.gc();
+			//System.gc();
 			
 			returnVal = getFileSizeInMB(fileName);						
 		} catch (IOException e) {
@@ -80,7 +80,7 @@ public static String saveFile(InputStream xlsFileInputStream, String serverLocat
 			outpuStream.flush();
 			outpuStream.close();
 			outpuStream = null;
-			System.gc();
+			//System.gc();
 			returnVal = fileName;						
 		} catch (IOException e) {
 			throw new Exception("Error while uploading document :"+ e.getMessage());

@@ -4,12 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.techpedia.chiper.ChiperEncryptException;
+import com.techpedia.usermanagement.dataobject.AddNewReviewerResponse;
 import com.techpedia.usermanagement.dataobject.CityListDO;
+import com.techpedia.usermanagement.dataobject.CollegeDataDo;
+import com.techpedia.usermanagement.dataobject.CollegeFacultyInfo;
 import com.techpedia.usermanagement.dataobject.CollegeListDO;
+import com.techpedia.usermanagement.dataobject.DegreeListDO;
 import com.techpedia.usermanagement.dataobject.Mentor1n2Details;
 import com.techpedia.usermanagement.dataobject.PasswordResetVo;
 import com.techpedia.usermanagement.dataobject.PopularMentorsDO;
 import com.techpedia.usermanagement.dataobject.RecentNewsDO;
+import com.techpedia.usermanagement.dataobject.ReviewerDO;
+import com.techpedia.usermanagement.dataobject.ReviewerDetailsDO;
 import com.techpedia.usermanagement.dataobject.SaveUserPhoto;
 import com.techpedia.usermanagement.dataobject.SearchCityDO;
 import com.techpedia.usermanagement.dataobject.SearchCollegeDO;
@@ -23,12 +29,18 @@ import com.techpedia.usermanagement.dataobject.UserProfileDO;
 import com.techpedia.usermanagement.dataobject.UserRecentComments;
 import com.techpedia.usermanagement.dataobject.UserTeamListDO;
 import com.techpedia.usermanagement.dataobject.UsrAccessDetails;
+import com.techpedia.usermanagement.exception.AddNewReviewerException;
 import com.techpedia.usermanagement.exception.CityFetchException;
+import com.techpedia.usermanagement.exception.CollegeInformationException;
+import com.techpedia.usermanagement.exception.CollegeRecentNewsException;
 import com.techpedia.usermanagement.exception.CollegesFetchException;
 import com.techpedia.usermanagement.exception.CreateProfileException;
 import com.techpedia.usermanagement.exception.CurrentPasswordFetchException;
+import com.techpedia.usermanagement.exception.DegreeFetchException;
 import com.techpedia.usermanagement.exception.EmailExistException;
+import com.techpedia.usermanagement.exception.GetCollegeFacultyException;
 import com.techpedia.usermanagement.exception.GetRecentNewsException;
+import com.techpedia.usermanagement.exception.GetReviewerException;
 import com.techpedia.usermanagement.exception.LoginException;
 import com.techpedia.usermanagement.exception.MentorSearchException;
 import com.techpedia.usermanagement.exception.PasswordExpiryException;
@@ -40,8 +52,10 @@ import com.techpedia.usermanagement.exception.ProfileNotFoundException;
 import com.techpedia.usermanagement.exception.ProfileSearchException;
 import com.techpedia.usermanagement.exception.ProfileUpdateException;
 import com.techpedia.usermanagement.exception.ProjectNotFoundException;
+import com.techpedia.usermanagement.exception.ReviewerStatusException;
 import com.techpedia.usermanagement.exception.SaveUserPhotoException;
 import com.techpedia.usermanagement.exception.StateFetchException;
+import com.techpedia.usermanagement.exception.SuggestableReviewersException;
 import com.techpedia.usermanagement.exception.UniversitiesFetchException;
 import com.techpedia.usermanagement.exception.UserExistException;
 import com.techpedia.usermanagement.exception.UserFunctionsNotDefinedException;
@@ -56,7 +70,7 @@ import com.techpedia.usermanagement.exception.UserTeamListFetchException;
 public interface UserManagementDAO {
 
 	// profile related operations
-	public String UploadUserPhoto(SaveUserPhoto SaveUserPhoto)
+	public String uploadUserPhoto(SaveUserPhoto saveUserPhoto)
 			throws SaveUserPhotoException ;
 	
 	public boolean createNewProfile(UserProfileDO userprofile)
@@ -74,10 +88,10 @@ public interface UserManagementDAO {
 	public boolean deactivateProfile(String userID)
 			throws ProfileNotFoundException, ProfileUpdateException;
 
-	public UserProfileDO getUserProfile(Long RegisterID)
+	public UserProfileDO getUserProfile(Long registerID)
 			throws ProfileNotFoundException, ProfileFetchException;
 	
-	public UserProfileDO getUserProfileNew(Long RegisterID)
+	public UserProfileDO getUserProfileNew(Long registerID)
 			throws ProfileNotFoundException, ProfileFetchException;
 
 	public boolean updatePhoto(UpdateUserPhotoDO updateUserPhotoDO)
@@ -108,7 +122,7 @@ public interface UserManagementDAO {
 			throws UserNotFoundException, PasswordResetException;
 
 	// authorization related operations
-	public UsrAccessDetails getUserRolePermissions(Long RegisterID)
+	public UsrAccessDetails getUserRolePermissions(Long registerID)
 			throws UserNotFoundException, UserRoleNotMappedException,
 			UserRoleNotMappedWithFunctionIdsException,
 			UserRoleNotDefinedException, UserFunctionsNotDefinedException;
@@ -122,10 +136,10 @@ public interface UserManagementDAO {
 	public boolean emailIdVerification(String emailId)
 			throws UserNotFoundException, ProfileFetchException;
 
-	public List<UserTeamListDO> getUserTeamList(Long RegisterID)
+	public List<UserTeamListDO> getUserTeamList(Long registerID)
 			throws UserTeamListFetchException;
 
-	public List<UserRecentComments> getUserRecentComments(Long RegisterID)
+	public List<UserRecentComments> getUserRecentComments(Long registerID)
 			throws UserRecentCommentsFetchException;
 
 	public List<PopularMentorsDO> getPopularMentorList()
@@ -143,10 +157,13 @@ public interface UserManagementDAO {
 	public List<StateListDO> getStateList(String sName)
 			throws StateFetchException;
 	
-	public List<CityListDO> getCityList(SearchCityDO SearchCityDO)
+	public List<CityListDO> getCityList(SearchCityDO searchCityDO)
 			throws CityFetchException;
 	
 	public List<CollegeListDO> getCollegesList(SearchCollegeDO searchCollege)
+			throws CollegesFetchException;
+	
+	public List<CollegeListDO> getCollegesListHeader(SearchCollegeDO searchCollege)
 			throws CollegesFetchException;
 	
 	public List<CollegeListDO> getCollegesListUser(String cName)
@@ -155,11 +172,62 @@ public interface UserManagementDAO {
 	public List<UniversityListDO> getUniversitiesList(String uName)
 			throws UniversitiesFetchException;
 
-	public boolean validateAdmin(Long RegisterID) throws UserNotFoundException,
+	public boolean validateAdmin(Long registerID) throws UserNotFoundException,
 			ProfileFetchException;
 	public boolean updateAddFacultyProfileHelper(UserProfileDO userprofile)
 			throws ProfileNotFoundException, ProfileUpdateException,
 			ChiperEncryptException,EmailExistException;
 	
 	public ArrayList<RecentNewsDO> getRecentNews() throws GetRecentNewsException;
+	
+	public ArrayList<RecentNewsDO> getCollegeRecentNews(String collegeName) throws CollegeRecentNewsException;
+	
+	public ArrayList<RecentNewsDO> getCollegeRecentNewsAdmin(String collegeName) throws CollegeRecentNewsException;
+	
+	public ArrayList<CollegeFacultyInfo> getCollegeFaculty(String collegeName) throws GetCollegeFacultyException;
+	
+	public String addCollegeRecentNews(RecentNewsDO recentNewsDO) throws CollegeRecentNewsException;
+	
+	public String deleteCollegeRecentNews(String newsId) throws CollegeRecentNewsException;
+	
+	public String activateCollegeRecentNews(String newsId) throws CollegeRecentNewsException;
+
+	public ArrayList<RecentNewsDO> getActiveCollegerecentNewsAdmin(String collegeName) throws CollegeRecentNewsException;
+	
+	public ArrayList<RecentNewsDO> getInActiveCollegerecentNewsAdmin(String collegeName) throws CollegeRecentNewsException;
+
+	public AddNewReviewerResponse addNewReviewer(ReviewerDO reviewerDO) throws AddNewReviewerException;
+	
+	public boolean activateReviewerProfile(String userID) throws ProfileNotFoundException, ProfileUpdateException;
+	
+	public boolean deActivateReviewerProfile(String userID) throws ProfileNotFoundException, ProfileUpdateException;
+	
+	public ReviewerDO reviewerSignIn(SignInVo signInVo) throws UserNotFoundException, LoginException, PasswordMismatchException, PasswordExpiryException, PasswordResetException, ProfileFetchException, UserInactiveException;
+	
+	public ReviewerDetailsDO getReviewerProfile(String revEmailId) throws ProfileNotFoundException, ProfileFetchException;
+	
+	public boolean reviewerAuthenticate(String userid, String pwd) throws UserNotFoundException, LoginException, PasswordMismatchException, PasswordExpiryException, PasswordResetException;
+	
+	public ArrayList<ReviewerDO> getAllReviewer() throws GetReviewerException;
+	
+	public ArrayList<ReviewerDO> getActiveReviewers() throws ReviewerStatusException;
+	
+	public ArrayList<ReviewerDO> getDeactiveReviewers() throws ReviewerStatusException;
+	
+	public ArrayList<ReviewerDO> getSuggestableReviewers(long projId) throws SuggestableReviewersException;
+	
+	public boolean editReviewerProfile(ReviewerDO reviewer) throws ProfileNotFoundException, ProfileUpdateException;
+	
+	public List<DegreeListDO> getDegreeList(String searchTerm) throws DegreeFetchException;
+	
+	public String reviewerForgotPassword(String email) throws UserNotFoundException, CurrentPasswordFetchException;
+	
+	public boolean reviewerPasswordReset(PasswordResetVo pwdResetVo) throws UserNotFoundException, PasswordResetException;
+
+	public CollegeDataDo getCollegeInforamtion(String collegeName)throws CollegeInformationException;
+
+	public boolean notifySuggestedReviewer(String suggestedReviewerEmail)throws UserNotFoundException, CurrentPasswordFetchException;
+
+	public boolean sendMoreInfoRequestToTeamLeader(String emailId)throws UserNotFoundException, CurrentPasswordFetchException;
+
 }

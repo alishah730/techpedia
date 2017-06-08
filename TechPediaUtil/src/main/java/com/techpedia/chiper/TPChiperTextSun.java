@@ -1,13 +1,13 @@
 package com.techpedia.chiper;
 
 
-
-	import com.sun.mail.util.BASE64DecoderStream;
-import com.sun.mail.util.BASE64EncoderStream;
-import com.techpedia.logger.TechPediaLogger;
-
+import java.util.Base64;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+//import com.sun.mail.util.BASE64DecoderStream;
+//import com.sun.mail.util.BASE64EncoderStream;
 
 	
 
@@ -19,7 +19,7 @@ import javax.crypto.spec.SecretKeySpec;
 	        123, 101, 116, 66, 98, 105
 	    };
 
-		private static TechPediaLogger log = TechPediaLogger.getLogger(TPChiperTextSun.class.getName());
+		private static final Logger LOGGER = LoggerFactory.getLogger(TPChiperTextSun.class.getName());
 		
 	    public TPChiperTextSun()
 	    {
@@ -43,11 +43,12 @@ import javax.crypto.spec.SecretKeySpec;
 	        cipher.init(1, secretKey);
 	        byte utf8[] = str.getBytes("UTF8");
 	        enc = cipher.doFinal(utf8);
-	        enc = BASE64EncoderStream.encode(enc);
+	        //enc = BASE64EncoderStream.encode(enc);
+	        enc = Base64.getEncoder().encode(enc);
 	        return new String(enc);
 	        }catch( Exception ex){
-		        log.error("Error while encrypting in method (baseEncrypt) : ", ex);
-		        throw new Exception(ex);
+		        LOGGER.error("Error while encrypting in method (baseEncrypt) : ", ex);
+		        throw ex;
 	    	}
 	    }
 
@@ -59,13 +60,14 @@ import javax.crypto.spec.SecretKeySpec;
 	        SecretKeySpec secretKey = new SecretKeySpec(key, "AES");
 	        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
 	        cipher.init(2, secretKey);
-	        byte dec[] = BASE64DecoderStream.decode(str.getBytes());
+	        //byte dec[] = BASE64DecoderStream.decode(str.getBytes());
+	        byte dec[] = Base64.getDecoder().decode(str.getBytes());
 	        utf8 = cipher.doFinal(dec);
 	        return new String(utf8, "UTF8");
 	        }catch(Exception e)
 	        {
-	        	log.error("Error while decrypting in method (baseEncrypt) : ", e);
-	        	throw new Exception(e);
+	        	LOGGER.error("Error while decrypting in method (baseEncrypt) : ", e);
+	        	throw e;
 	        }
 	    }
 

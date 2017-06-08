@@ -1,0 +1,60 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+    "-//Hibernate/Hibernate Configuration DTD//EN"
+    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection settings -->
+       
+		<property name="hibernate.connection.datasource">java:jboss/datasources/techpediaDataSource</property>
+		
+        <!-- SQL dialect -->
+        <property name="dialect">org.hibernate.dialect.MySQLDialect</property>
+		<property name="hibernate.connection.autocommit">false</property> 
+		
+		<!-- <property name="hibernate.c3p0.min_size">5</property>
+		<property name="hibernate.c3p0.max_size">20</property>
+		<property name="hibernate.c3p0.timeout">300</property>
+		<property name="hibernate.c3p0.max_statements">50</property>
+		<property name="hibernate.c3p0.idle_test_period">3000</property>	
+ -->
+        <!-- Echo all executed SQL to stdout -->
+        <property name="show_sql">true</property>
+
+        <!-- Mapping Packages and classes -->
+        <!-- user management entities start -->
+          <mapping package="com.techpedia.usermanagement.entity"/>
+           <mapping class="com.techpedia.usermanagement.entity.ProjectTeamDetails"/>
+           <mapping class="com.techpedia.usermanagement.entity.ProjectMaster"/>
+           <mapping class="com.techpedia.usermanagement.entity.RecentNewsTxn"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrMngtMaster"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrMngtAddress"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrMngtContactInfo"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrMngtStudent"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrMngtPassword"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrMngtCollege"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrMngtFaculty"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrMngtMentor"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrMngtIndustry"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UserMngtCollegeMaster"/>
+		   <mapping class="com.techpedia.usermanagement.entity.ProjectTeamMaster"/>
+		   <mapping class="com.techpedia.usermanagement.entity.ProjectTeamTxn"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrAssignAuthortnRolesToUsrs"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrAuthortnFunctions"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrAuthortnRoles"/>
+		   <mapping class="com.techpedia.usermanagement.entity.MentorDetails"/>
+		   <mapping class="com.techpedia.usermanagement.entity.MentorsAssignedToProject"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrCollegeMaster"/>
+		   <mapping class="com.techpedia.usermanagement.entity.UsrUniversityMaster"/>
+		   <mapping class="com.techpedia.usermanagement.entity.BranchMaster"/>
+		   <mapping class="com.techpedia.usermanagement.entity.TrsReviewerMastDetail"/>
+		   
+		   
+		   
+		 <!-- user management entities end -->
+		 
+		 <!-- project management entities start -->
+		 <!-- project management entities end -->  
+	    
+	    </session-factory>
+</hibernate-configuration>

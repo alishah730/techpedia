@@ -8,19 +8,25 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Query;
@@ -34,23 +40,30 @@ import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.criterion.Subqueries;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import sun.misc.BASE64Decoder;
-
-import com.techpedia.logger.TechPediaLogger;
+import com.techpedia.chiper.ChiperUtils;
 import com.techpedia.projectmanagement.bean.AddCommVO;
 import com.techpedia.projectmanagement.bean.AddNewFacultyResponseVO;
+import com.techpedia.projectmanagement.bean.AddNewTeamMemberResponseVO;
+import com.techpedia.projectmanagement.bean.AddNewTeamMemberVO;
 import com.techpedia.projectmanagement.bean.ApproveOrDeclineMentorRequestResponse;
 import com.techpedia.projectmanagement.bean.ApproveOrDeclineMentorRequestVO;
 import com.techpedia.projectmanagement.bean.Branch;
 import com.techpedia.projectmanagement.bean.CreateProjectResponseVO;
 import com.techpedia.projectmanagement.bean.DeleteCommVO;
 import com.techpedia.projectmanagement.bean.DeleteDocVO;
+import com.techpedia.projectmanagement.bean.DisplayProjectMacroVO;
 import com.techpedia.projectmanagement.bean.DisplayProjectsMacroBranchVO;
 import com.techpedia.projectmanagement.bean.DisplayTeamCommVO;
 import com.techpedia.projectmanagement.bean.DownloadDocVO;
@@ -62,27 +75,51 @@ import com.techpedia.projectmanagement.bean.FacultyMarkedProjectAsCompletedRespo
 import com.techpedia.projectmanagement.bean.FacultyMarkedProjectAsCompletedVO;
 import com.techpedia.projectmanagement.bean.FacultyVO;
 import com.techpedia.projectmanagement.bean.FollowProjectVO;
+import com.techpedia.projectmanagement.bean.GYTIProjectStatisticsVO;
+import com.techpedia.projectmanagement.bean.GetAllGytiProjectByLoggedInReviewerResponse;
+import com.techpedia.projectmanagement.bean.GetAllReviewsByLoggedInReviewerAndOthersResponse;
+import com.techpedia.projectmanagement.bean.GetReviewRatingVO;
+import com.techpedia.projectmanagement.bean.GytiProjectVO;
 import com.techpedia.projectmanagement.bean.MentorVO;
+import com.techpedia.projectmanagement.bean.OverallCalculatedReviewRatingVO;
 import com.techpedia.projectmanagement.bean.ProjFollowVO;
 import com.techpedia.projectmanagement.bean.ProjSubmit;
 import com.techpedia.projectmanagement.bean.Project;
+import com.techpedia.projectmanagement.bean.ProjectDocPathVO;
 import com.techpedia.projectmanagement.bean.ProjectDocument;
+import com.techpedia.projectmanagement.bean.ProjectGytiAddInfo;
+import com.techpedia.projectmanagement.bean.ProjectMacroBranch;
 import com.techpedia.projectmanagement.bean.ProjectTeamComment;
 import com.techpedia.projectmanagement.bean.ProjectTeamDetailVO;
 import com.techpedia.projectmanagement.bean.ProjectType;
 import com.techpedia.projectmanagement.bean.ProjectXLSVO;
+import com.techpedia.projectmanagement.bean.RegisterNewFacultyResponseVO;
+import com.techpedia.projectmanagement.bean.RegisterNewFacultyVO;
 import com.techpedia.projectmanagement.bean.ReplaceTeamLead;
 import com.techpedia.projectmanagement.bean.RequestToBeMentorResponse;
 import com.techpedia.projectmanagement.bean.RequestToBeMentorVO;
-import com.techpedia.projectmanagement.bean.SaveProjectPhoto;
 import com.techpedia.projectmanagement.bean.ResubmitProjectResponse;
+import com.techpedia.projectmanagement.bean.ReviewRatingVO;
+import com.techpedia.projectmanagement.bean.SaveProjectPhotoVO;
 import com.techpedia.projectmanagement.bean.SearchByKeyVO;
+import com.techpedia.projectmanagement.bean.SubmitInnovationToGytiVO;
+import com.techpedia.projectmanagement.bean.SuggestReviewerVO;
+import com.techpedia.projectmanagement.bean.SuggestedProjectForReviewByLoggedInReviewerVO;
 import com.techpedia.projectmanagement.bean.Team;
 import com.techpedia.projectmanagement.bean.TeamMember;
+import com.techpedia.projectmanagement.bean.TotalProjectsStatisticsVO;
+import com.techpedia.projectmanagement.bean.TotalProjectsYearWiseStatisticsVO;
+import com.techpedia.projectmanagement.bean.UploadMultipleProjDocVO;
 import com.techpedia.projectmanagement.bean.UploadProjDocVO;
 import com.techpedia.projectmanagement.bean.UserProfileVO;
+import com.techpedia.projectmanagement.bean.UsrMngtAddressVO;
+import com.techpedia.projectmanagement.bean.UsrMngtContactInfoVO;
+import com.techpedia.projectmanagement.bean.UsrMngtPasswdVO;
+import com.techpedia.projectmanagement.bean.UsrMngtStudentVO;
 import com.techpedia.projectmanagement.dao.ProjectDao;
 import com.techpedia.projectmanagement.dao.helper.ProjectDaoHelper;
+import com.techpedia.projectmanagement.dao.helper.ProjectDaoHelper2;
+import com.techpedia.projectmanagement.dao.helper.ProjectDaoHelper3;
 import com.techpedia.projectmanagement.entity.BranchMaster;
 import com.techpedia.projectmanagement.entity.ChallengeTeamTxn;
 import com.techpedia.projectmanagement.entity.ProjectBranchMaster;
@@ -104,10 +141,12 @@ import com.techpedia.projectmanagement.entity.UsrMngtStudent;
 import com.techpedia.projectmanagement.exception.AddCommentException;
 import com.techpedia.projectmanagement.exception.AddNewFacultyException;
 import com.techpedia.projectmanagement.exception.AddNewMentorException;
+import com.techpedia.projectmanagement.exception.AddNewTeamMemberException;
 import com.techpedia.projectmanagement.exception.AddTeamMembersException;
 import com.techpedia.projectmanagement.exception.ApproveOrDeclineMentorRequestException;
 import com.techpedia.projectmanagement.exception.BulkUploadException;
 import com.techpedia.projectmanagement.exception.CheckProjectFollowException;
+import com.techpedia.projectmanagement.exception.CollegeRecentProjectsException;
 import com.techpedia.projectmanagement.exception.CreateProjectException;
 import com.techpedia.projectmanagement.exception.DeleteDocumentException;
 import com.techpedia.projectmanagement.exception.DeleteProjectException;
@@ -117,34 +156,52 @@ import com.techpedia.projectmanagement.exception.FacultyInitiatedProjectExceptio
 import com.techpedia.projectmanagement.exception.FacultyMarkedProjectAsCompletedException;
 import com.techpedia.projectmanagement.exception.FacultyRejectedProjectException;
 import com.techpedia.projectmanagement.exception.FollowTheProjectException;
+import com.techpedia.projectmanagement.exception.GetAllBranchesException;
 import com.techpedia.projectmanagement.exception.GetAllFollowedProjectException;
+import com.techpedia.projectmanagement.exception.GetAllGytiProjectException;
 import com.techpedia.projectmanagement.exception.GetAllMentorsException;
 import com.techpedia.projectmanagement.exception.GetAllProjectException;
+import com.techpedia.projectmanagement.exception.GetAllReviewsException;
 import com.techpedia.projectmanagement.exception.GetDetailOfTeamException;
+import com.techpedia.projectmanagement.exception.GetGYTIProjectStatisticsException;
+import com.techpedia.projectmanagement.exception.GetGytiProjectRatingDetailsException;
 import com.techpedia.projectmanagement.exception.GetPopularityException;
 import com.techpedia.projectmanagement.exception.GetProjectDetailsException;
 import com.techpedia.projectmanagement.exception.GetProjectFollowersException;
 import com.techpedia.projectmanagement.exception.GetProjectTypeException;
+import com.techpedia.projectmanagement.exception.GetSuggestedReviewersException;
+import com.techpedia.projectmanagement.exception.GytiInnovationCountException;
+import com.techpedia.projectmanagement.exception.GytiReviewedInnovationCountException;
 import com.techpedia.projectmanagement.exception.OtherCommentsNotFoundException;
 import com.techpedia.projectmanagement.exception.ProjectByLoggedInUserException;
+import com.techpedia.projectmanagement.exception.ProjectMacroBranchException;
+import com.techpedia.projectmanagement.exception.RejectSuggestedProjectForReviewException;
 import com.techpedia.projectmanagement.exception.RemoveCommentException;
 import com.techpedia.projectmanagement.exception.RemoveMentorException;
 import com.techpedia.projectmanagement.exception.RemoveProjectFollowException;
 import com.techpedia.projectmanagement.exception.RemoveTeamMembersException;
 import com.techpedia.projectmanagement.exception.ReplaceTeamLeadException;
 import com.techpedia.projectmanagement.exception.RequestToBeMentorException;
-import com.techpedia.projectmanagement.exception.SaveProjectPhotoException;
 import com.techpedia.projectmanagement.exception.ResubmitProjectException;
+import com.techpedia.projectmanagement.exception.ReviewRatingException;
+import com.techpedia.projectmanagement.exception.SaveProjectPhotoException;
 import com.techpedia.projectmanagement.exception.SearchProjectException;
+import com.techpedia.projectmanagement.exception.SubmitAcademicProjectToGytiException;
+import com.techpedia.projectmanagement.exception.SubmitProjectToGytiException;
 import com.techpedia.projectmanagement.exception.SubmitProjectsException;
+import com.techpedia.projectmanagement.exception.SuggestReviewerException;
 import com.techpedia.projectmanagement.exception.SuggestedBranchNotFoundException;
 import com.techpedia.projectmanagement.exception.SuggestedFacultyNotFoundException;
 import com.techpedia.projectmanagement.exception.SuggestedTeamMembersNotFoundException;
 import com.techpedia.projectmanagement.exception.SuggestedkeywordsNotFoundException;
 import com.techpedia.projectmanagement.exception.TeamCommentsNotFoundException;
+import com.techpedia.projectmanagement.exception.TotalProectsStatisticsException;
+import com.techpedia.projectmanagement.exception.TotalProectsYearWiseStatisticsException;
+import com.techpedia.projectmanagement.exception.UpdateGytiInnovationException;
 import com.techpedia.projectmanagement.exception.UpdateProjectException;
+import com.techpedia.projectmanagement.exception.UploadMultipleProjDocException;
 import com.techpedia.projectmanagement.exception.UploadProjDocException;
-import com.techpedia.projectmanagement.util.BulkUploadCVS;
+import com.techpedia.projectmanagement.exception.updateGytiProjectReviewRatingException;
 import com.techpedia.projectmanagement.util.BulkUploadXLS;
 import com.techpedia.projectmanagement.util.FileUploadDownload;
 import com.techpedia.util.HibernateUtil;
@@ -161,42 +218,41 @@ public class ProjectDaoImpl implements ProjectDao {
 	
 	@Autowired
 	private ProjectDaoHelper projectDaoHelper;
-
-	private static final Logger log = Logger.getLogger(ProjectDaoImpl.class.getName());
 	
-	/* 
-	 * @see com.techpedia.projectmanagement.dao.ProjectManagementDAO#createProject(com.techpedia.projectmanagement.dataobject.ProjectDO)
-	 */
-	/**
-	 * @author charan.teja
-	 *
-	 */
-	public String UploadProjectPhoto(SaveProjectPhoto saveProjectPhoto)
+	@Autowired
+	private ProjectDaoHelper2 projectDaoHelper2;
+	
+	@Autowired
+	private ProjectDaoHelper3 projectDaoHelper3;
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(ProjectDaoImpl.class.getName());
+	
+
+	public String uploadProjectPhoto(SaveProjectPhotoVO saveProjectPhoto)
 			throws SaveProjectPhotoException {
-		log.info("projectManagementDAOImpl UploadProjectPhoto :START");
+		LOGGER.info("projectManagementDAOImpl UploadProjectPhoto :START");
 		String returnVal = "N";
 		String fileSize = "";
 		String footerFileSize = "";
 		ResourceBundle rbundle = ResourceBundle.getBundle("uploadImage");
-		String SERVER_UPLOAD_PROJECTIMAGE_FOLDER_LOCATION = rbundle.getString("SERVER_UPLOAD_PROJECTIMAGE_FOLDER_LOCATION");		
+		String serverUploadProjectImageFolderLocation = rbundle.getString("SERVER_UPLOAD_PROJECTIMAGE_FOLDER_LOCATION");		
 		String projectId = String.valueOf(saveProjectPhoto.getProjectId());
 		String docName = saveProjectPhoto.getImgName();	
-		String docPath = projectId+"/"+docName;
+		String docPath = serverUploadProjectImageFolderLocation+"/"+projectId+"/"+docName;
 		String footerDocName = saveProjectPhoto.getFooterImgName();	
-		String footerDocPath = projectId+"/"+footerDocName;
+		String footerDocPath = serverUploadProjectImageFolderLocation+"/"+projectId+"/"+footerDocName;
 		Calendar now = Calendar.getInstance(); 
 	    Date imgUploadDate = now.getTime();
 	    Transaction tx = null;
 		Session session = null;
 		try {			
-			BASE64Decoder decoder = new BASE64Decoder();
-			byte[] decodedBytes = decoder.decodeBuffer(saveProjectPhoto.getImgByteArray());
+			byte[] decodedBytes = (byte[]) Base64.decodeBase64(saveProjectPhoto.getImgByteArray().getBytes());
 			InputStream inputStream = new ByteArrayInputStream(decodedBytes);			
-			fileSize = FileUploadDownload.saveFile(inputStream, SERVER_UPLOAD_PROJECTIMAGE_FOLDER_LOCATION,projectId, docName);
+			fileSize = FileUploadDownload.saveFile(inputStream, serverUploadProjectImageFolderLocation,projectId, docName);
 			
-			byte[] footerDecodedBytes = decoder.decodeBuffer(saveProjectPhoto.getFooterImgByteArray());
+			byte[] footerDecodedBytes = (byte[]) Base64.decodeBase64(saveProjectPhoto.getFooterImgByteArray().getBytes());
 			InputStream footerInputStream = new ByteArrayInputStream(footerDecodedBytes);			
-			footerFileSize = FileUploadDownload.saveFile(footerInputStream, SERVER_UPLOAD_PROJECTIMAGE_FOLDER_LOCATION,projectId, footerDocName);
+			footerFileSize = FileUploadDownload.saveFile(footerInputStream, serverUploadProjectImageFolderLocation,projectId, footerDocName);
 			
 			/*Start Adding into TB_TECH001_MAST_PROJECTS_DETAIL here*/	
 			session = HibernateUtil.getSessionFactory().openSession();
@@ -209,7 +265,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			query.executeUpdate();
 	        tx.commit();
 			returnVal = "Y";
-		} catch (Exception e) {		
+		} catch (Exception e) {     
 			tx.rollback();
 			session.createSQLQuery("delete from tb_tech001_mast_projects_detail where PROJ_ID = :projId").setParameter("projId", saveProjectPhoto.getProjectId()).executeUpdate();
 			throw new SaveProjectPhotoException("UM-EXC03",
@@ -221,7 +277,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			if(session!=null)
 				session.close();
 		}	
-		log.info("projectManagementDAOImpl UploadProjectPhoto :END");
+		LOGGER.info("projectManagementDAOImpl UploadProjectPhoto :END");
 		return returnVal;
 	}
 	
@@ -229,7 +285,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public CreateProjectResponseVO createProject(Project project) throws CreateProjectException{
 		
-		//log.debug("ProjectDaoImpl.createProject :Start");
+		//LOGGER.debug("ProjectDaoImpl.createProject :Start");
 		Transaction tx = null;
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		String returnVal = "N";
@@ -255,6 +311,8 @@ public class ProjectDaoImpl implements ProjectDao {
 		long projectTeamId = project.getProjTeamId();
 		long projGuideId = project.getProjGuideId();
 		int projStatusId = project.getProjStatusId();
+		//to skip the faculty initial approval
+		projStatusId = 2;
 		String projToFloat = project.getProjToFloat();
 		long projectEstimationCost = project.getProjEstimationCost();
 		String projCommentsPublish = project.getProjCommentsPublish();
@@ -264,20 +322,33 @@ public class ProjectDaoImpl implements ProjectDao {
 		String projAwardDesc= project.getProjAwardDesc();
 		String projIsMentorAvail = project.getProjIsMentorAvail();
 		String projIsFacApprove = project.getProjIsFacApprove();
+		//to skip the faculty initial approval
+		projIsFacApprove = "Y";
 		String projAdminComments = project.getProjAdminComments();
 		long projectFaculty = project.getProjFaculty();
 		String projIsForChallenge = project.getProjIsForChallenge();
 		/*Parameters for Table: `TB_TECH001_MAST_PROJECTS_TEAM`*/
-		String projTeamDesc = project.getProjTeamDesc();
+		String projTeamDesc=null;
+		if(project.getProjTeamDesc() != null){
+		projTeamDesc = project.getProjTeamDesc();
+		}
+		else{
+			if(project.getProjTitle().length()>15){
+				projTeamDesc = project.getProjTitle().substring(0, 14).concat("_team");
+			}
+			else{
+				projTeamDesc = project.getProjTitle().concat("_team");
+			}
+		}
 		/*Parameters for Table: `TB_TECH001_MAST_PROJECTS_BRNCH`*/
 		ArrayList<Integer> projectBranches = project.getProjBranches();
 		/*Parameters for Table: `TB_TECH001_MAST_PROJECTS_KEYWRD`*/
 		ArrayList<String> projectKeywords = project.getProjKeywords();
 		/*Parameters for Table: `TB_TECH001_TXN_PROJECTS_TEAM`*/
 		ArrayList<Long> projectTeamMembers = project.getProjTeamMembers();
-		log.debug("ProjectDaoImpl.createProjectnew :Start" + projectTeamMembers);
-		/*String projectCollege = project.getProjCollege();
-		String projectStudentId = project.getProjStudentId();
+		LOGGER.debug("ProjectDaoImpl.createProjectnew :Start" + projectTeamMembers);
+		String projectCollege = project.getProjCollege();
+		/*String projectStudentId = project.getProjStudentId();
 		
 		
 		byte[] projectImage = project.getProjImage();*/
@@ -292,11 +363,11 @@ public class ProjectDaoImpl implements ProjectDao {
 			ProjectTeamMaster projectTeamMaster = new ProjectTeamMaster(projTeamDesc);
 			Serializable sr = session.save(projectTeamMaster);
 			projectTeamId = Long.parseLong(sr.toString());
-			//log.debug("ProjectTeamMaster added is :" + projectTeamId);
+			//LOGGER.debug("ProjectTeamMaster added is :" + projectTeamId);
 			
 			/*Start Adding into TB_TECH001_MAST_PROJECTS_DETAIL here*/
 			projectMaster = new ProjectMaster(projTypeId, projectTitle, projectAbstract, projectDescription, projectUniversity, 
-					projCollegeRgstrIdUsr, userRgstrNo, projectYear, projectDuration, projectCollegeState, projectStartDate, 
+					projCollegeRgstrIdUsr, userRgstrNo, projectYear, projectDuration,projectCollege,  projectCollegeState, projectStartDate, 
 					projectEndDate, projMentor1Id, projMentor2Id, projectTeamId, projGuideId, projStatusId, projToFloat, 
 					projectEstimationCost, projCommentsPublish, projGrade, projTeamLeaderId, projAwardWon, projAwardDesc, 
 					projIsMentorAvail, projIsFacApprove, projAdminComments,projIsForChallenge, "ACTIVE", projectFaculty);
@@ -305,7 +376,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			projId = Long.parseLong(sr.toString());
 			projectMaster.setProjId(projId);
 			project.setProjId(projectMaster.getProjId());
-			//log.debug("ProjectMaster added is :" + projId);
+			//LOGGER.debug("ProjectMaster added is :" + projId);
 			
 			
 			/*Start Adding into TB_TECH001_MAST_PROJECTS_KEYWRD here*/
@@ -364,13 +435,13 @@ public class ProjectDaoImpl implements ProjectDao {
 			tx.commit();
 			
 		} catch (Exception e) {
-			//log.debug("Unable to add project to DB : " + e);
+			//LOGGER.debug("Unable to add project to DB : " + e);
 			e.printStackTrace();
 			try {
 				tx.rollback();
 				session.createSQLQuery("delete from tb_tech001_mast_projects_detail where PROJ_ID = :projId").setParameter("projId", projId).executeUpdate();
 			} catch (Exception e1) {
-				//log.debug("Couldn�t roll back transaction : " + e1);
+				//LOGGER.debug("Couldn�t roll back transaction : " + e1);
 				throw new CreateProjectException("Error while doing rollback to the failed transection : "+ e1.getMessage());
 			}
 			throw new CreateProjectException("Error while creating new project : "+ e.getMessage());
@@ -392,7 +463,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public ArrayList<String> getSuggestedkeywords(ArrayList<Integer> branchIds) throws SuggestedkeywordsNotFoundException{
 		
-		//log.debug("ProjectDaoImpl.getSuggestedkeywords :Start");
+		//LOGGER.debug("ProjectDaoImpl.getSuggestedkeywords :Start");
 		ArrayList<String> suggestedkeywords = new ArrayList<String>();
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		
@@ -407,13 +478,13 @@ public class ProjectDaoImpl implements ProjectDao {
 			suggestedkeywords = (ArrayList<String>) criteria.list();
 			
 		} catch (Exception e) {
-			//log.error("Error while retrieving the Suggested keywords :" + e.getMessage());
+			//LOGGER.error("Error while retrieving the Suggested keywords :" + e.getMessage());
 			throw new SuggestedkeywordsNotFoundException("Error while retriving the Suggested keywords : "+ e.getMessage());
 		}finally{
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ProjectDaoImpl.getSuggestedkeywords :End");
+		//LOGGER.debug("ProjectDaoImpl.getSuggestedkeywords :End");
 		return suggestedkeywords;
 		
 	}
@@ -424,9 +495,9 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public ArrayList<Team> getSuggestedTeamMembers(UserProfileVO userProfileVO)
 			throws SuggestedTeamMembersNotFoundException {
-		//log.debug("ProjectDaoImpl.getSuggestedTeamMembers :Start");
+		//LOGGER.debug("ProjectDaoImpl.getSuggestedTeamMembers :Start");
 		return  ProjectDaoHelper.getSuggestedTeamMembers(userProfileVO);
-		//log.debug("ProjectDaoImpl.getSuggestedTeamMembers :End");
+		//LOGGER.debug("ProjectDaoImpl.getSuggestedTeamMembers :End");
 	}
 
 	/* 
@@ -436,22 +507,23 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public ArrayList<Branch> getSuggestedBranches(String term)
 			throws SuggestedBranchNotFoundException {
-		//log.debug("ProjectDaoImpl.getSuggestedBranches :Start");
+		//LOGGER.debug("ProjectDaoImpl.getSuggestedBranches :Start");
 		ArrayList<Branch> suggestedBranchs = new ArrayList<Branch>();
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		
 		try {
 			Criteria criteria = session.createCriteria(BranchMaster.class);
 			criteria.add(Restrictions.ilike("projBranchDesc", "%"+term+"%"));
+			criteria.addOrder(Order.asc("projBranchDesc"));
 			suggestedBranchs = (ArrayList<Branch>) criteria.list();
 		} catch (Exception e) {
-			//log.error("Error while retrieving the Suggested keywords :" + e.getMessage());
+			//LOGGER.error("Error while retrieving the Suggested keywords :" + e.getMessage());
 			throw new SuggestedBranchNotFoundException("Error while retrieving the Suggested Branches : "+ e.getMessage());
 		}finally{
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ProjectDaoImpl.getSuggestedBranches :End");
+		//LOGGER.debug("ProjectDaoImpl.getSuggestedBranches :End");
 		return suggestedBranchs;
 	}
 
@@ -460,9 +532,9 @@ public class ProjectDaoImpl implements ProjectDao {
 	 */
 	@Override
 	public ArrayList<Faculty> getSuggestedFaculty(String userId) throws SuggestedFacultyNotFoundException{
-		//log.debug("ProjectDaoImpl.getSuggestedFaculty :Start");
+		//LOGGER.debug("ProjectDaoImpl.getSuggestedFaculty :Start");
 		return ProjectDaoHelper.getSuggestedFaculty(userId);
-		//log.debug("ProjectDaoImpl.getSuggestedFaculty :End");
+		//LOGGER.debug("ProjectDaoImpl.getSuggestedFaculty :End");
 	}
 
 	/* 
@@ -472,7 +544,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	public AddNewFacultyResponseVO addNewFaculty(FacultyVO facultyVO)
 			throws AddNewFacultyException {
 		
-		//log.debug("ProjectDaoImpl.addNewFaculty :Start");
+		//LOGGER.debug("ProjectDaoImpl.addNewFaculty :Start");
 		
 		Transaction tx = null;
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -510,7 +582,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			usrMngtMaster.setType("faculty");
 			Serializable sr = session.save(usrMngtMaster);
 			regId = (long) sr;
-			//log.debug("UsrMngtMaster added is :" + regId);
+			//LOGGER.debug("UsrMngtMaster added is :" + regId);
 			
 			/*Start Adding into USR_MNGT_FACULTY here*/
 			usrMngtFaculty = new UsrMngtFaculty();
@@ -538,18 +610,18 @@ public class ProjectDaoImpl implements ProjectDao {
 			usrMngtAddress.setRgstrId(regId);
 			session.save(usrMngtAddress);
 
-			//log.debug("UsrMngtStudent added is :" + sr.toString());
+			//LOGGER.debug("UsrMngtStudent added is :" + sr.toString());
 			
 			tx.commit();
 			addNewFacultyResponseVO.setRgstrId(String.valueOf(regId));
 			addNewFacultyResponseVO.setUserID(userID);
 		} catch (Exception e) {
-			//log.debug("Unable to add Faculty to DB : " + e);
+			//LOGGER.debug("Unable to add Faculty to DB : " + e);
 			try {
 				tx.rollback();
 				session.createSQLQuery("delete from usr_mngt_master where RGSTR_ID = :rgstrId").setParameter("rgstrId", regId).executeUpdate();
 			} catch (Exception e1) {
-				//log.debug("Couldn�t roll back transaction : " + e1);
+				//LOGGER.debug("Couldn�t roll back transaction : " + e1);
 				throw new AddNewFacultyException("Error while doing rollback to the failed transection : "+ e1.getMessage());
 			}
 			throw new AddNewFacultyException("Error while creating new faculty : "+ e.getMessage());
@@ -559,7 +631,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ProjectDaoImpl.addNewFaculty :End");
+		//LOGGER.debug("ProjectDaoImpl.addNewFaculty :End");
 		return addNewFacultyResponseVO;
 	}
 	
@@ -585,7 +657,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public String deleteProject(long projId) throws DeleteProjectException {
 		
-		//log.debug("ProjectDaoImpl.deleteProject :Start");
+		//LOGGER.debug("ProjectDaoImpl.deleteProject :Start");
 		String returnVal = "N";
 		Transaction tx = null;
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -599,7 +671,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			tx.commit();
 			returnVal = "Y";
 		} catch (Exception e) {
-			//log.debug("Error while deleting project : "+ e.getMessage());
+			//LOGGER.debug("Error while deleting project : "+ e.getMessage());
 			throw new DeleteProjectException("Error while deleting project : "+ e.getMessage());
 		}finally{
 			if(tx!=null)
@@ -607,7 +679,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ProjectDaoImpl.deleteProject :End");
+		//LOGGER.debug("ProjectDaoImpl.deleteProject :End");
 		return returnVal;
 	}
 
@@ -618,7 +690,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public Project getProjectDetails(long projId) throws GetProjectDetailsException {
 		
-		//log.debug("ProjectDaoImpl.getProjectDetails :Start");
+		//LOGGER.debug("ProjectDaoImpl.getProjectDetails :Start");
 		
 		Project project = new Project();
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -655,14 +727,24 @@ public class ProjectDaoImpl implements ProjectDao {
 			proFacultyCriteria.add(Restrictions.eq("rgstrId", projectMaster.getProjFacRgstrId()));
 			if(proFacultyCriteria.list().size() > 0){
 				ArrayList<UsrMngtMaster> usrMngtMasters = (ArrayList<UsrMngtMaster>) proFacultyCriteria.list();
+				if(usrMngtMasters.get(0).getmName()==null){
+					project.setProjFacultyName(usrMngtMasters.get(0).getpFname()+" "+usrMngtMasters.get(0).getlName());
+				}
+				else{
 				project.setProjFacultyName(usrMngtMasters.get(0).getpFname()+" "+usrMngtMasters.get(0).getmName()+" "+usrMngtMasters.get(0).getlName());
+				}
 			}
 			
 			Criteria proTeamLeadCriteria = session.createCriteria(UsrMngtMaster.class);
 			proTeamLeadCriteria.add(Restrictions.eq("rgstrId", projectMaster.getProjTeamLeaderId()));
 			if(proTeamLeadCriteria.list().size() > 0){
 				ArrayList<UsrMngtMaster> usrMngtMasters = (ArrayList<UsrMngtMaster>) proTeamLeadCriteria.list();
-				project.setProjTeamLeaderName(usrMngtMasters.get(0).getpFname()+" "+usrMngtMasters.get(0).getmName()+" "+usrMngtMasters.get(0).getlName());
+				if(usrMngtMasters.get(0).getmName()==null){
+				project.setProjTeamLeaderName(usrMngtMasters.get(0).getpFname()+" "+usrMngtMasters.get(0).getlName());
+				}
+				else{
+					project.setProjTeamLeaderName(usrMngtMasters.get(0).getpFname()+" "+usrMngtMasters.get(0).getmName()+" "+usrMngtMasters.get(0).getlName());
+				}
 			}
 			
 			project.setPhoto1Path(projectMaster.getPhoto1Path());
@@ -697,14 +779,14 @@ public class ProjectDaoImpl implements ProjectDao {
 					project.setChallengId(challengeId.get(0));
 			}
 		} catch (Exception e) {
-			//log.debug("Error while deleting project : "+ e.getMessage());
 			throw new GetProjectDetailsException("Error while getting project : "+ e.getMessage());
+			
 			
 		}finally{
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ProjectDaoImpl.getProjectDetails :End");
+		//LOGGER.debug("ProjectDaoImpl.getProjectDetails :End");
 		return project;
 	}
 
@@ -715,7 +797,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public ArrayList<Project> getAllProject(String iterationCount)
 			throws GetAllProjectException {
-		//log.debug("ProjectDaoImpl.getAllProject :Start");
+		//LOGGER.debug("ProjectDaoImpl.getAllProject :Start");
 		Project project = null;
 		ArrayList<Project> projects = new ArrayList<Project>();
 		int initCount = Integer.valueOf(iterationCount);
@@ -789,13 +871,13 @@ public class ProjectDaoImpl implements ProjectDao {
 			if(projects.size()==0)
 				throw new GetAllProjectException("No projects available for this criteria");
 		} catch (Exception e) {
-			//log.debug("Error while deleting project : "+ e.getMessage());
+			//LOGGER.debug("Error while deleting project : "+ e.getMessage());
 			throw new GetAllProjectException("Error while getting all project : "+ e.getMessage());
 		}finally{
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ProjectDaoImpl.getAllProject :End");
+		//LOGGER.debug("ProjectDaoImpl.getAllProject :End");
 		return projects;
 	}
 
@@ -814,7 +896,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public String getPopularity(String rgstrId) throws GetPopularityException {
 		
-		//log.debug("ProjectDaoImpl.getPopularity :Start");
+		//LOGGER.debug("ProjectDaoImpl.getPopularity :Start");
 		
 		ArrayList<Integer> popularity = null;
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -826,13 +908,13 @@ public class ProjectDaoImpl implements ProjectDao {
 			popularity = (ArrayList<Integer>) criteria.list();
 			
 		} catch (Exception e) {
-			//log.error("Error while retrieving the Popularity :" + e.getMessage());
+			//LOGGER.error("Error while retrieving the Popularity :" + e.getMessage());
 			throw new GetPopularityException("Error while retriving the Popularity : "+ e.getMessage());
 		}finally{
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ProjectDaoImpl.getPopularity :End");
+		//LOGGER.debug("ProjectDaoImpl.getPopularity :End");
 		if(popularity.size() > 0 && popularity.get(0)!=null){
 		return popularity.get(0).toString();
 		}else{
@@ -847,7 +929,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public String updateProject(Project project) throws UpdateProjectException {
 		
-				//log.debug("ProjectDaoImpl.updateProject :Start");
+				//LOGGER.debug("ProjectDaoImpl.updateProject :Start");
 				Transaction tx = null;
 				Session session = HibernateUtil.getSessionFactory().openSession();
 				String returnVal = "N";
@@ -911,7 +993,7 @@ public class ProjectDaoImpl implements ProjectDao {
 					tx.commit();
 					returnVal = "Y";
 				}catch (Exception e) {
-						//log.debug("Unable to update project to DB : " + e);
+						//LOGGER.debug("Unable to update project to DB : " + e);
 						throw new UpdateProjectException("Error while updating project : "+ e.getMessage());
 					}finally{
 						if(tx!=null)
@@ -919,7 +1001,7 @@ public class ProjectDaoImpl implements ProjectDao {
 						if(session!=null)
 							session.close();
 					}
-					//log.debug("ProjectDaoImpl.updateProject :End");
+					//LOGGER.debug("ProjectDaoImpl.updateProject :End");
 			return returnVal;
 	}
 
@@ -929,7 +1011,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public String addTeamMembers(ArrayList<TeamMember> teamMembers)
 			throws AddTeamMembersException {
-		//log.debug("ProjectDaoImpl.addTeamMembers :Start");
+		//LOGGER.debug("ProjectDaoImpl.addTeamMembers :Start");
 		String returnVal = "N";
 		int tranCount = 0;
 		Transaction tx = null;
@@ -962,7 +1044,7 @@ public class ProjectDaoImpl implements ProjectDao {
 				if(session!=null)
 					session.close();
 			}
-		//log.debug("ProjectDaoImpl.addTeamMembers :End");
+		//LOGGER.debug("ProjectDaoImpl.addTeamMembers :End");
 		return returnVal;
 	}
 
@@ -972,7 +1054,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public String removeTeamMembers(ArrayList<TeamMember> teamMembers)
 			throws RemoveTeamMembersException {
-		//log.debug("ProjectDaoImpl.removeTeamMembers :Start");
+		//LOGGER.debug("ProjectDaoImpl.removeTeamMembers :Start");
 		String returnVal = "N";
 		Transaction tx = null;
 		Session session = HibernateUtil.getSessionFactory().openSession();
@@ -998,7 +1080,7 @@ public class ProjectDaoImpl implements ProjectDao {
 				if(session!=null)
 					session.close();
 			}
-		//log.debug("ProjectDaoImpl.removeTeamMembers :End");
+		//LOGGER.debug("ProjectDaoImpl.removeTeamMembers :End");
 		return returnVal;
 	}
 	/**
@@ -1012,7 +1094,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public ArrayList<Project> searchProjectByKeyword(SearchByKeyVO searchByKeyVO)
 			throws SearchProjectException {
-		//log.debug("ProjectDaoImpl.searchProject :Start");
+		//LOGGER.debug("ProjectDaoImpl.searchProject :Start");
 				ArrayList<Project> projects = new ArrayList<Project>();
 				Project project;
 				String term = searchByKeyVO.getTerm();
@@ -1093,13 +1175,13 @@ public class ProjectDaoImpl implements ProjectDao {
 						projects.add(project);
 					}
 				} catch (Exception e) {
-					//log.error("Error while searching the project :" + e.getMessage());
+					//LOGGER.error("Error while searching the project :" + e.getMessage());
 					throw new SearchProjectException("Error while searching the project : "+ e.getMessage());
 				}finally{
 					if(session!=null)
 						session.close();
 				}
-				//log.debug("ProjectDaoImpl.searchProject :End");
+				//LOGGER.debug("ProjectDaoImpl.searchProject :End");
 		return projects;
 	}
 	
@@ -1138,7 +1220,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	        }
 	     }
 	      catch (Exception e) {
-			//log.debug("2 mentors already exist : " + e);
+			//LOGGER.debug("2 mentors already exist : " + e);
 			throw new AddNewMentorException("Both mentors already exist : "+ e.getMessage());
 		}finally{
 			if(tx!=null)
@@ -1147,7 +1229,7 @@ public class ProjectDaoImpl implements ProjectDao {
 				session.close();
 		}
 	
-		//log.debug("ProjectDaoImpl.addNewMentor :End");
+		//LOGGER.debug("ProjectDaoImpl.addNewMentor :End");
 		return returnVal;
 	
 	}
@@ -1189,7 +1271,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			returnVal = "Y";
 		}		
 		} catch (Exception e) {
-			//log.debug("Mentors does NOT exist : " + e);
+			//LOGGER.debug("Mentors does NOT exist : " + e);
 			throw new RemoveMentorException("Mentors does NOT exist : "+ e.getMessage());
 		}finally{
 			if(tx!=null)
@@ -1197,7 +1279,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ProjectDaoImpl.deleteMentor :End");
+		//LOGGER.debug("ProjectDaoImpl.deleteMentor :End");
 		return returnVal;
 	}
 	
@@ -1229,7 +1311,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			tx.commit();
 			returnVal = "Y";
 		}catch (Exception e) {
-			//log.debug("Error while Following the Project :" + e);
+			//LOGGER.debug("Error while Following the Project :" + e);
 			throw new FollowTheProjectException("Error while Following the Project : "+ e.getMessage());
 		}finally{
 			if(tx!=null)
@@ -1237,7 +1319,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			if(session!=null)
 				session.close();
 		    }
-		//log.debug("ProjectDaoImpl.followTheProject :End");
+		//LOGGER.debug("ProjectDaoImpl.followTheProject :End");
 		return returnVal;
 	} 
 	
@@ -1247,9 +1329,9 @@ public class ProjectDaoImpl implements ProjectDao {
 	 */
 	@Override
 	public ArrayList<ProjectTeamComment> displayTeamComments(DisplayTeamCommVO displayTeamCommVO) throws TeamCommentsNotFoundException{
-		//log.debug("ProjectDaoImpl.displayTeamComments :Start");
+		//LOGGER.debug("ProjectDaoImpl.displayTeamComments :Start");
 		return ProjectDaoHelper.displayTeamComments(displayTeamCommVO.getProjId(), displayTeamCommVO.getIterationCount());
-		//log.debug("ProjectDaoImpl.displayTeamComments :End");
+		//LOGGER.debug("ProjectDaoImpl.displayTeamComments :End");
 	}
 
 	/* (non-Javadoc)
@@ -1258,7 +1340,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public String addComment(AddCommVO addCommVO) throws AddCommentException {
 		
-		//log.debug("ProjectDaoImpl.addComment :Start");
+		//LOGGER.debug("ProjectDaoImpl.addComment :Start");
 		
 				Transaction tx = null;
 				String returnVal = "N";
@@ -1280,11 +1362,11 @@ public class ProjectDaoImpl implements ProjectDao {
 					projectCommentTxn.setIsActiveCommt("Y"); 							
 				    projectCommentTxn.setProjCommentsRecDate(projCmntRecDate);		             
 				    session.saveOrUpdate(projectCommentTxn);
-					//log.debug("ProjectCommentTxn added is :" + sr.toString());		
+					//LOGGER.debug("ProjectCommentTxn added is :" + sr.toString());		
 					tx.commit();
 					returnVal = "Y";
 				} catch (Exception e) {
-					//log.debug("Unable to add Comments to DB : " + e);		
+					//LOGGER.debug("Unable to add Comments to DB : " + e);		
 					throw new AddCommentException("Error while creating Project Comment : "+ e.getMessage());
 				}finally{
 					if(tx!=null)
@@ -1292,7 +1374,7 @@ public class ProjectDaoImpl implements ProjectDao {
 					if(session!=null)
 						session.close();
 				}
-				//log.debug("ProjectDaoImpl.addNewFaculty :End");
+				//LOGGER.debug("ProjectDaoImpl.addNewFaculty :End");
 				return returnVal;
 	}
 
@@ -1321,7 +1403,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			tx.commit();
 			returnVal = "Y";
 		} catch (Exception e) {
-			//log.debug("Comments does NOT exist : " + e);
+			//LOGGER.debug("Comments does NOT exist : " + e);
 			throw new RemoveCommentException("Comments does NOT exist : "+ e.getMessage());
 		}finally{
 			if(tx!=null)
@@ -1329,7 +1411,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ProjectDaoImpl.deleteComment :End");
+		//LOGGER.debug("ProjectDaoImpl.deleteComment :End");
 		return returnVal;
 	}
 
@@ -1340,7 +1422,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public ArrayList<Project> getAllFollowedProject(String rgstrId)
 			throws GetAllFollowedProjectException {
-		//log.debug("ProjectDaoImpl.getAllFollowedProject :Start");
+		//LOGGER.debug("ProjectDaoImpl.getAllFollowedProject :Start");
 				ArrayList<Project> projects = new ArrayList<Project>();
 				ArrayList<ProjectMaster> projectMasters = new ArrayList<ProjectMaster>();
 				Project project;
@@ -1363,13 +1445,13 @@ public class ProjectDaoImpl implements ProjectDao {
 					}
 						
 				} catch (Exception e) {
-					//log.error("Error while retriving the all followed projects : " + e.getMessage());
+					//LOGGER.error("Error while retriving the all followed projects : " + e.getMessage());
 					throw new GetAllFollowedProjectException("Error while retriving the all followed projects : "+ e.getMessage());
 				}finally{
 					if(session!=null)
 						session.close();
 				}
-				//log.debug("ProjectDaoImpl.getAllFollowedProject :End");
+				//LOGGER.debug("ProjectDaoImpl.getAllFollowedProject :End");
 		return projects;
 	}
 
@@ -1377,9 +1459,8 @@ public class ProjectDaoImpl implements ProjectDao {
 	 * @see com.techpedia.projectmanagement.dao.ProjectDao#uploadProject(java.util.ArrayList)
 	 */
 	@SuppressWarnings("unchecked")
-	private String uploadProjects(ArrayList<ProjectXLSVO> projectXLSVOs)
-			throws BulkUploadException {
-		//log.debug("ProjectDaoImpl.uploadProject :Start");
+	private String uploadProjects(ArrayList<ProjectXLSVO> projectXLSVOs) throws BulkUploadException {
+		//LOGGER.debug("ProjectDaoImpl.uploadProject :Start");
 				Transaction tx = null;
 				
 				Session session = HibernateUtil.getSessionFactory().openSession();
@@ -1429,7 +1510,7 @@ public class ProjectDaoImpl implements ProjectDao {
 						/*Start Adding into TB_TECH001_MAST_PROJECTS_DETAIL here*/
 						projectMaster = new  ProjectMaster(projectXLSVO.getProjTypeId(),projectXLSVO.getProjTitle(),projectXLSVO.getProjAbstract(),
 								projectXLSVO.getProjDescription(),projectXLSVO.getProjUniversity(),
-								projectXLSVO.getProjCollegeRgstrIdUsr(),null,projectXLSVO.getProjYear(),0,
+								projectXLSVO.getProjCollegeRgstrIdUsr(),null,projectXLSVO.getProjYear(),0,projectXLSVO.getProjCollege(),
 								projectXLSVO.getProjCollegeState(),projectXLSVO.getProjStartDate(),projectXLSVO.getProjEndDate(),
 								projectXLSVO.getProjMentor1Id(),0,projectTeamId,projectXLSVO.getProjGuideId(),projectXLSVO.getProjStatusId(),
 								projectXLSVO.getProjToFloat(),null,projectXLSVO.getProjCommentsPublish(),projectXLSVO.getProjGrade(),
@@ -1476,7 +1557,7 @@ public class ProjectDaoImpl implements ProjectDao {
 						tx.rollback();
 						session.createSQLQuery("delete from tb_tech001_mast_projects_detail where PROJ_ID = :projId").setParameter("projId", projId).executeUpdate();
 					} catch (Exception e1) {
-						//log.debug("Couldn�t roll back transaction : " + e1);
+						//LOGGER.debug("Couldn�t roll back transaction : " + e1);
 						throw new BulkUploadException("Error while doing rollback to the failed transection : "+ e1.getMessage());
 					}
 					throw new BulkUploadException("Error while creating new project : "+ e.getMessage());
@@ -1489,26 +1570,33 @@ public class ProjectDaoImpl implements ProjectDao {
 				return returnVal;
 	}
 
+
 	@Override
-	public String bulkUploadProject(String exlByteArray)
-			throws BulkUploadException {
+	@Transactional (rollbackFor = Exception.class)
+	public String bulkUploadProject(String exlByteArray) throws BulkUploadException {
 		ArrayList<ProjectXLSVO> projectXLSVOs;
+		String retVal = "N";
 		try {
 			ResourceBundle rbundle = ResourceBundle.getBundle("uploadDownload");
-			String BULK_UPLOAD_TEMP_LOCATION = rbundle.getString("SERVER_PROJ_BULK_UPLOAD_TEMP_FOLDER_LOCATION");
-			String BULK_UPLOAD_TEMP_FILE_NAME = rbundle.getString("BULK_UPLOAD_TEMP_FILE_NAME");
-			BulkUploadCVS bulkUploadCVS = new BulkUploadCVS();
-			BASE64Decoder decoder = new BASE64Decoder();
-			byte[] decodedBytes = decoder.decodeBuffer(exlByteArray);
+			String bulkUploadTempLocation = rbundle.getString("SERVER_PROJ_BULK_UPLOAD_TEMP_FOLDER_LOCATION");
+			String bulkUploadTempFileName = rbundle.getString("BULK_UPLOAD_TEMP_FILE_NAME");
+			BulkUploadXLS bulkUploadXLS = new BulkUploadXLS();
+			/*BASE64Decoder decoder = new BASE64Decoder();
+			byte[] decodedBytes = decoder.decodeBuffer(exlByteArray);*/
+			byte[] decodedBytes = Base64.decodeBase64(exlByteArray.getBytes());
 			InputStream inputStream = new ByteArrayInputStream(decodedBytes);
-			String fileName = FileUploadDownload.saveFile(inputStream,BULK_UPLOAD_TEMP_LOCATION,BULK_UPLOAD_TEMP_FILE_NAME);
+			String fileName = FileUploadDownload.saveFile(inputStream, bulkUploadTempLocation, bulkUploadTempFileName);
 			projectXLSVOs = new ArrayList<ProjectXLSVO>();
-			projectXLSVOs = bulkUploadCVS.readCSV(new File(fileName));			
-			FileUploadDownload.deleteFile(fileName);
+			LOGGER.info("Reading project data from File :: "+fileName);
+			projectXLSVOs = bulkUploadXLS.readXLS(new File(fileName));	
+			retVal = uploadProjectsAsXLS(projectXLSVOs);
+			//FileUploadDownload.deleteFile(fileName);
+			LOGGER.info("File uploaded successfully :: "+retVal);
 		} catch (Exception e) {
-			throw new BulkUploadException("Error while bulk uploading project : "+ e.getMessage());
+			LOGGER.error("An Unexpected error occur while bulkUploadProject Ex :: ", e);
+			throw new BulkUploadException(e.getMessage());
 		}
-		return this.uploadProjects(projectXLSVOs);
+		return retVal;
 	}
 
 	@Override
@@ -1523,7 +1611,7 @@ public class ProjectDaoImpl implements ProjectDao {
     @Override
     public String removeProjectFollow(ProjFollowVO projFollowVO) throws RemoveProjectFollowException {
     	
-    	//log.debug("ProjectDaoImpl.removeProjectFollow :Start"); 
+    	//LOGGER.debug("ProjectDaoImpl.removeProjectFollow :Start"); 
     	String returnVal = "N";
 	     Transaction tx = null;	
 	     Session session = HibernateUtil.getSessionFactory().openSession();
@@ -1543,7 +1631,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	     }catch(ObjectNotFoundException onfe){
 	    	 return returnVal;
 	     }catch (Exception e) {
-				//log.debug("Remove does NOT happened : " + e);
+				//LOGGER.debug("Remove does NOT happened : " + e);
 				throw new RemoveProjectFollowException("Remove does NOT happened : "+ e.getMessage());
 	     }finally{
 	    	 if(tx!=null)
@@ -1551,7 +1639,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	    	 if(session!=null)
 				session.close();
 			}
-	   //log.debug("ProjectDaoImpl.removeProjectFollow :End"); 
+	   //LOGGER.debug("ProjectDaoImpl.removeProjectFollow :End"); 
 	     return returnVal;
 	}
 	 /**
@@ -1560,7 +1648,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public String checkProjectFollow(ProjFollowVO projFollowVO) throws CheckProjectFollowException {	
 		
-		//log.debug("ProjectDaoImpl.checkProjectFollow :Start");
+		//LOGGER.debug("ProjectDaoImpl.checkProjectFollow :Start");
 	    String returnVal = "N";
 	    long projId = projFollowVO.getProjectId();
 	    long regstrId = projFollowVO.getRgstrId();
@@ -1576,13 +1664,13 @@ public class ProjectDaoImpl implements ProjectDao {
 			 returnVal = "Y";		 
 		 
 		} catch (Exception e) {
-			//log.debug("Check whether Project is followed or NOT: " + e);
+			//LOGGER.debug("Check whether Project is followed or NOT: " + e);
 			throw new CheckProjectFollowException("Error in Check Project followed or not: "+ e.getMessage());
 		}finally{
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ProjectDaoImpl.checkProjectFollow :End");
+		//LOGGER.debug("ProjectDaoImpl.checkProjectFollow :End");
 		return returnVal;
 	 }
 
@@ -1591,7 +1679,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	public Project submitProject(ProjSubmit projSubmit)
 			throws SubmitProjectsException {
 		
-		//log.debug("ProjectDaoImpl.submitProject :Start");
+		//LOGGER.debug("ProjectDaoImpl.submitProject :Start");
 		
 			String returnVal = "N";
 			long projId = projSubmit.getProjId();;
@@ -1606,7 +1694,9 @@ public class ProjectDaoImpl implements ProjectDao {
 					ProjectMaster projectMaster = (ProjectMaster) session.load(ProjectMaster.class, projId);	
 				    long prId = projectMaster.getProjId();
 					 if (prId != 0){									  
-						projectMaster.setProjStatusId(3);	
+						//projectMaster.setProjStatusId(3);
+						//to skip the faculty final approval
+						projectMaster.setProjStatusId(4);
 						session.update(projectMaster);
 						long projGuideId = projectMaster.getProjFacRgstrId();
 						long projTeamLeaderId = projectMaster.getProjTeamLeaderId();													 
@@ -1617,7 +1707,7 @@ public class ProjectDaoImpl implements ProjectDao {
 						UsrMngtMaster usrMngtMasterGuide = new UsrMngtMaster();	 
 						if(projGuideId != 0){				
 							usrMngtMasterGuide = (UsrMngtMaster) session.get(UsrMngtMaster.class,projGuideId);	
-							project.setProjFacEMailId(usrMngtMasterGuide.getEmail());							
+							project.setProjFacEmailId(usrMngtMasterGuide.getEmail());							
 						}
 							
 						/*For Team Leader*/
@@ -1632,7 +1722,7 @@ public class ProjectDaoImpl implements ProjectDao {
 				returnVal = "Y";	
 				
 			}catch (Exception e) {
-				//log.error("Error while retriving the all followed projects : " + e.getMessage());
+				//LOGGER.error("Error while retriving the all followed projects : " + e.getMessage());
 				throw new SubmitProjectsException("Error submitting the Project :"+ e.getMessage());
 			}finally{
 				if(tx!=null)
@@ -1640,7 +1730,7 @@ public class ProjectDaoImpl implements ProjectDao {
 				if(session!=null)
 					session.close();
 			}
-			//log.debug("ProjectDaoImpl.submitProject :End");
+			//LOGGER.debug("ProjectDaoImpl.submitProject :End");
 			return project;
 	}
 
@@ -1651,7 +1741,7 @@ public class ProjectDaoImpl implements ProjectDao {
 		String returnVal = "N";
 		String fileSize = "";
 		ResourceBundle rbundle = ResourceBundle.getBundle("uploadDownload");
-		String SERVER_UPLOAD_FOLDER_LOCATION = rbundle.getString("SERVER_UPLOAD_PROJECT_FOLDER_LOCATION");		
+		String serverUploadFolderLocation = rbundle.getString("SERVER_UPLOAD_PROJECT_FOLDER_LOCATION");		
 		String projId = String.valueOf(uploadProjDocVO.getProjId());
 		String regstrId = String.valueOf(uploadProjDocVO.getRgstrId());
 		String docName = uploadProjDocVO.getDocName();	
@@ -1661,10 +1751,11 @@ public class ProjectDaoImpl implements ProjectDao {
 	    Transaction tx = null;
 		Session session = null;
 		try {			
-			BASE64Decoder decoder = new BASE64Decoder();
-			byte[] decodedBytes = decoder.decodeBuffer(uploadProjDocVO.getDocByteArray());
+			/*BASE64Decoder decoder = new BASE64Decoder();
+			byte[] decodedBytes = decoder.decodeBuffer(uploadProjDocVO.getDocByteArray());*/
+			byte[] decodedBytes = Base64.decodeBase64(uploadProjDocVO.getDocByteArray().getBytes());
 			InputStream inputStream = new ByteArrayInputStream(decodedBytes);			
-			fileSize = FileUploadDownload.saveFile(inputStream, SERVER_UPLOAD_FOLDER_LOCATION, projId, regstrId, docName);
+			fileSize = FileUploadDownload.saveFile(inputStream, serverUploadFolderLocation, projId, regstrId, docName);
 			
 			/*Start Adding into TB_TECH001_MAST_PROJECTS_DETAIL here*/	
 			session = HibernateUtil.getSessionFactory().openSession();
@@ -1700,7 +1791,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	public ArrayList<ProjectDocument> downloadProjectDocument(DownloadDocVO downloadDocVO)
 			throws DownloadProjDocException {
 		
-		//log.debug("ProjectDaoImpl.downloadProjectDocument :Start");
+		//LOGGER.debug("ProjectDaoImpl.downloadProjectDocument :Start");
 		ArrayList<ProjectDocument> projectDocuments = new ArrayList<ProjectDocument>();
 		ProjectDocument projectDocument;
 		ArrayList<ProjectDocPathTxn> projectDocPathTxns = new ArrayList<ProjectDocPathTxn>();
@@ -1709,7 +1800,7 @@ public class ProjectDaoImpl implements ProjectDao {
 		Set<Long> projTeamMems = new HashSet<Long>();
 		projTeamMems = ProjectDaoHelper.getProjectTeamMembers(projId);
 		ResourceBundle rbundle = ResourceBundle.getBundle("uploadDownload");
-		String SERVER_UPLOAD_FOLDER_LOCATION = rbundle.getString("SERVER_UPLOAD_PROJECT_FOLDER_LOCATION");
+		String serverUploadFolderLocation = rbundle.getString("SERVER_UPLOAD_PROJECT_FOLDER_LOCATION");
 		Session session = HibernateUtil.getSessionFactory().openSession();	
 		try {							
 			Criteria criteria = session.createCriteria(ProjectDocPathTxn.class);
@@ -1722,20 +1813,21 @@ public class ProjectDaoImpl implements ProjectDao {
 				String docPath = docPathTxn.getProjPath();
 				String docName = docPath.substring(docPath.lastIndexOf("/")+1, docPath.length());
 				projectDocument.setDocName(docName);
-				projectDocument.setDocLink(SERVER_UPLOAD_FOLDER_LOCATION+"/"+docPath);
+				projectDocument.setDocLink(serverUploadFolderLocation+"/"+docPath);
 				projectDocument.setRegstrId(docPathTxn.getRegstrId());
 				projectDocuments.add(projectDocument);
 			}
-			if(projectDocPathTxns.size()==0)
-				throw new DownloadProjDocException("No documents uploaded by given user for given project");		
+			//if(projectDocPathTxns.size()==0)
+				
+				//throw new DownloadProjDocException("No documents uploaded by given user for given project");		
 		} catch (Exception e) {
-			//log.error("Error while retriving the all followed projects : " + e.getMessage());
+			//LOGGER.error("Error while retriving the all followed projects : " + e.getMessage());
 			throw new DownloadProjDocException("Error while downloading project documents : "+ e.getMessage());
 		}finally{
 			if(session!=null)
 				session.close();
 		}
-		//log.debug("ProjectDaoImpl.downloadProjectDocument :End");
+		//LOGGER.debug("ProjectDaoImpl.downloadProjectDocument :End");
 		return projectDocuments;
 	}
 
@@ -1743,16 +1835,16 @@ public class ProjectDaoImpl implements ProjectDao {
 	public ArrayList<ProjectTeamComment> displayOtherComments(
 			DisplayTeamCommVO displayTeamCommVO)
 			throws OtherCommentsNotFoundException {
-		//log.debug("ProjectDaoImpl.displayOtherComments :Start");
+		//LOGGER.debug("ProjectDaoImpl.displayOtherComments :Start");
 			return ProjectDaoHelper.displayOtherComments(displayTeamCommVO.getProjId(), displayTeamCommVO.getIterationCount());
-		//log.debug("ProjectDaoImpl.displayOtherComments :End");
+		//LOGGER.debug("ProjectDaoImpl.displayOtherComments :End");
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public ArrayList<Project> getProjectsByLoggedInUser(String rgstrId)
 			throws ProjectByLoggedInUserException {	
-		//log.debug("ProjectDaoImpl.getProjectsByLoggedInUser :Start");
+		//LOGGER.debug("ProjectDaoImpl.getProjectsByLoggedInUser :Start");
 				Project project = null;
 				ArrayList<Project> projects = new ArrayList<Project>();
 				
@@ -1793,39 +1885,49 @@ public class ProjectDaoImpl implements ProjectDao {
 						projects.add(project);
 					}
 					} catch (Exception e) {
-					//log.debug("Error while deleting project : "+ e.getMessage());
+					//LOGGER.debug("Error while deleting project : "+ e.getMessage());
 					throw new ProjectByLoggedInUserException("Error while getting all project : "+ e.getMessage());
 				}finally{
 					if(session!=null)
 						session.close();
 				}
-				//log.debug("ProjectDaoImpl.getProjectsByLoggedInUser :End");
+				//LOGGER.debug("ProjectDaoImpl.getProjectsByLoggedInUser :End");
 				return projects;
 		}
 
 	@Override
 	public ArrayList<Project> getProjectFollowers()
 			throws GetProjectFollowersException {	
-		//log.debug("ProjectDaoImpl.checkProjectFollow :Start");
+		//LOGGER.debug("ProjectDaoImpl.checkProjectFollow :Start");
 		return ProjectDaoHelper.getProjectFollowers();
-		//log.debug("ProjectDaoImpl.checkProjectFollow :End");
+		//LOGGER.debug("ProjectDaoImpl.checkProjectFollow :End");
 		
 	}
 	
 	@Override
 	public ArrayList<Project> getRecentProject()
 			throws GetAllProjectException {	
-		//log.debug("ProjectDaoImpl.checkProjectFollow :Start");
+		//LOGGER.debug("ProjectDaoImpl.checkProjectFollow :Start");
 		return ProjectDaoHelper.getRecentProject();
-		//log.debug("ProjectDaoImpl.checkProjectFollow :End");
+		//LOGGER.debug("ProjectDaoImpl.checkProjectFollow :End");
 		
 	}
+	
+	@Override
+	public ArrayList<Project> getCollegeRecentProjects(String collegeName)
+			throws CollegeRecentProjectsException {	
+		//LOGGER.debug("ProjectDaoImpl.checkProjectFollow :Start");
+		return projectDaoHelper.getCollegeRecentProjects(collegeName);
+		//LOGGER.debug("ProjectDaoImpl.checkProjectFollow :End");
+		
+	}
+	
 	@Override
 	public ArrayList<Project> getLatestProject()
 			throws GetAllProjectException {	
-		//log.debug("ProjectDaoImpl.checkProjectFollow :Start");
+		//LOGGER.debug("ProjectDaoImpl.checkProjectFollow :Start");
 		return ProjectDaoHelper.getLatestProject();
-		//log.debug("ProjectDaoImpl.checkProjectFollow :End");
+		//LOGGER.debug("ProjectDaoImpl.checkProjectFollow :End");
 		
 	}
 	
@@ -1833,7 +1935,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	public String deleteProjectDocument(DeleteDocVO deleteDocVO)
 			throws DeleteDocumentException {
 		
-		//log.debug("ProjectDaoImpl.deleteProjectDocument :Start");
+		//LOGGER.debug("ProjectDaoImpl.deleteProjectDocument :Start");
 		String returnVal = "N";		
 		long projId = deleteDocVO.getProjId();
 		long regstrId = deleteDocVO.getRegstrId();
@@ -1841,7 +1943,7 @@ public class ProjectDaoImpl implements ProjectDao {
 		//String docLink = deleteDocVO.getDocLink();
 		String docPath = projId+"/"+regstrId+"/"+docName;
 		ResourceBundle rbundle = ResourceBundle.getBundle("uploadDownload");
-		String SERVER_UPLOAD_FOLDER_LOCATION = rbundle.getString("SERVER_UPLOAD_PROJECT_FOLDER_LOCATION");	
+		String serverUploadProjectFolderLocation = rbundle.getString("SERVER_UPLOAD_PROJECT_FOLDER_LOCATION");	
 		Session session = HibernateUtil.getSessionFactory().openSession();
 		ProjectDocPathTxn projectDocPathTxn = new ProjectDocPathTxn();
 		Transaction tx = null;
@@ -1854,12 +1956,12 @@ public class ProjectDaoImpl implements ProjectDao {
 			          .add(Restrictions.eq("projPath", docPath)));
 			projectDocPathTxn = (ProjectDocPathTxn) criteria.uniqueResult();
 			session.delete(projectDocPathTxn);
-			returnVal = FileUploadDownload.deleteFile(SERVER_UPLOAD_FOLDER_LOCATION+"/"+docPath);
+			returnVal = FileUploadDownload.deleteFile(serverUploadProjectFolderLocation+"/"+docPath);
 			tx.commit();					
 			if(returnVal=="N")
 				throw new DeleteDocumentException("Unable to delete document");		
 			} catch (Exception e) {
-				//log.error("Error while retriving the all followed projects : " + e.getMessage());
+				//LOGGER.error("Error while retriving the all followed projects : " + e.getMessage());
 				throw new DeleteDocumentException("Error while deleting project documents : "+ e.getMessage());
 			}finally{
 				if(tx!=null)
@@ -1867,14 +1969,14 @@ public class ProjectDaoImpl implements ProjectDao {
 				if(session!=null)
 					session.close();
 			}
-			//log.debug("ProjectDaoImpl.deleteProjectDocument :End");				
+			//LOGGER.debug("ProjectDaoImpl.deleteProjectDocument :End");				
 		return returnVal;
 	}
 
 	@Override
 	public String facultyInitiatedProject(FacInitProjVO facInitProjVO)
 			throws FacultyInitiatedProjectException {
-		//log.debug("ProjectDaoImpl.facultyInitiatedProject :Start");
+		//LOGGER.debug("ProjectDaoImpl.facultyInitiatedProject :Start");
 				String returnVal = "N";
 				Transaction tx = null;
 				long projId = facInitProjVO.getProjId();
@@ -1900,7 +2002,7 @@ public class ProjectDaoImpl implements ProjectDao {
 					tx.commit();
 					returnVal = "Y";
 				} catch (Exception e) {
-					//log.debug("Error while initiating the project by Faculty: "+ e.getMessage());
+					//LOGGER.debug("Error while initiating the project by Faculty: "+ e.getMessage());
 					throw new FacultyInitiatedProjectException("Error while initiating the project by Faculty: "+ e.getMessage());
 				}finally{
 					if(tx!=null)
@@ -1908,14 +2010,14 @@ public class ProjectDaoImpl implements ProjectDao {
 					if(session!=null)
 						session = null;
 				}
-				//log.debug("ProjectDaoImpl.facultyInitiatedProject :End");
+				//LOGGER.debug("ProjectDaoImpl.facultyInitiatedProject :End");
 				return returnVal;
 	}
 
 	@Override
 	public String facultyClosedProject(FacInitProjVO facInitProjVO)
 			throws FacultyClosedProjectException {
-		//log.debug("ProjectDaoImpl.facultyClosedProject :Start");
+		//LOGGER.debug("ProjectDaoImpl.facultyClosedProject :Start");
 				String returnVal = "N";
 				Transaction tx = null;
 				long projId = facInitProjVO.getProjId();
@@ -1943,7 +2045,7 @@ public class ProjectDaoImpl implements ProjectDao {
 					tx.commit();
 					returnVal = "Y";
 				} catch (Exception e) {
-					//log.debug("Error while closing the project by faculty :"+ e.getMessage());
+					//LOGGER.debug("Error while closing the project by faculty :"+ e.getMessage());
 					throw new FacultyClosedProjectException("Error while closing the project by faculty : "+ e.getMessage());
 				}finally{
 					if(tx!=null)
@@ -1951,7 +2053,7 @@ public class ProjectDaoImpl implements ProjectDao {
 					if(session!=null)
 						session = null;
 				}
-				//log.debug("ProjectDaoImpl.facultyClosedProject :End");
+				//LOGGER.debug("ProjectDaoImpl.facultyClosedProject :End");
 				return returnVal;
 	}
 
@@ -1959,7 +2061,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	@Override
 	public ArrayList<ProjectType> getProjectType() throws GetProjectTypeException {
 		
-		//log.debug("ProjectDaoImpl.getProjectType :Start");
+		//LOGGER.debug("ProjectDaoImpl.getProjectType :Start");
 		ProjectType projectType = null;
 		ArrayList<ProjectType> projectTypes = new ArrayList<ProjectType>();
 		Session session = HibernateUtil.getSessionFactory().openSession();		
@@ -1974,13 +2076,13 @@ public class ProjectDaoImpl implements ProjectDao {
 				projectTypes.add(projectType);
 			}
 			}catch (Exception e) {
-				//log.debug("Error while deleting project : "+ e.getMessage());
+				//LOGGER.debug("Error while deleting project : "+ e.getMessage());
 				throw new GetProjectTypeException("Error while getting project types : "+ e.getMessage());
 			}finally{
 				if(session!=null)
 					session.close();
 			}
-		//log.debug("ProjectDaoImpl.getProjectType :End");
+		//LOGGER.debug("ProjectDaoImpl.getProjectType :End");
 		return projectTypes;
 	}
 	
@@ -2004,7 +2106,7 @@ public class ProjectDaoImpl implements ProjectDao {
 					DetachedCriteria dc1 = DetachedCriteria.forClass(ProjectBranchMaster.class);
 					dc1.add((Subqueries.propertyIn("projBranchId", dc2)));
 					dc1.setProjection(Projections.property("projId"));
-					//log.debug(dc1.list());
+					//LOGGER.debug(dc1.list());
 					
 					Criteria criteria = session.createCriteria(ProjectMaster.class);
 					criteria.add(Subqueries.propertyIn("projId", dc1));
@@ -2061,13 +2163,13 @@ public class ProjectDaoImpl implements ProjectDao {
 					if(projects.size()==0)
 						throw new ProjectByLoggedInUserException("No projects available for this criteria");
 				} catch (Exception e) {
-					//log.debug("Error while deleting project : "+ e.getMessage());
+					//LOGGER.debug("Error while deleting project : "+ e.getMessage());
 					throw new ProjectByLoggedInUserException("Error while getting all project : "+ e.getMessage());
 				}finally{
 					if(session!=null)
 						session.close();
 				}
-				//log.debug("ProjectDaoImpl.getProjectsByLoggedInUser :End");
+				//LOGGER.debug("ProjectDaoImpl.getProjectsByLoggedInUser :End");
 				return projects;
 		}
 	@SuppressWarnings("unchecked")
@@ -2075,7 +2177,7 @@ public class ProjectDaoImpl implements ProjectDao {
 	public String replaceTeamLead(ReplaceTeamLead replaceTeamLead)
 			throws ReplaceTeamLeadException {
 		
-		//log.debug("ProjectDaoImpl.replaceTeamLead :Start");
+		//LOGGER.debug("ProjectDaoImpl.replaceTeamLead :Start");
 		String returnVal = "N";		
 		long teamId = replaceTeamLead.getTeamId();
 		long regstrId = replaceTeamLead.getRegstrId();
@@ -2104,7 +2206,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			tx.commit();
 			returnVal = "Y";}
 		} catch (Exception e) {
-			//log.debug("Error while closing the project by faculty :"+ e.getMessage());
+			//LOGGER.debug("Error while closing the project by faculty :"+ e.getMessage());
 			throw new ReplaceTeamLeadException("Error while changing Team lead : "+ e.getMessage());
 		}finally{
 			if(tx!=null)
@@ -2112,7 +2214,7 @@ public class ProjectDaoImpl implements ProjectDao {
 			if(session!=null)
 				session = null;
 		}
-		//log.debug("ProjectDaoImpl.facultyClosedProject :End");
+		//LOGGER.debug("ProjectDaoImpl.facultyClosedProject :End");
 		return returnVal;
 }
 	
@@ -2125,74 +2227,479 @@ public class ProjectDaoImpl implements ProjectDao {
 			ResourceBundle rbundle = ResourceBundle.getBundle("uploadDownload");
 			String bulkUploadTempLocation = rbundle.getString("SERVER_PROJ_BULK_UPLOAD_TEMP_FOLDER_LOCATION");
 			BulkUploadXLS bulkUploadXLS = new BulkUploadXLS();
-			fileName = bulkUploadTempLocation + fileName;
+			fileName = bulkUploadTempLocation +"//"+ fileName;
 			projectXLSVOs = new ArrayList<ProjectXLSVO>();
 			projectXLSVOs = bulkUploadXLS.readXLS(new File(fileName));
-			log.info("Reading project data from File :: "+fileName);
+			LOGGER.info("Reading project data from File :: "+fileName);
 			retVal = uploadProjectsAsXLS(projectXLSVOs);
+			LOGGER.info("File uploaded successfully :: "+retVal);
 		} catch (Exception e) {
-			throw new BulkUploadException("Error while bulk uploading project : "+ e.getMessage());
+			retVal =  e.getMessage();
 		}
 		return retVal;
 	}
 	
 	private String uploadProjectsAsXLS(final ArrayList<ProjectXLSVO> projectXLSVOs) throws BulkUploadException {
 		
+		String retVal = "N";
 		ResourceBundle rbundle = ResourceBundle.getBundle("query");
-		String bulkUploadMastProjectDetailInsertQuery = rbundle.getString("BULK_UPLOAD_TB_TECH001_MAST_PROJECTS_DETAIL_INSERT_QUERY");
-		log.info("bulkUploadMastProjectDetailInsertQuery :: "+bulkUploadMastProjectDetailInsertQuery);
 		
-		JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
-		jdbcTemplate.batchUpdate(bulkUploadMastProjectDetailInsertQuery, new BatchPreparedStatementSetter(){
+		ArrayList<UserProfileVO> userList = new ArrayList<UserProfileVO>();
+		String projCollege = "";
+		
+		try{
+			//Select All EMAIL_ID from USR_MNGT_MASTER TABLE
+			JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+			String bulkUploadUsrMngtMasterSelectQuery = rbundle.getString("BULK_UPLOAD_USR_MNGT_MASTER_SELECT_QUERY");
+			LOGGER.info("bulkUploadUsrMngtMasterSelectQuery :: "+bulkUploadUsrMngtMasterSelectQuery);
+			
+			userList = (ArrayList<UserProfileVO>) jdbcTemplate.query(bulkUploadUsrMngtMasterSelectQuery, new RowMapper<UserProfileVO>(){
 
-			@Override
-			public void setValues(PreparedStatement ps, int i)
-					throws SQLException {
-				ProjectXLSVO projectXLSVO = projectXLSVOs.get(i);
-				log.debug("ProjUniversity :: "+projectXLSVO.getProjUniversity());
-				ps.setInt(1, projectXLSVO.getProjTypeId());//PROJ_TYPE_ID
-				ps.setString(2, projectXLSVO.getProjTitle());//PROJ_TITLE
-				ps.setString(3, projectXLSVO.getProjAbstract());//PROJ_ABSTRACT
-				ps.setString(4, projectXLSVO.getProjDescription());//PROJ_DESCRIPTION
-				ps.setString(5, projectXLSVO.getProjUniversity());//PROJ_UNIVERSITY
-				ps.setString(6, projectXLSVO.getProjCollegeRgstrIdUsr());//PROJ_COLLEGE_RGSTR_ID_USR
-				ps.setString(7, null); // USER_REGISTRATION_NO
-				ps.setInt(8, projectXLSVO.getProjYear()); //PROJ_YEAR
-				ps.setInt(9, 6); //PROJ_DURATION
-				ps.setString(10, projectXLSVO.getProjCollegeState()); //PROJ_COLLEGE_STATE
-				Date utilProjectStartDate = projectXLSVO.getProjStartDate();
-				Date utilProjectEndDate = projectXLSVO.getProjEndDate();
-				ps.setDate(11, new java.sql.Date(utilProjectStartDate.getTime()));//PROJ_START_DATE
-				ps.setDate(12, new java.sql.Date(utilProjectEndDate.getTime()));//PROJ_END_DATE
-				ps.setLong(13, projectXLSVO.getProjMentor1Id());//PROJ_MENTOR1_ID
-				ps.setInt(14, 16);//PROJ_MENTOR2_ID
-				ps.setInt(15, 1);//TEAM_ID
-				ps.setLong(16, projectXLSVO.getProjGuideId());//PROJ_GUIDE_ID
-				ps.setInt(17, projectXLSVO.getProjStatusId());//PROJ_STATUS_ID
-				ps.setString(18, projectXLSVO.getProjToFloat());//PROJ_TO_FLOAT
-				ps.setInt(19, 0);//PROJ_ESTIMATED_COST
-				ps.setString(20, projectXLSVO.getProjCommentsPublish());//PROJ_COMMENTS_PUBLISH
-				ps.setString(21, projectXLSVO.getProjGrade());//PROJ_GRADE
-				ps.setInt(22, 2);//PROJ_TEAM_LEADER_ID
-				ps.setString(23, projectXLSVO.getProjAwardWon());//PROJ_AWARD_WON
-				ps.setString(24, projectXLSVO.getProjAwardDesc());//PROJ_AWARD_DESC
-				ps.setString(25, "Y");//PROJ_IS_MENTOR_AVAIL
-				ps.setString(26, "Y");//PROJ_IS_FAC_APPROVE
-				ps.setString(27, null);//PROJ_ADMIN_COMMENTS
-				ps.setString(28, "N");//PROJ_IS_FOR_CHALLENGE
-				ps.setString(29, "ACTIVE");//PROJECT_STATUS
-				ps.setInt(30, 13);//PROJ_FAC_RGSTR_ID
+				@Override
+				public UserProfileVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+					UserProfileVO userProfileVO = new UserProfileVO();
+					userProfileVO.setFirstName(rs.getString("FNAME"));
+					userProfileVO.setMidName(rs.getString("MNAME"));
+					userProfileVO.setLastName(rs.getString("LNAME"));
+					userProfileVO.setEmail(rs.getString("EMAIL_ID"));
+					return userProfileVO;
+				}});
+			
+			Collection<String> userEmailFromDBList = new ArrayList<String>();
+			Collection<String> userEmailFromXlsList = new ArrayList<String>();
+			
+			for(UserProfileVO userProfileVO : userList){
+				LOGGER.debug("Email Id From DB :: "+userProfileVO.getEmail());
+				userEmailFromDBList.add(userProfileVO.getEmail());
+			}
+			//Get All EMAIL_IDs from XLS file
+			for(ProjectXLSVO projectXLSVO : projectXLSVOs){
+				LOGGER.debug("Email Id From Excel :: "+projectXLSVO.getEmail());
+				userEmailFromXlsList.add(projectXLSVO.getEmail());
+			}
+			//Get All EMAIL_IDs from NOT PRESENT in DB
+			List<String> newUserEmailToBeInsertedList = new ArrayList<String>(userEmailFromXlsList);
+			newUserEmailToBeInsertedList.removeAll(userEmailFromDBList);
+			
+			if(newUserEmailToBeInsertedList.size()>0){
+				for(String emailIdToBeInserted : newUserEmailToBeInsertedList){
+					LOGGER.info("emailIdToBeInserted :: "+emailIdToBeInserted);
+				}
+				//INSERT All EMAIL_IDs in USR_MNGT_MASTER which were NOT PRESENT in DB
+				String bulkUploadUsrMngtMasterInsertQuery = rbundle.getString("BULK_UPLOAD_USR_MNGT_MASTER_INSERT_QUERY");
+				LOGGER.info("bulkUploadUsrMngtMasterInsertQuery :: "+bulkUploadUsrMngtMasterInsertQuery);
+				
+				jdbcTemplate.batchUpdate(bulkUploadUsrMngtMasterInsertQuery, new BatchPreparedStatementSetter(){
+
+					@Override
+					public void setValues(PreparedStatement ps, int i)
+							throws SQLException {
+						String emailId = newUserEmailToBeInsertedList.get(i);
+						String fName = "";
+						String mName = "";
+						String lName = "";
+						for(ProjectXLSVO projectXLSVO : projectXLSVOs){
+							if(projectXLSVO.getEmail().equalsIgnoreCase(emailId)){
+								fName = projectXLSVO.getFirstName();
+								mName = projectXLSVO.getMidName();
+								lName = projectXLSVO.getLastName();
+							}
+						}
+						String generatedUserId = RandomStringUtils.randomAlphanumeric(12);
+						Date rgstrDate = new Date();
+						ps.setString(1, fName);//FNAME
+						ps.setString(2, mName);//MNAME
+						ps.setString(3, lName);//LNAME
+						ps.setString(4, generatedUserId);//USR_ID
+						ps.setTimestamp(5, new java.sql.Timestamp (rgstrDate.getTime()));//RGSTR_DATE
+						ps.setDate(6, new java.sql.Date (rgstrDate.getTime()));//ACTIVATED_DATE
+						ps.setString(7, "1");//CAPTCHA_VERIFICATION
+						ps.setString(8, "Y");//IS_ACTIVE
+						ps.setString(9, "student");//TYPE
+						ps.setString(10, emailId);//EMAIL_ID
+					}
+
+					@Override
+					public int getBatchSize() {
+						return newUserEmailToBeInsertedList.size();
+					}
+					
+					
+				});
+				//Get the RGSTR_IDs of all those Users after insertion of EMAIL_ID in DB
+				NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+				
+				String bulkUploadUsrMngtMasterSelectByEmailIdQuery = rbundle.getString("BULK_UPLOAD_USR_MNGT_MASTER_SELECT_BY_EMAIL_ID_QUERY");
+				bulkUploadUsrMngtMasterSelectByEmailIdQuery = bulkUploadUsrMngtMasterSelectByEmailIdQuery.replaceAll("&EMAILIDS", ":emailIds");
+				LOGGER.info("bulkUploadUsrMngtMasterSelectByEmailIdQuery :: "+bulkUploadUsrMngtMasterSelectByEmailIdQuery);
+		
+				Map<String, Object> paramMapForEmailIds = new HashMap<String, Object>();
+				paramMapForEmailIds.put("emailIds", newUserEmailToBeInsertedList);
+				LOGGER.info("emailIds :: "+newUserEmailToBeInsertedList);
+		
+				ArrayList<UserProfileVO> userToBeInsertedList = new ArrayList<UserProfileVO>();
+				userToBeInsertedList = (ArrayList<UserProfileVO>) namedParameterJdbcTemplate.query(bulkUploadUsrMngtMasterSelectByEmailIdQuery, paramMapForEmailIds,  new RowMapper<UserProfileVO>(){
+
+					@Override
+					public UserProfileVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+						UserProfileVO userProfileVO = new UserProfileVO();
+						userProfileVO.setRgstrId(rs.getLong("RGSTR_ID"));
+						userProfileVO.setEmail(rs.getString("EMAIL_ID"));
+						userProfileVO.setUserName(rs.getString("USR_ID"));
+						return userProfileVO;
+					}});
+				
+				//Insert into UsrMngtPasswd for All the newly inserted RGSTR_IDs
+				ArrayList<UsrMngtPasswdVO> usrMngtPasswdVOs = new ArrayList<UsrMngtPasswdVO>();
+				for(UserProfileVO userProfileVO : userToBeInsertedList){
+					LOGGER.info("Rgstr Id :: "+userProfileVO.getRgstrId());
+					UsrMngtPasswdVO usrMngtPasswdVO = new UsrMngtPasswdVO();
+					usrMngtPasswdVO.setRgstrId(userProfileVO.getRgstrId());
+					usrMngtPasswdVO.setUsrId(userProfileVO.getUserName());
+					String generatedPasswd = RandomStringUtils.randomAlphanumeric(8); // Encryption to be done here
+					String encryptedGeneratedPasswd = ChiperUtils.encrypt2(generatedPasswd);
+					usrMngtPasswdVO.setUsrPasswd(encryptedGeneratedPasswd);
+					Date createdDate = new Date();
+					usrMngtPasswdVO.setCreatedDate(createdDate);
+					usrMngtPasswdVOs.add(usrMngtPasswdVO);
+				}
+				
+				String bulkUploadUsrMngtPasswdInsertQuery = rbundle.getString("BULK_UPLOAD_USR_MNGT_PASSWD_INSERT_QUERY");
+				LOGGER.info("bulkUploadUsrMngtPasswdInsertQuery :: "+bulkUploadUsrMngtPasswdInsertQuery);
+				jdbcTemplate.batchUpdate(bulkUploadUsrMngtPasswdInsertQuery, new BatchPreparedStatementSetter(){
+
+					@Override
+					public void setValues(PreparedStatement ps, int i)
+							throws SQLException {
+						UsrMngtPasswdVO usrMngtPasswdVO = usrMngtPasswdVOs.get(i);
+						ps.setLong(1, usrMngtPasswdVO.getRgstrId());//RGSTR_ID
+						ps.setString(2, usrMngtPasswdVO.getUsrId());//USR_ID
+						ps.setString(3, usrMngtPasswdVO.getUsrPasswd());//USR_PASSWD
+						ps.setTimestamp(4, new java.sql.Timestamp (usrMngtPasswdVO.getCreatedDate().getTime()));//CREATED_DATE
+					}
+
+					@Override
+					public int getBatchSize() {
+						return usrMngtPasswdVOs.size();
+					}
+				});
+				for(UserProfileVO userProfileVO : userToBeInsertedList){
+					
+					for(ProjectXLSVO projectXLSVO : projectXLSVOs){
+						if(userProfileVO.getEmail().equalsIgnoreCase(projectXLSVO.getEmail())){
+							userProfileVO.setBranch(String.valueOf(projectXLSVO.getBranchId()));
+							userProfileVO.setUniversity(projectXLSVO.getProjUniversity());
+							userProfileVO.setDegreeOfStudent(projectXLSVO.getDegree());
+							DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+							String yearOfPassDate = df.format(projectXLSVO.getYearOfPass());
+							userProfileVO.setCompletionYear(yearOfPassDate);
+							userProfileVO.setStudentID(projectXLSVO.getEnrollmentNo());
+						}
+						projCollege = projectXLSVO.getProjCollege();
+					}
+				}
+				
+				//Insert into UsrMngtStudent for All the newly inserted RGSTR_IDs
+				ArrayList<UsrMngtStudentVO> usrMngtStudentVOs = new ArrayList<UsrMngtStudentVO>();
+				for(UserProfileVO userProfileVO : userToBeInsertedList){
+					LOGGER.info("Rgstr Id :: "+userProfileVO.getRgstrId());
+					UsrMngtStudentVO usrMngtStudentVO = new UsrMngtStudentVO();
+					usrMngtStudentVO.setCollege(projCollege);
+					usrMngtStudentVO.setRgstrId(userProfileVO.getRgstrId());
+					usrMngtStudentVO.setBranchId(userProfileVO.getBranch());
+					usrMngtStudentVO.setDegree(userProfileVO.getDegreeOfStudent());
+					usrMngtStudentVO.setUniversity(userProfileVO.getUniversity());
+					usrMngtStudentVO.setEnrollmentNo(userProfileVO.getStudentID());
+					String yearOfPass = userProfileVO.getCompletionYear();
+					DateFormat format = new SimpleDateFormat("dd/MM/yyyy");
+					Date yearOfPassDate = format.parse(yearOfPass);
+					usrMngtStudentVO.setYearOfPass(yearOfPassDate);
+					usrMngtStudentVOs.add(usrMngtStudentVO);
+				}
+				
+				String bulkUploadUsrMngtStudentInsertQuery = rbundle.getString("BULK_UPLOAD_USR_MNGT_STUDENT_INSERT_QUERY");
+				LOGGER.info("bulkUploadUsrMngtStudentInsertQuery :: "+bulkUploadUsrMngtStudentInsertQuery);
+				jdbcTemplate.batchUpdate(bulkUploadUsrMngtStudentInsertQuery, new BatchPreparedStatementSetter(){
+
+					@Override
+					public void setValues(PreparedStatement ps, int i)
+							throws SQLException {
+						UsrMngtStudentVO usrMngtStudentVO = usrMngtStudentVOs.get(i);
+						ps.setLong(1, usrMngtStudentVO.getRgstrId());//RGSTR_ID
+						ps.setString(2, usrMngtStudentVO.getDegree());//DEGREE
+						ps.setString(3, usrMngtStudentVO.getCollege());//COLLEGE
+						ps.setString(4, usrMngtStudentVO.getUniversity());//UNIVERSITY
+						ps.setString(5, usrMngtStudentVO.getEnrollmentNo());//ENROLLMENT_NO
+						ps.setDate(6, new java.sql.Date(usrMngtStudentVO.getYearOfPass().getTime()));//YEAR_OF_PASS
+						ps.setString(7, usrMngtStudentVO.getBranchId());//BRANCH
+					}
+
+					@Override
+					public int getBatchSize() {
+						return usrMngtStudentVOs.size();
+					}
+				});
+				//Insert into UsrMngtContactInfo for All the newly inserted RGSTR_IDs
+				ArrayList<UsrMngtContactInfoVO> usrMngtContactInfoVOs = new ArrayList<UsrMngtContactInfoVO>();
+				for(UserProfileVO userProfileVO : userToBeInsertedList){
+					LOGGER.info("Rgstr Id :: "+userProfileVO.getRgstrId());
+					UsrMngtContactInfoVO usrMngtContactInfoVO = new UsrMngtContactInfoVO();
+					usrMngtContactInfoVO.setRgstrId(userProfileVO.getRgstrId());
+					usrMngtContactInfoVO.setMobileNo(userProfileVO.getMobile());
+					usrMngtContactInfoVO.setHomePhoneNo(userProfileVO.getHomePhoneNo());
+					usrMngtContactInfoVOs.add(usrMngtContactInfoVO);
+				}
+				
+				String bulkUploadUsrMngtContactInfoInsertQuery = rbundle.getString("BULK_UPLOAD_USR_MNGT_CONTACT_INFO_INSERT_QUERY");
+				LOGGER.info("bulkUploadUsrMngtContactInfoInsertQuery :: "+bulkUploadUsrMngtContactInfoInsertQuery);
+				jdbcTemplate.batchUpdate(bulkUploadUsrMngtContactInfoInsertQuery, new BatchPreparedStatementSetter(){
+
+					@Override
+					public void setValues(PreparedStatement ps, int i)
+							throws SQLException {
+						UsrMngtContactInfoVO usrMngtContactInfoVO = usrMngtContactInfoVOs.get(i);
+						ps.setLong(1, usrMngtContactInfoVO.getRgstrId());//RGSTR_ID
+						ps.setString(2, usrMngtContactInfoVO.getMobileNo());//MOBILE_NO
+						ps.setString(3, usrMngtContactInfoVO.getHomePhoneNo());//HOME_PHONE_NO
+					}
+
+					@Override
+					public int getBatchSize() {
+						return usrMngtContactInfoVOs.size();
+					}
+				});
+				
+				//Insert into UsrMngtAddress for All the newly inserted RGSTR_IDs
+				ArrayList<UsrMngtAddressVO> usrMngtAddressVOs = new ArrayList<UsrMngtAddressVO>();
+				for(UserProfileVO userProfileVO : userToBeInsertedList){
+					LOGGER.info("Rgstr Id :: "+userProfileVO.getRgstrId());
+					UsrMngtAddressVO usrMngtAddressVO = new UsrMngtAddressVO();
+					usrMngtAddressVO.setRgstrId(userProfileVO.getRgstrId());
+					usrMngtAddressVOs.add(usrMngtAddressVO);
+				}
+				
+				String bulkUploadUsrMngtAddressInsertQuery = rbundle.getString("BULK_UPLOAD_USR_MNGT_ADDRESS_INSERT_QUERY");
+				LOGGER.info("bulkUploadUsrMngtAddressInsertQuery :: "+bulkUploadUsrMngtAddressInsertQuery);
+				jdbcTemplate.batchUpdate(bulkUploadUsrMngtAddressInsertQuery, new BatchPreparedStatementSetter(){
+
+					@Override
+					public void setValues(PreparedStatement ps, int i)
+							throws SQLException {
+						UsrMngtAddressVO usrMngtAddressVO = usrMngtAddressVOs.get(i);
+						ps.setLong(1, usrMngtAddressVO.getRgstrId());//RGSTR_ID
+					}
+
+					@Override
+					public int getBatchSize() {
+						return usrMngtAddressVOs.size();
+					}
+				});
 				
 			}
+			
+			//Get the data of all those Users amentioned in xls file
+			NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+			
+			String bulkUploadUsrMngtMasterSelectByEmailIdQuery = rbundle.getString("BULK_UPLOAD_USR_MNGT_MASTER_SELECT_BY_EMAIL_ID_QUERY");
+			bulkUploadUsrMngtMasterSelectByEmailIdQuery = bulkUploadUsrMngtMasterSelectByEmailIdQuery.replaceAll("&EMAILIDS", ":emailIds");
+			LOGGER.info("bulkUploadUsrMngtMasterSelectByEmailIdQuery :: "+bulkUploadUsrMngtMasterSelectByEmailIdQuery);
+	
+			Map<String, Object> paramMapForEmailIds = new HashMap<String, Object>();
+			paramMapForEmailIds.put("emailIds", userEmailFromXlsList);
+			LOGGER.info("emailIds :: "+newUserEmailToBeInsertedList);
+	
+			ArrayList<UserProfileVO> allUsersList = new ArrayList<UserProfileVO>();
+			allUsersList = (ArrayList<UserProfileVO>) namedParameterJdbcTemplate.query(bulkUploadUsrMngtMasterSelectByEmailIdQuery, paramMapForEmailIds,  new RowMapper<UserProfileVO>(){
 
-			@Override
-			public int getBatchSize() {
-				return projectXLSVOs.size();
+				@Override
+				public UserProfileVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+					UserProfileVO userProfileVO = new UserProfileVO();
+					userProfileVO.setRgstrId(rs.getLong("RGSTR_ID"));
+					userProfileVO.setEmail(rs.getString("EMAIL_ID"));
+					return userProfileVO;
+				}});
+			for(UserProfileVO userProfileVO : allUsersList){
+				LOGGER.info("emailId :: "+userProfileVO.getEmail());
+				LOGGER.info("rgstrId :: "+userProfileVO.getRgstrId());
+			}
+			for(UserProfileVO userProfileVO : allUsersList){
+				
+				for(ProjectXLSVO projectXLSVO : projectXLSVOs){
+					if(userProfileVO.getEmail().equalsIgnoreCase(projectXLSVO.getEmail())){
+						projectXLSVO.setProjTeamLeaderId(userProfileVO.getRgstrId());
+					}
+				}
+			}
+			String bulkUploadMastProjectDetailInsertQuery = rbundle.getString("BULK_UPLOAD_TB_TECH001_MAST_PROJECTS_DETAIL_INSERT_QUERY");
+			LOGGER.info("bulkUploadMastProjectDetailInsertQuery :: "+bulkUploadMastProjectDetailInsertQuery);
+			jdbcTemplate.batchUpdate(bulkUploadMastProjectDetailInsertQuery, new BatchPreparedStatementSetter(){
+
+				@Override
+				public void setValues(PreparedStatement ps, int i)
+						throws SQLException {
+					ProjectXLSVO projectXLSVO = projectXLSVOs.get(i);
+					ps.setInt(1, 1);//PROJ_TYPE_ID
+					ps.setString(2, projectXLSVO.getProjTitle());//PROJ_TITLE
+					ps.setString(3, projectXLSVO.getProjAbstract());//PROJ_ABSTRACT
+					ps.setString(4, projectXLSVO.getProjDescription());//PROJ_DESCRIPTION
+					ps.setString(5, projectXLSVO.getProjUniversity());//PROJ_UNIVERSITY
+					ps.setString(6, projectXLSVO.getProjCollegeRgstrIdUsr());//PROJ_COLLEGE_RGSTR_ID_USR
+					ps.setString(7, projectXLSVO.getEnrollmentNo()); // USER_REGISTRATION_NO
+					ps.setInt(8, projectXLSVO.getProjYear()); //PROJ_YEAR
+					ps.setInt(9, 12); //PROJ_DURATION
+					ps.setString(10, projectXLSVO.getProjCollegeState()); //PROJ_COLLEGE_STATE
+					Date utilProjectStartDate = projectXLSVO.getProjStartDate();
+					Date utilProjectEndDate = projectXLSVO.getProjEndDate();
+					ps.setDate(11, new java.sql.Date(utilProjectStartDate.getTime()));//PROJ_START_DATE
+					ps.setDate(12, new java.sql.Date(utilProjectEndDate.getTime()));//PROJ_END_DATE
+					ps.setLong(13, projectXLSVO.getProjMentor1Id());//PROJ_MENTOR1_ID
+					ps.setInt(14, 16);//PROJ_MENTOR2_ID
+					ps.setInt(15, 0);//TEAM_ID
+					ps.setLong(16, projectXLSVO.getProjGuideId());//PROJ_GUIDE_ID
+					ps.setInt(17, 4);//PROJ_STATUS_ID
+					ps.setString(18, null);//PROJ_TO_FLOAT
+					ps.setInt(19, 0);//PROJ_ESTIMATED_COST
+					ps.setString(20, "N");//PROJ_COMMENTS_PUBLISH
+					ps.setString(21, projectXLSVO.getProjGrade());//PROJ_GRADE
+					ps.setLong(22, projectXLSVO.getProjTeamLeaderId());//PROJ_TEAM_LEADER_ID
+					ps.setString(23, projectXLSVO.getProjAwardWon());//PROJ_AWARD_WON
+					ps.setString(24, projectXLSVO.getProjAwardDesc());//PROJ_AWARD_DESC
+					ps.setString(25, "N");//PROJ_IS_MENTOR_AVAIL
+					ps.setString(26, "N");//PROJ_IS_FAC_APPROVE
+					ps.setString(27, null);//PROJ_ADMIN_COMMENTS
+					ps.setString(28, "N");//PROJ_IS_FOR_CHALLENGE
+					ps.setString(29, "ACTIVE");//PROJECT_STATUS
+					ps.setInt(30, 0);//PROJ_FAC_RGSTR_ID
+					ps.setString(31, projectXLSVO.getProjCollege());//PROJ_COLLEGE
+					
+				}
+
+				@Override
+				public int getBatchSize() {
+					return projectXLSVOs.size();
+				}
+			});
+			retVal = "Y";
+		}catch(Exception e){
+			LOGGER.error("An unexpected Error while bulk uploading project Ex :: ", e);
+			throw new BulkUploadException("Error while bulk uploading project : "+e.getMessage());
+		}
+		return retVal;
+	}
+
+	public synchronized String uploadMultipleProjectDocument(UploadMultipleProjDocVO uploadMultipleProjDocVO) throws UploadMultipleProjDocException {
+		
+		String returnVal = "N";
+		String fileSize = "";
+		ResourceBundle rbundleForDownload = ResourceBundle.getBundle("uploadDownload");
+		ResourceBundle rbundle = ResourceBundle.getBundle("query");
+		String serverUploadProjectFolderLocation = rbundleForDownload.getString("SERVER_UPLOAD_PROJECT_FOLDER_LOCATION");		
+		String projId = String.valueOf(uploadMultipleProjDocVO.getProjId());
+		String regstrId = String.valueOf(uploadMultipleProjDocVO.getRgstrId());
+		
+		Map<String, String> documentMap = uploadMultipleProjDocVO.getDocumentMap();
+		Calendar now = Calendar.getInstance(); 
+	    Date docUploadDate = now.getTime();
+	    Map<String, String> fileNameSizeMap = new HashMap<String, String>();
+	    LOGGER.info("No of entries :: "+documentMap.size());
+		try{
+			for (Map.Entry<String, String> doc : documentMap.entrySet()){
+				
+				String docName = doc.getKey();	
+		    
+				//Base64 decoder = new Base64();
+				//byte[] encodedBytes  = Base64.encodeBase64(doc.getValue().getBytes());
+				byte[] decodedBytes = Base64.decodeBase64(doc.getValue().getBytes());
+				InputStream inputStream = new ByteArrayInputStream(decodedBytes);			
+				fileSize = FileUploadDownload.saveFile(inputStream, serverUploadProjectFolderLocation, projId, regstrId, docName);
+				fileNameSizeMap.put(docName, fileSize);
+				LOGGER.info("Doc name :: "+docName);
+				LOGGER.info("Doc fileSize :: "+fileSize);
 			}
 			
+			for (Map.Entry<String, String> doc : documentMap.entrySet()){
+				
+				String docName = doc.getKey();	
+				String docPath = projId+"/"+regstrId+"/"+docName;
+				
+				ArrayList<ProjectDocPathVO> projectDocPaths = new ArrayList<ProjectDocPathVO>();
+				String getAllProjectDocPathQuery=rbundle.getString("GET_ALL_PROJECT_DOC_PATH_QUERY");
+				getAllProjectDocPathQuery = getAllProjectDocPathQuery.replaceAll("&PROJID", ":projId");
+				getAllProjectDocPathQuery = getAllProjectDocPathQuery.replaceAll("&REGSTRID", ":regstrId");
+				getAllProjectDocPathQuery = getAllProjectDocPathQuery.replaceAll("&PROJPATH", ":projPath");
+				LOGGER.info("getAllProjectDocPathQuery :: "+getAllProjectDocPathQuery);
+				
+				NamedParameterJdbcTemplate namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+				Map<String, Object> paramMapForProjIdRegstrIdProjPath = new HashMap<String, Object>();
+				paramMapForProjIdRegstrIdProjPath.put("projId", uploadMultipleProjDocVO.getProjId());
+				paramMapForProjIdRegstrIdProjPath.put("regstrId", uploadMultipleProjDocVO.getRgstrId());
+				paramMapForProjIdRegstrIdProjPath.put("projPath", docPath);
+				projectDocPaths = (ArrayList<ProjectDocPathVO>) namedParameterJdbcTemplate.query(getAllProjectDocPathQuery, paramMapForProjIdRegstrIdProjPath, new RowMapper<ProjectDocPathVO>(){
+
+					@Override
+					public ProjectDocPathVO mapRow(ResultSet rs, int rowNum) throws SQLException {
+
+						ProjectDocPathVO projectDocPathVO = new ProjectDocPathVO();
+						projectDocPathVO.setProjId(rs.getLong("PROJ_ID"));
+						projectDocPathVO.setProjDocId(rs.getLong("PROJ_DOC_ID"));
+						projectDocPathVO.setprojDocSizeMb(rs.getString("PROJ_DOC_SIZE_MB"));
+						projectDocPathVO.setProjDocUploadDate(rs.getDate("PROJ_DOC_UPLOAD_DATE"));
+						projectDocPathVO.setProjPath(rs.getString("PROJ_PATH"));
+						projectDocPathVO.setRegstrId(rs.getLong("REGSTR_ID"));
+						return projectDocPathVO;
+					}
+
+				});
+				LOGGER.info("Document exists :: "+projectDocPaths.size());
+				if(projectDocPaths.size()==0){
+					String projectDocPathInsertQuery=rbundle.getString("PROJECT_DOC_PATH_INSERT_QUERY");
+					JdbcTemplate jdbcTemplate = new JdbcTemplate(dataSource);
+					jdbcTemplate.update(projectDocPathInsertQuery, new PreparedStatementSetter(){
+
+						@Override
+						public void setValues(PreparedStatement ps)
+								throws SQLException {
+							ps.setLong(1,uploadMultipleProjDocVO.getProjId());
+							ps.setString(2,docPath);
+							ps.setDate(3, new java.sql.Date(docUploadDate.getTime()));
+							ps.setLong(4,uploadMultipleProjDocVO.getRgstrId());
+							String projDocSizeMb = "0";
+							for(Map.Entry<String, String> fileNameSize : fileNameSizeMap.entrySet()){
+								if(fileNameSize.getKey().equalsIgnoreCase(doc.getKey())){
+									projDocSizeMb = fileNameSize.getValue();
+								}
+							}
+							ps.setString(5,projDocSizeMb);
+						}
+					});
+					
+				}
+				else{
+					String projectDocPathUpdateQuery=rbundle.getString("PROJECT_DOC_PATH_UPDATE_QUERY");
+					ProjectDocPathVO projectDocPath = projectDocPaths.get(0);
+					MapSqlParameterSource queryParameters = new MapSqlParameterSource();
+					
+					queryParameters.addValue("projDocUploadDate", docUploadDate);
+					String projDocSizeMb = "0";
+					for(Map.Entry<String, String> fileNameSize : fileNameSizeMap.entrySet()){
+						if(fileNameSize.getKey().equalsIgnoreCase(doc.getKey())){
+							projDocSizeMb = fileNameSize.getValue();
+						}
+					}
+					queryParameters.addValue("projDocSizeMb", projDocSizeMb);
+					queryParameters.addValue("projDocId", projectDocPath.getProjDocId());
+					
+					namedParameterJdbcTemplate.update(projectDocPathUpdateQuery, queryParameters);
+				}
+				
+			}
 			
-		});
-		return "Y";
+			returnVal = "Y";
+		} catch (Exception e) {	
+			LOGGER.error("Error while uploading multiple document : Ex :: ", e);
+			throw new UploadMultipleProjDocException("Error while uploading multiple document :"+ e.getMessage());
+		}
+		return returnVal;
 	}
 	
 	public ArrayList<Project> getCompletedProject() throws GetAllProjectException{
@@ -2241,5 +2748,193 @@ public class ProjectDaoImpl implements ProjectDao {
 	public ApproveOrDeclineMentorRequestResponse approveOrDeclineMentorRequest(ApproveOrDeclineMentorRequestVO approveOrDeclineMentorRequestVO) throws ApproveOrDeclineMentorRequestException {
 		
 		return projectDaoHelper.approveOrDeclineMentorRequest(approveOrDeclineMentorRequestVO);
+	}
+
+
+	public ArrayList<ProjectMacroBranch> getprojectMacroBranch() throws ProjectMacroBranchException {
+		
+		return projectDaoHelper.getprojectMacroBranch();
+	}
+	
+	
+	public ArrayList<Project> getAllProjectBymacroBranch( DisplayProjectMacroVO displayProjectMacro  ) throws GetAllProjectException {
+		return projectDaoHelper.getAllProjectBymacroBranch( displayProjectMacro );
+	}
+
+
+
+	
+	public ArrayList<Branch> getAllBranches() throws GetAllBranchesException {
+			
+			return projectDaoHelper.getAllBranches();
+		}
+	
+	@Transactional (rollbackFor = Exception.class)
+	public String submitAcademicProjectToGyti(ProjectGytiAddInfo gytiAddInfo) throws SubmitAcademicProjectToGytiException{
+			
+			return projectDaoHelper2.submitAcademicProjectToGyti(gytiAddInfo);
+		}
+	
+	@Transactional (rollbackFor = Exception.class)
+	public String submitProjectToGyti(SubmitInnovationToGytiVO innovationInfo) throws SubmitProjectToGytiException {
+			
+			return projectDaoHelper2.submitProjectToGyti(innovationInfo);
+		}
+	
+	
+	public SubmitInnovationToGytiVO getgytiProjectDetails(long projId) throws GetProjectDetailsException {
+		
+		return projectDaoHelper2.getgytiProjectDetails(projId);
+	}
+
+	public ArrayList<GytiProjectVO> getAllGytiProject(int interationCount) throws GetAllGytiProjectException {
+		
+		return projectDaoHelper2.getAllGytiProject(interationCount);
+	}
+
+
+	public ArrayList<GytiProjectVO> getAllGytiProjectByLoggedInUser(String rgstrId) throws GetAllGytiProjectException {
+		
+		return projectDaoHelper2.getAllGytiProjectByLoggedInUser(rgstrId);
+	}
+
+	@Transactional (rollbackFor = Exception.class)
+	public String updateGytiProject(SubmitInnovationToGytiVO innovationInfo) throws UpdateGytiInnovationException {
+		
+		return projectDaoHelper2.updateGytiProject(innovationInfo);
+	}
+
+
+	@Override
+	public ArrayList<GYTIProjectStatisticsVO> getGYTIProjectStatistics() throws GetGYTIProjectStatisticsException {
+
+		return projectDaoHelper2.getGYTIProjectStatistics();
+	}
+
+
+	@Override
+	public String reviewRating(ReviewRatingVO reviewRating) throws ReviewRatingException {
+
+		return projectDaoHelper2.reviewRating(reviewRating);
+	}
+	
+	public GetAllGytiProjectByLoggedInReviewerResponse getAllGytiProjectByLoggedInReviewer(String revRgstrId,String awardYear) throws GetAllGytiProjectException {
+		
+		return projectDaoHelper2.getAllGytiProjectByLoggedInReviewer(revRgstrId,awardYear);
+	}
+	
+	public String suggestReviewer(ArrayList<SuggestReviewerVO> suggestReviewerVO) throws SuggestReviewerException{
+		
+		return projectDaoHelper2.suggestReviewer(suggestReviewerVO);
+	}
+
+	public ReviewRatingVO getgytiProjectReviewDetails(GetReviewRatingVO getReviewRatingVO) throws GetGytiProjectRatingDetailsException{
+		
+		return projectDaoHelper2.getgytiProjectReviewDetails(getReviewRatingVO);
+	}
+
+	
+	public List<OverallCalculatedReviewRatingVO> getAllReviews(String awardYear) throws GetAllReviewsException {
+		
+		return projectDaoHelper3.getAllReviews(awardYear);
+	}
+	
+	public String updateGytiProjectReviewRating(ReviewRatingVO reviewRatingVO) throws updateGytiProjectReviewRatingException{
+			
+			return projectDaoHelper2.updateGytiProjectReviewRating(reviewRatingVO);
+		}
+	
+
+	@Override
+	public ArrayList<GytiProjectVO> getLatestGytiProject() throws  GetAllGytiProjectException {	
+		
+		return projectDaoHelper2.getLatestGytiProject();
+		
+		
+	}
+	
+	public ReviewRatingVO getRatingDetailsByReviwer(String ratingId) throws GetGytiProjectRatingDetailsException{
+		
+		return projectDaoHelper2.getRatingDetailsByReviewer(ratingId);
+		
+	}
+
+	public GetAllReviewsByLoggedInReviewerAndOthersResponse getAllReviewsByLoggedInReviewerAndOthers(String revRgstrId, String awardYear) throws GetAllReviewsException {
+		
+		return projectDaoHelper3.getAllReviewsByLoggedInReviewerAndOthers(revRgstrId, awardYear);
+	}
+
+	public ArrayList<SuggestedProjectForReviewByLoggedInReviewerVO> getSuggestedReviewersByLoggedInReviewer(long assignedBy) throws GetSuggestedReviewersException {
+			
+			return projectDaoHelper2.getSuggestedReviewersByLoggedInReviewer(assignedBy);
+		}
+	
+	public ArrayList<SuggestedProjectForReviewByLoggedInReviewerVO> getAllSuggestedReviewersList() throws GetSuggestedReviewersException {
+		
+		return projectDaoHelper2.getAllSuggestedReviewersList();
+	}
+
+	public String rejectSuggestedProjectForReview(GetReviewRatingVO getReviewRating) throws RejectSuggestedProjectForReviewException{
+		
+		return projectDaoHelper2.rejectSuggestedProjectForReview(getReviewRating);
+		
+	}
+	
+	public OverallCalculatedReviewRatingVO getAllReviewsForSpecificProject(long projId) throws GetAllReviewsException {
+		
+		return projectDaoHelper3.getAllReviewsForSpecificProject(projId);
+	}
+	
+	public long gytiInnovationCount() throws GytiInnovationCountException {
+		
+		return projectDaoHelper2.gytiInnovationCount();
+	}
+	
+	public long gytiYearWiseInnovationCount(int year) throws GytiInnovationCountException {
+		
+		return projectDaoHelper2.gytiYearWiseInnovationCount(year);
+	}
+	
+	public long gytiYearWiseReviewedInnovationCount(int year) throws GytiReviewedInnovationCountException {
+		
+		return projectDaoHelper2.gytiYearWiseReviewedInnovationCount(year);
+	}
+	
+	public List<TotalProjectsStatisticsVO> totalProjectsStatistics() throws TotalProectsStatisticsException {
+		
+		return projectDaoHelper2.totalProjectsStatistics();
+	}
+	
+	public Map<String, List<TotalProjectsYearWiseStatisticsVO>> totalProjectsYearWiseStatistics() throws TotalProectsYearWiseStatisticsException {
+			
+			return projectDaoHelper2.totalProjectsYearWiseStatistics();
+		}
+	public Map<String, List<TotalProjectsYearWiseStatisticsVO>> totalProjectsInAYearStatistics(int year) throws TotalProectsYearWiseStatisticsException {
+		
+		return projectDaoHelper2.totalProjectsInAYearStatistics(year);
+	}
+	@Transactional (rollbackFor = Exception.class)
+	public AddNewTeamMemberResponseVO addNewTeamMember(AddNewTeamMemberVO addNewTeamMemberVO) throws AddNewTeamMemberException {
+		
+		return projectDaoHelper3.addNewTeamMember(addNewTeamMemberVO);
+	}
+	
+	@Override
+	public String saveReviewRating(ReviewRatingVO reviewRating) throws ReviewRatingException {
+
+		return projectDaoHelper2.saveReviewRating(reviewRating);
+	}
+	
+	public String acceptSuggestedProjectForReview(GetReviewRatingVO getReviewRating) throws RejectSuggestedProjectForReviewException{
+		
+		return projectDaoHelper2.acceptSuggestedProjectForReview(getReviewRating);
+		
+	}
+
+
+	@Override
+	public RegisterNewFacultyResponseVO registerNewFaculty(RegisterNewFacultyVO registerNewFacultyVO)
+			throws AddNewTeamMemberException {
+		return projectDaoHelper3.registerNewFaculty(registerNewFacultyVO);
 	}
 }

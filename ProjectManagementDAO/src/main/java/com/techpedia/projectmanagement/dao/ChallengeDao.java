@@ -57,7 +57,7 @@ public interface ChallengeDao {
 	
 	public abstract ArrayList<Challenge> searchChallengeByTitle(SearchByKeyVO searchByKeyVO)throws SearchChallengeException;
 	
-	public abstract Challenge getChallengeDetail(String ChallengeId) throws GetChallengeDetailException;
+	public abstract Challenge getChallengeDetail(String challengeId) throws GetChallengeDetailException;
 	
 	public abstract String uploadChallengeDocument(UploadChallDocVO uploadChallDocVO) throws UploadChallengeDocException;
 	
@@ -71,9 +71,9 @@ public interface ChallengeDao {
 	
 	public abstract ArrayList<ChallengeType> getChallengeType() throws GetChallengeTypeException;
 
-	public abstract String followTheChallenge(FollowChallengeVO FollowChallengeVO) throws FollowTheChallengeException;
+	public abstract String followTheChallenge(FollowChallengeVO followChallengeVO) throws FollowTheChallengeException;
 
-	public abstract String removeChallengeFollow(FollowChallengeVO FollowChallengeVO) throws RemoveChallengeFollowException;
+	public abstract String removeChallengeFollow(FollowChallengeVO followChallengeVO) throws RemoveChallengeFollowException;
 
 	public abstract ArrayList<Challenge> getAllFollowedChallenges(String rgstrId) throws GetAllFollowedChallengeException;
 

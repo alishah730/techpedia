@@ -51,6 +51,9 @@ public class ProjectMaster {
 	@Column(name="PROJ_DURATION")
 	private int projDuration; 
 	
+	@Column(name="PROJ_COLLEGE")
+	private String projCollege;
+	
 	@Column(name="PROJ_COLLEGE_STATE")
 	private String projCollegeState; 
 	
@@ -134,6 +137,7 @@ public class ProjectMaster {
 	 * @param userRgstrNo
 	 * @param projYear
 	 * @param projDuration
+	 * @param projCollege
 	 * @param projCollegeState
 	 * @param projStartDate
 	 * @param projEndDate
@@ -159,7 +163,7 @@ public class ProjectMaster {
 	public ProjectMaster(int projTypeId, String projTitle,
 			String projAbstract, String projDescription, String projUniversity,
 			String projCollegeRgstrIdUsr, String userRgstrNo, int projYear,
-			int projDuration, String projCollegeState, Date projStartDate,
+			int projDuration, String projCollege, String projCollegeState, Date projStartDate,
 			Date projEndDate, long projMentor1Id, long projMentor2Id,
 			long teamId, long projGuideId, int projStatusId,
 			String projToFloat, Long projEstimatedCost,
@@ -177,6 +181,7 @@ public class ProjectMaster {
 		this.userRgstrNo = userRgstrNo;
 		this.projYear = projYear;
 		this.projDuration = projDuration;
+		this.projCollege = projCollege;
 		this.projCollegeState = projCollegeState;
 		this.projStartDate = projStartDate;
 		this.projEndDate = projEndDate;
@@ -239,7 +244,7 @@ public class ProjectMaster {
 	public ProjectMaster(int projTypeId, String projTitle,
 			String projAbstract, String projDescription, String projUniversity,
 			String projCollegeRgstrIdUsr, String userRgstrNo, int projYear,
-			int projDuration, String projCollegeState, Date projStartDate,
+			int projDuration, String projCollege, String projCollegeState, Date projStartDate,
 			Date projEndDate, long projMentor1Id, long projMentor2Id,
 			long teamId, long projGuideId, int projStatusId,
 			String projToFloat, Long projEstimatedCost,
@@ -257,6 +262,7 @@ public class ProjectMaster {
 		this.userRgstrNo = userRgstrNo;
 		this.projYear = projYear;
 		this.projDuration = projDuration;
+		this.projCollege = projCollege;
 		this.projCollegeState = projCollegeState;
 		this.projStartDate = projStartDate;
 		this.projEndDate = projEndDate;
@@ -427,6 +433,22 @@ public class ProjectMaster {
 	public void setProjDuration(int projDuration) {
 		this.projDuration = projDuration;
 	}
+
+	/**
+	 * @return the projCollege
+	 */
+	public String getProjCollege() {
+		return projCollege;
+	}
+
+
+	/**
+	 * @param projCollege the projCollege to set
+	 */
+	public void setProjCollege(String projCollege) {
+		this.projCollege = projCollege;
+	}
+
 
 	/**
 	 * @return the projCollegeState

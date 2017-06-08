@@ -24,7 +24,7 @@ package com.techpedia.usermanagement.exception;
 			 */
 			public GetRecentNewsException(String exceptionCode,
 					String exceptionMessage, String exceptionDetails) {
-				super();
+				super(exceptionDetails);
 				this.exceptionCode = exceptionCode;
 				this.exceptionMessage = exceptionMessage;
 				this.exceptionDetails = exceptionDetails;

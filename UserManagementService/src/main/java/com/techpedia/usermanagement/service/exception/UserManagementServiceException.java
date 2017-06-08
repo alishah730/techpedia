@@ -2,7 +2,6 @@ package com.techpedia.usermanagement.service.exception;
 
 import java.io.Serializable;
 
-import com.google.gson.Gson;
 import com.techpedia.usermanagement.service.constant.UserManagementServiceConstant;
 
 public class UserManagementServiceException extends Exception implements Serializable

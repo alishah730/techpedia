@@ -37,6 +37,8 @@ public class Project {
 	private String projStudentId;
 	private long projFaculty;
 	private String projFacultyName;
+	private int projFacRgstrId;
+	
 	private long projEstimationCost;
 	private  byte[] projImage;
 	private String imgName;
@@ -63,14 +65,25 @@ public class Project {
 	private String projAdminComments;
 	private long challengId;
 	private String projIsForChallenge;
-	private String ProjFacEMailId;
+	private String projFacEmailId;
 	private String projTeamLeaderEMailId;
 	private String projTeamLeaderName;
 	private String projSubmitionDate;
 	private String projFacNotes;
 	
 	
-	
+	/**
+	 * @return the projFacRgstrId
+	 */
+	public int getProjFacRgstrId() {
+		return projFacRgstrId;
+	}
+	/**
+	 * @param projFacRgstrId the projFacRgstrId to set
+	 */
+	public void setProjFacRgstrId(int projFacRgstrId) {
+		this.projFacRgstrId = projFacRgstrId;
+	}
 	/**
 	 * @return the footerImgName
 	 */
@@ -638,16 +651,16 @@ public class Project {
 		this.projIsForChallenge = projIsForChallenge;
 	}
 	/**
-	 * @return the projFacEMailId
+	 * @return the projFacEmailId
 	 */
-	public String getProjFacEMailId() {
-		return ProjFacEMailId;
+	public String getProjFacEmailId() {
+		return projFacEmailId;
 	}
 	/**
-	 * @param projFacEMailId the projFacEMailId to set
+	 * @param projFacEmailId the projFacEmailId to set
 	 */
-	public void setProjFacEMailId(String projFacEMailId) {
-		ProjFacEMailId = projFacEMailId;
+	public void setProjFacEmailId(String projFacEmailId) {
+		this.projFacEmailId = projFacEmailId;
 	}
 	/**
 	 * @return the projTeamLeaderEMailId
@@ -704,38 +717,28 @@ public class Project {
 	 */
 	@Override
 	public String toString() {
-		return "Project [projId=" + projId + ", projTypeId=" + projTypeId
-				+ ", projTitle=" + projTitle + ", projBranches=" + projBranches
-				+ ", projKeywords=" + projKeywords + ", projTeamMembers="
-				+ projTeamMembers + ", projBranchList=" + projBranchList
-				+ ", projTeamMemberList=" + projTeamMemberList
-				+ ", projTeamId=" + projTeamId + ", projTeamDesc="
-				+ projTeamDesc + ", projStartDate=" + projStartDate
-				+ ", projEndDate=" + projEndDate + ", projYear=" + projYear
-				+ ", projDuration=" + projDuration + ", projAbstract="
-				+ projAbstract + ", projDescription=" + projDescription
-				+ ", projUniversity=" + projUniversity + ", projCollege="
-				+ projCollege + ", projCollegeState=" + projCollegeState
-				+ ", projStudentId=" + projStudentId + ", projFaculty="
-				+ projFaculty + ", projFacultyName=" + projFacultyName
-				+ ", projEstimationCost=" + projEstimationCost + ", projImage="
-				+ Arrays.toString(projImage) + ", projCollegeRgstrIdUsr="
-				+ projCollegeRgstrIdUsr + ", userRgstrNo=" + userRgstrNo
-				+ ", projMentor1Id=" + projMentor1Id + ", projMentor2Id="
-				+ projMentor2Id + ", projGuideId=" + projGuideId
-				+ ", projStatusId=" + projStatusId + ", projToFloat="
-				+ projToFloat + ", projCommentsPublish=" + projCommentsPublish
-				+ ", projGrade=" + projGrade + ", projTeamLeaderId="
-				+ projTeamLeaderId + ", projAwardWon=" + projAwardWon
-				+ ", projAwardDesc=" + projAwardDesc + ", projIsMentorAvail="
-				+ projIsMentorAvail + ", projIsFacApprove=" + projIsFacApprove
-				+ ", projAdminComments=" + projAdminComments + ", challengId="
-				+ challengId + ", projIsForChallenge=" + projIsForChallenge
-				+ ", ProjFacEMailId=" + ProjFacEMailId
-				+ ", projTeamLeaderEMailId=" + projTeamLeaderEMailId
-				+ ", projTeamLeaderName=" + projTeamLeaderName
-				+ ", projSubmitionDate=" + projSubmitionDate + ", imgName=" + imgName + ", imgByteArray=" + imgByteArray + ", photo1Path=" + photo1Path + ", photo2Path=" + photo2Path + ", footerImgName=" + footerImgName + ", footerImgByteArray=" + footerImgByteArray
-				+ ", projFacNotes=" + projFacNotes+"]";
+		return "Project [projId=" + projId + ", projTypeId=" + projTypeId + ", projTitle=" + projTitle
+				+ ", projBranches=" + projBranches + ", projKeywords=" + projKeywords + ", projTeamMembers="
+				+ projTeamMembers + ", projBranchList=" + projBranchList + ", projTeamMemberList=" + projTeamMemberList
+				+ ", projTeamId=" + projTeamId + ", projTeamDesc=" + projTeamDesc + ", projStartDate=" + projStartDate
+				+ ", projEndDate=" + projEndDate + ", projYear=" + projYear + ", projDuration=" + projDuration
+				+ ", projAbstract=" + projAbstract + ", projDescription=" + projDescription + ", projUniversity="
+				+ projUniversity + ", projCollege=" + projCollege + ", projCollegeState=" + projCollegeState
+				+ ", projStudentId=" + projStudentId + ", projFaculty=" + projFaculty + ", projFacultyName="
+				+ projFacultyName + ", projFacRgstrId=" + projFacRgstrId + ", projEstimationCost=" + projEstimationCost
+				+ ", projImage=" + Arrays.toString(projImage) + ", imgName=" + imgName + ", imgByteArray="
+				+ imgByteArray + ", footerImgName=" + footerImgName + ", footerImgByteArray=" + footerImgByteArray
+				+ ", photo1Path=" + photo1Path + ", photo2Path=" + photo2Path + ", projCollegeRgstrIdUsr="
+				+ projCollegeRgstrIdUsr + ", userRgstrNo=" + userRgstrNo + ", projMentor1Id=" + projMentor1Id
+				+ ", projMentor2Id=" + projMentor2Id + ", projGuideId=" + projGuideId + ", projStatusId=" + projStatusId
+				+ ", projToFloat=" + projToFloat + ", projCommentsPublish=" + projCommentsPublish + ", projGrade="
+				+ projGrade + ", projTeamLeaderId=" + projTeamLeaderId + ", projAwardWon=" + projAwardWon
+				+ ", projAwardDesc=" + projAwardDesc + ", projIsMentorAvail=" + projIsMentorAvail
+				+ ", projIsFacApprove=" + projIsFacApprove + ", projAdminComments=" + projAdminComments
+				+ ", challengId=" + challengId + ", projIsForChallenge=" + projIsForChallenge + ", ProjFacEMailId="
+				+ projFacEmailId + ", projTeamLeaderEMailId=" + projTeamLeaderEMailId + ", projTeamLeaderName="
+				+ projTeamLeaderName + ", projSubmitionDate=" + projSubmitionDate + ", projFacNotes=" + projFacNotes
+				+ "]";
 	}
 	
 }

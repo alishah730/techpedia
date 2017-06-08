@@ -59,7 +59,15 @@ public class UsrMngtMaster {
 	
 	@Column(name = "LINKEDIN_ID")
 	private String linkedinId;
+	
+	@Column(name = "ISMOBILE")
+	private String isMobile;
 
+	@Column(name = "GENDER")
+	private String gender;
+	
+	@Column(name = "AGE")
+	private String age;
 	
 
 	/**
@@ -82,7 +90,7 @@ public class UsrMngtMaster {
 	public UsrMngtMaster(String pFname, String mName,
 			String lName, String dOb, String iSactive, String cVerify,
 			String type, String userId, String fbId, String rgstrDate,
-			Date activatedDate, String email, String twitterId, String linkedinId) {
+			Date activatedDate, String email, String twitterId, String linkedinId,String isMobile,String gender,String age) {
 		super();
 		this.pFname = pFname;
 		this.mName = mName;
@@ -98,6 +106,9 @@ public class UsrMngtMaster {
 		this.email = email;
 		this.twitterId = twitterId;
 		this.linkedinId = linkedinId;
+		this.isMobile = isMobile;
+		this.gender = gender;
+		this.age = age;
 	}
 	
 	
@@ -226,6 +237,52 @@ public class UsrMngtMaster {
 	public void setActivatedDate(Date activatedDate) {
 		this.activatedDate = activatedDate;
 	}
+	/**
+	 * @return the isMobile
+	 */
+	public String getIsMobile() {
+		return isMobile;
+	}
+	/**
+	 * @param isMobile the isMobile to set
+	 */
+	public void setIsMobile(String isMobile) {
+		this.isMobile = isMobile;
+	}
+	
+	/**
+	 * @return the gender
+	 */
+	public String getGender() {
+		return gender;
+	}
+
+	/**
+	 * @param gender the gender to set
+	 */
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+
+
+
+	/**
+	 * @return the age
+	 */
+	public String getAge() {
+		return age;
+	}
+
+
+
+
+	/**
+	 * @param age the age to set
+	 */
+	public void setAge(String age) {
+		this.age = age;
+	}
 
 
 
@@ -240,7 +297,7 @@ public class UsrMngtMaster {
 				+ ", iSactive=" + iSactive + ", cVerify=" + cVerify + ", type="
 				+ type + ", userId=" + userId + ", twitterId=" + twitterId + ", linkedinId=" + linkedinId + 
 				",fbId=" + fbId + ", rgstrDate=" + rgstrDate + ", activatedDate="
-				+ activatedDate + ", email=" + email 
+				+ activatedDate + ", email=" + email +",isMobile="+isMobile
 				+ ", twitterId=" + twitterId + ", linkedinId=" + linkedinId + "]";
 	}
 	

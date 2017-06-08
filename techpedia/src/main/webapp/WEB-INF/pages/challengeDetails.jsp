@@ -106,7 +106,7 @@ font-size:15px;font-family: Corbel;font-weight:bold;
 					<%
 						if (session.getAttribute("username") != null) {
 					%>
-					<div class="col-md-12 pull-right" style="padding-bottom:5px;" ng-switch on="checkChallengeFollow">
+					<div class="col-md-12 pull-right" style="padding-bottom:5px;" ng-switch on="checkChallengeFollow" ng-show="challenge.rgstrId!=<%=session.getAttribute("id")%>">
 				      <div class="col-md-12 pull-right" ng-switch-when="true"><a style="cursor: pointer;background-color:#709FDD;border-color:#709FDD; " class="btn btn-info btn-sm accept-style pull-right" ng-click="unfollow()">Unfollow</a><br></div>
 				      <div class="col-md-12 pull-right" ng-switch-when="false"><a style="cursor: pointer;background-color:#709FDD;border-color:#709FDD;" class="btn btn-info btn-sm accept-style pull-right" ng-click="follow()">Follow</a><br></div>
 				      <div class="col-md-12 pull-right" ng-switch-default><a style="cursor: pointer;background-color:#709FDD;border-color:#709FDD;" class="btn btn-info btn-sm accept-style pull-right" ng-click="follow()">follow</a></div>
@@ -163,7 +163,7 @@ font-size:15px;font-family: Corbel;font-weight:bold;
 								if (session.getAttribute("username") != null) {
 							%>
 							<div class="col-md-4">
-								<a style="cursor: pointer" class="btn btn-info btn-sm accept-style"
+								<a style="cursor: pointer" class="btn btn-info btn-sm accept-style" ng-show="challenge.rgstrId!=<%=session.getAttribute("id")%>"
 									ng-click=acceptChallenge(challenge)>Accept</a><br> <br>
 							</div>
 							<%
@@ -205,12 +205,12 @@ font-size:15px;font-family: Corbel;font-weight:bold;
 							<a href="#" ng-click="clickProject(project.projId)">
 							<div class="post col-xs-12 col-md-4" style="background-color:#ffffff;color:#fffff" >
          <span>{{entry.title}}</span> 
-            <div  class="project" onmouseenter="$(this).children('.div1').slideDown(300)" onmouseleave="$(this).children('.div1').slideUp(300)">
+            <div  class="project" onmouseenter="$(this).children('.div1').slideDown(600)" onmouseleave="$(this).children('.div1').slideUp(600)">
 				
 			
 				<table class="icon_table" >
 						<tr>
-							<img src="${pageContext.request.contextPath}/image/{{project.photo1Path ||'defaultImage/placeholder.png'}}" width="226px" height="182px" class="fourimage" alt="" />
+							<img src="${pageContext.request.contextPath}/image/{{project.photo1Path ||'E:/Techpedia/Project/UploadedDocuments/ProjectImages/defaultImage/placeholder.png'}}" width="226px" height="182px" class="fourimage" alt="" />
 						</tr>
 						
 						<tr>

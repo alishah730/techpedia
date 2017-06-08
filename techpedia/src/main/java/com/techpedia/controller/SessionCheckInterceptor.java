@@ -9,7 +9,6 @@ import javax.servlet.http.HttpSession;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
-
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
@@ -19,9 +18,9 @@ public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
 		restrictedPages.add("manageChallenge");
 		restrictedPages.add("addProject");
 		restrictedPages.add("editProfile");
-		restrictedPages.add("challengeDetails");
+		//restrictedPages.add("challengeDetails");
 		restrictedPages.add("addChallenge");
-		restrictedPages.add("mentorDetails");
+		//restrictedPages.add("mentorDetails");
 		restrictedPages.add("ideate");
 		restrictedPages.add("addMentor");
 		restrictedPages.add("logout");
@@ -29,9 +28,20 @@ public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
 		restrictedPages.add("manageProjects");
 		restrictedPages.add("teamDetails");
 		restrictedPages.add("teams");
+		restrictedPages.add("collegeAdmin");
+		restrictedPages.add("techpediaArchive");
+		restrictedPages.add("techAdmin");
 
 		String url = request.getRequestURL().toString().split("/")[request.getRequestURL().toString().split("/").length - 1];
-		if (restrictedPages.contains(url)) {
+		boolean restrictAccess = false;
+		for(String pageToIntercept : restrictedPages){
+			if(url.contains(pageToIntercept)){
+				restrictAccess = true;
+			}
+		}
+		
+		//if (restrictedPages.contains(url)) { // commented by Vinayak
+		if (restrictAccess) {
 			System.out.println("Inside interceptor Evaluation - " + url);
 			HttpSession session = request.getSession(false);
 			if (session == null) {
@@ -55,6 +65,7 @@ public class SessionCheckInterceptor extends HandlerInterceptorAdapter {
 			System.out.println("Inside interceptor Free - " + url);
 			return true;
 		}
+		
 	}
-
+	
 }

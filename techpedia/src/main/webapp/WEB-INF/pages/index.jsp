@@ -18,6 +18,39 @@
 
 </head>
 <style>
+.col-xs-15, .col-sm-15, .col-md-15, .col-lg-15 {
+	position: relative;
+	min-height: 1px;
+	padding-right: 10px;
+	padding-left: 10px;
+}
+
+.col-xs-15 {
+	width: 20%;
+	float: left;
+}
+
+@media ( min-width : 768px) {
+	.col-sm-15 {
+		width: 20%;
+		float: left;
+	}
+}
+
+@media ( min-width : 992px) {
+	.col-md-15 {
+		width: 20%;
+		float: left;
+	}
+}
+
+@media ( min-width : 1200px) {
+	.col-lg-15 {
+		width: 20%;
+		float: left;
+	}
+}
+
 .circle {
 	width: 180px;
 	height: 180px;
@@ -119,6 +152,9 @@
 		margin-right: -500px;
 	}
 }
+
+.red-tooltip + .tooltip > .tooltip-inner {background-color: black;}
+.red-tooltip + .tooltip > .tooltip-arrow { border-bottom-color:black; }
 </style>
 <script>
 	$('#theCarousel').carousel({
@@ -156,8 +192,8 @@
 			data-lazy-src="images/banner5.jpg" />
 	</div>
 	<div class="customFont"
-		style="background-color: #1c9cc3; height: 300px">
-		<div class="container" style="padding-left: 180px; padding-top: 60px;">
+		style="background-color: #1c9cc3;">
+		<div class="container" style="padding-left: 180px; padding-top: 40px;">
 
 			<div class="col-sm-4 col-md-4">
 				<img src="images/creativity-animation.gif" class="img-responsive">
@@ -227,7 +263,7 @@
 
 				</div>
 				<div ng-controller="IndexController" ng-init="InitLoad()"
-					class="col-sm-6 col-md-6" style="right-padding: 50px;">
+					class="col-sm-6 col-md-6" style="right-padding: 50px;padding-top: 45px;">
 					<img src="images/welcome-to-techpedia.jpg" class="img-responsive">
 				</div>
 			</div>
@@ -251,8 +287,7 @@
 							</div>
 						</div>
 						<div class="col-xs-12">&nbsp;</div>
-						<div class="col-xs-12">&nbsp;</div>
-						<div class="col-xs-12">&nbsp;</div>
+						
 						<div class="span8" style="color: black; text-align: justify">
 							<p
 								style="font-size: 16px; color: #ffffff; font-family: 'Signika', sans-serif;">Techpedia,
@@ -275,9 +310,7 @@
 								href="challenges"><i class="fa fa-eye"></i>&nbsp;View</a>
 						</div>
 						<div class="col-xs-12">&nbsp;</div>
-						<div class="col-xs-12">&nbsp;</div>
-						<div class="col-xs-12">&nbsp;</div>
-						<div class="col-xs-12">&nbsp;</div>
+						
 					</div>
 
 					<!-- <div class="customFont borderRadius" style="background-color:#FAFAF7;padding:15px;">
@@ -357,7 +390,7 @@
 								<div class=""
 									style="background-color: #292b38; height: 30px; padding-top: 4px;">
 									<p
-										style="font-size: 15px; font-weight: 900px; color: #ffffff; font-family: Arial;">Area:
+										style="font-size: 15px; font-weight: 900px; color: #ffffff; font-family: Arial;">
 										{{mentors[$index+0].mentorBranch}}</p>
 								</div>
 							</div>
@@ -392,7 +425,7 @@
 								<div class=""
 									style="background-color: #292b38; height: 30px; padding-top: 4px;">
 									<p
-										style="font-size: 15px; font-weight: 900px; color: #ffffff; font-family: Arial;">Area:
+										style="font-size: 15px; font-weight: 900px; color: #ffffff; font-family: Arial;">
 										{{mentors[$index+1].mentorBranch}}</p>
 								</div>
 
@@ -428,7 +461,7 @@
 								<div class=""
 									style="background-color: #292b38; height: 30px; padding-top: 4px;">
 									<p
-										style="font-size: 15px; font-weight: 900px; color: #ffffff; font-family: Arial;">Area:
+										style="font-size: 15px; font-weight: 900px; color: #ffffff; font-family: Arial;">
 										{{mentors[$index+2].mentorBranch}}</p>
 								</div>
 
@@ -464,7 +497,7 @@
 								<div class=""
 									style="background-color: #292b38; height: 30px; padding-top: 4px;">
 									<p
-										style="font-size: 15px; font-weight: 900px; color: #ffffff; font-family: Arial;">Area:
+										style="font-size: 15px; font-weight: 900px; color: #ffffff; font-family: Arial;">
 										{{mentors[$index+3].mentorBranch}}</p>
 								</div>
 
@@ -500,7 +533,7 @@
 								<div class=""
 									style="background-color: #292b38; height: 30px; padding-top: 4px;">
 									<p
-										style="font-size: 15px; font-weight: 900px; color: #ffffff; font-family: Arial">Area:
+										style="font-size: 15px; font-weight: 900px; color: #ffffff; font-family: Arial">
 										{{mentors[$index+4].mentorBranch}}</p>
 								</div>
 
@@ -536,7 +569,7 @@
 								<div class=""
 									style="background-color: #292b38; height: 30px; padding-top: 4px;">
 									<p
-										style="font-size: 15px; font-weight: 900px; color: #ffffff; font-family: Arial;">Area:
+										style="font-size: 15px; font-weight: 900px; color: #ffffff; font-family: Arial;">
 										{{mentors[$index+5].mentorBranch}}</p>
 								</div>
 							</div>
@@ -552,31 +585,94 @@
 		<div class="container" style="background-color: #217790;"
 			ng-controller="IndexController" ng-init="InitLoad()">
 			<h2 class="footer-title"
-				style="text-align: center; font-family: Arial Bold; font-size: 40px; color: #ffffff;">OUR
-				PROJECTS</h2>
+				style="text-align: center; font-family: Arial Bold; font-size: 40px; color: #ffffff;">
+				PROJECTS CATEGORIES</h2>
 
-			<div class="container"
-				style="margin-left: 540px; margin-right: 500px;">
+			<div class="container" style="text-align: center;">
 				<div class="row">
-					<div class="col-sm-1">
+					<!-- <div class="col-sm-1">
 						<a class="btn-button-name"
+
 							style="display: inline-block; margin-left: -20px; text-align: center;"
-							ng-click="popularProjectVisibility()" href=""><i
+							ng-click="popularProjectVisibility()" href="">
+							<i
 							class="fa fa-thumbs-up" ></i>&nbsp;POPULAR</a>
 					</div>
-					<div class="col-sm-1 ">
-						<a class="btn-button-name"
+					<div class="col-sm-1 " >
+						<a class="btn-button-name" id="recentProjectsBtn"
 							style="display: inline-block; margin-left: -20px; text-align: center;"
 							ng-click="recentProjectVisibility()" href=""><img alt=""
 							src="http://icons.iconarchive.com/icons/delacro/id/24/Recent-Documents-icon.png">&nbsp;RECENT</a>
+					</div> -->
+
+					<!-- <div class="btn-group" role="group">
+
+						<button type="button" class="btn btn-default "
+							ng-click="popularProjectVisibility()">
+							<i class="fa fa-thumbs-up"></i>&nbsp;POPULAR
+						</button>
 					</div>
+						<div class="btn-group" role="group">
+						<button type="button" class="btn btn-default "
+							ng-click="recentProjectVisibility()">
+							<i class="fa fa-clock-o"></i>&nbsp;RECENT
+						</button>
+						</div> -->
+					<!-- <div class="btn-group" role="group">
+						<button type="button" class="btn btn-default dropdown-toggle"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Project Category<span class="caret"></span>
+						</button>
+						<button type="button" class="btn btn-default">PROJECT CATEGORY</button>
+
+						<button type="button" class="btn btn-default dropdown-toggle"
+							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<span class="caret"></span> <span class="sr-only">Toggle
+								Dropdown</span>
+						</button>
+						<ul class="dropdown-menu">
+							<li  ng-repeat="macro in projectsMacroBranches"><a href="#">{{macro.macroBranchName}}</a></li>
+							
+						</ul>
+						</div> -->
+					<!-- <div class="col-xs-12">
+						<div class="col-xs-3" ng-repeat="macro in projectsMacroBranches" style="height: 120px !important; width: 120px !important;" >
+							<a style="text-align: center; font-family: Arial Bold; font-size: 15px; color: #ffffff !important;" href="#" ng-click="clickMacroBranch(macro.macroBranchName)">{{macro.macroBranchName}}</a>
+							<img alt="" src="images/macrobranch/Aeronautical.jpg" class="img-responsive" width="120" height="120">
+						</div>
+					</div> -->
+					<div class="col-xs-9" style="margin-left: 237px;">
+						<div class="row">
+							<div class="col-md-15 col-sm-3"
+								ng-repeat="macro in projectsMacroBranches"
+								style="margin-left: -70px; height: 170px;">
+								<a href="" ng-click="clickMacroBranch(macro.macroBranchName)" class="macro-tooltip"  data-toggle="tooltip" data-placement="bottom"  title="{{macro.macroBranchName}}">
+									<div>
+										<img src="${pageContext.request.contextPath}/image/{{macro.photoPath ||'/usr/Techpedia/Project/placeholders/placeholder.png'}}"
+											height="120px" width="120px" style="box-shadow: 0 0 2em #b2b2b2;">
+									</div>
+									
+									<div style="color:#ffffff;margin-left:22px;margin-right:22px;">{{macro.macroBranch}}</div>
+									
+									
+								</a>
+<br/><br/>
+							</div>
+
+						</div>
+
+
+					</div>
+
+
+
 				</div>
 			</div>
 			<div class="col-xs-12">&nbsp;</div>
 			<div class="col-xs-12">&nbsp;</div>
 
 
-			<div class="row row-centered" id="popularProjects"
+			<%-- <div class="row row-centered" id="popularProjects"
 				style="width: 990px; display: block; margin-left: auto; margin-right: auto; float: none;">
 
 
@@ -587,7 +683,7 @@
 
 
 					<img
-						src="${pageContext.request.contextPath}/image/{{project.photo1Path ||'defaultImage/placeholder.png'}}"
+						src="${pageContext.request.contextPath}/image/{{project.photo1Path ||'E:/Techpedia/Project/UploadedDocuments/ProjectImages/defaultImage/placeholder.png'}}"
 						class="img-responsive" alt="{{project.projTitle}}"
 						style="height: 144px; width: 215px; padding-top: 10px;" />
 					<p
@@ -599,12 +695,12 @@
 					<div class="col-xs-12">&nbsp;</div>
 
 				</div>
-			</div>
+			</div> --%>
 
 
 
 
-			<div class="row row-centered" id="recentProjects"
+			<%-- <div class="row row-centered" id="recentProjects"
 				style="width: 990px; display: none; margin-left: auto; margin-right: auto; float: none;">
 
 				<div class="col-sm-3 col-md-3"
@@ -613,7 +709,7 @@
 
 
 					<img
-						src="${pageContext.request.contextPath}/image/{{project.photo1Path ||'defaultImage/placeholder.png'}}"
+						src="${pageContext.request.contextPath}/image/{{project.photo1Path ||'E:/Techpedia/Project/UploadedDocuments/ProjectImages/defaultImage/placeholder.png'}}"
 						class="img-responsive" alt="{{project.projTitle}}"
 						style="height: 144px; width: 215px; padding-top: 10px;" />
 					<p
@@ -626,7 +722,7 @@
 				</div>
 
 			</div>
-
+ --%>
 
 
 
@@ -651,14 +747,14 @@
 									<img src="images/Abdul-Kalam-Azad.png" class="img-responsive"
 										style="margin-left: 30px;"> <br> <br>
 									<p
-										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif;">I
+										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif; text-align: justify;">I
 										am extremely happy to see an initiative of SRISTI (Society for
 										Research and Initiatives for Sustainable Technologies and
 										Institutions) which has led to mapping of the mind of
 										engineering youth of our country in an unprecedented manner.</p>
 									<br>
 									<p
-										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif;">Dr.
+										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif; text-align: justify;">Dr.
 										A.P.J. Abdul Kalam</p>
 								</div>
 							</div>
@@ -667,7 +763,7 @@
 									<img src="images/DR_raghuNath.png" class="img-responsive"
 										style="margin-left: 30px;"> <br> <br>
 									<p
-										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif;">What
+										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif; text-align: justify;">What
 										touched me most was that these innovations were not just about
 										making the next supercar or next superbike or super-plane:
 										They were about making the life of every Indian, not some, a
@@ -675,7 +771,7 @@
 										but from your heart. That's something very special.</p>
 									<br>
 									<p
-										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif;">Dr.
+										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif; text-align: justify;">Dr.
 										R.A. Mashelkar</p>
 								</div>
 							</div>
@@ -684,13 +780,13 @@
 									<img src="images/3.png" class="img-responsive"
 										style="margin-left: 30px;"> <br> <br>
 									<p
-										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif;">I
+										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif; text-align: justify;">I
 										am particularly pleased to know that several of the
 										innovations by the school children are also being valorized by
 										engineering college students.</p>
 									<br>
 									<p
-										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif;">Prof
+										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif; text-align: justify;">Prof
 										XYZ</p>
 								</div>
 							</div>
@@ -699,13 +795,13 @@
 									<img src="images/1.png" class="img-responsive"
 										style="margin-left: 30px;"> <br> <br>
 									<p
-										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif;">I
+										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif; text-align: justify;">I
 										am particularly pleased to know that several of the
 										innovations by the school children are also being valorized by
 										engineering college students.</p>
 									<br>
 									<p
-										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif;">Prof
+										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif; text-align: justify;">Prof
 										ABC</p>
 								</div>
 							</div>
@@ -714,13 +810,13 @@
 									<img src="images/2.png" class="img-responsive"
 										style="margin-left: 30px;"> <br> <br>
 									<p
-										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif;">I
+										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif; text-align: justify;">I
 										am particularly pleased to know that several of the
 										innovations by the school children are also being valorized by
 										engineering college students.</p>
 									<br>
 									<p
-										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif;">Prof
+										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif; text-align: justify;">Prof
 										PQR</p>
 								</div>
 							</div>
@@ -729,13 +825,13 @@
 									<img src="images/3.png" class="img-responsive"
 										style="margin-left: 30px;"> <br> <br>
 									<p
-										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif;">I
+										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif; text-align: justify;">I
 										am particularly pleased to know that several of the
 										innovations by the school children are also being valorized by
 										engineering college students.</p>
 									<br>
 									<p
-										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif;">Prof
+										style="font-size: 14px; color: #ffffff; font-family: 'Signika', sans-serif; text-align: justify;">Prof
 										XYZ</p>
 								</div>
 							</div>
@@ -1048,8 +1144,16 @@
 			jQuery('.dropdown-grid').removeClass('open');
 		}
 	</script>
-	<script type="text/javascript"
-		src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script>
+  
+	   $(document).ready(function(){
+		    $(".macro-tooltip").tooltip();
+		});
+	   
+
+
+  </script> 
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
 	<script type="text/javascript" src="js/jquery.easing.1.3.js"></script>
 	<!-- the jScrollPane script -->
 	<script type="text/javascript" src="js/jquery.mousewheel.js"></script>
@@ -1061,19 +1165,7 @@
 		jQuery.noConflict();
 	</script>
 
-	<!--   <script>
-  
-  $( document ).ready(function() {
-	  
-	  setTimeout(function() {
-		  alert("page is loading");
-		  $("#myFunction").substring(0,10).replace(/"([^"]*)"/g, "...");  
-	  }, 1000);
-	  });
 	   
-
-
-  </script> -->
 </body>
 
 </html>

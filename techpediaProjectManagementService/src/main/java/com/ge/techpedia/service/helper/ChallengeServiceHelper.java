@@ -2,11 +2,15 @@ package com.ge.techpedia.service.helper;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.ge.techpedia.constant.ProjectManagementServiceConstant;
 import com.ge.techpedia.service.response.ChallengeServiceResponse;
 import com.ge.techpedia.service.response.ProjectServiceResponse;
 import com.google.gson.Gson;
-import com.techpedia.logger.TechPediaLogger;
 import com.techpedia.projectmanagement.bean.AddCommChallengeVO;
 import com.techpedia.projectmanagement.bean.AddCommVO;
 import com.techpedia.projectmanagement.bean.Challenge;
@@ -24,9 +28,11 @@ import com.techpedia.projectmanagement.bean.FollowProjectVO;
 import com.techpedia.projectmanagement.bean.ProjFollowVO;
 import com.techpedia.projectmanagement.bean.Project;
 import com.techpedia.projectmanagement.bean.ProjectDocument;
+import com.techpedia.projectmanagement.bean.SaveProjectPhotoVO;
 import com.techpedia.projectmanagement.bean.SearchByKeyVO;
 import com.techpedia.projectmanagement.bean.UploadChallDocVO;
 import com.techpedia.projectmanagement.dao.ChallengeDao;
+import com.techpedia.projectmanagement.dao.ProjectDao;
 import com.techpedia.projectmanagement.dao.impl.ChallengeDaoImpl;
 import com.techpedia.projectmanagement.exception.AcceptChallengeException;
 import com.techpedia.projectmanagement.exception.AddCommentException;
@@ -47,16 +53,18 @@ import com.techpedia.projectmanagement.exception.GetChallengeException;
 import com.techpedia.projectmanagement.exception.GetChallengeTypeException;
 import com.techpedia.projectmanagement.exception.RemoveChallengeFollowException;
 import com.techpedia.projectmanagement.exception.RemoveCommentException;
+import com.techpedia.projectmanagement.exception.SaveProjectPhotoException;
 import com.techpedia.projectmanagement.exception.SearchChallengeException;
 import com.techpedia.projectmanagement.exception.SuggestedChallengeNotFoundException;
 import com.techpedia.projectmanagement.exception.TeamCommentsNotFoundException;
 import com.techpedia.projectmanagement.exception.UploadChallengeDocException;
-
+@Service
 public class ChallengeServiceHelper {
 
-	private static TechPediaLogger log = TechPediaLogger.getLogger(ChallengeServiceHelper.class.getName());
+	private static Logger log = LoggerFactory.getLogger(ChallengeServiceHelper.class.getName());
 	
 static ChallengeDao challengeDao = null;
+static ProjectDao projectDao = null;
 static ChallengeServiceResponse response = null;
 static Gson gson = null;
 	
@@ -164,10 +172,10 @@ static Gson gson = null;
 	 * @param ChallengeId
 	 * @return
 	 */
-	public static String getChallengeDetail(String ChallengeId) throws GetChallengeDetailException{
+	public static String getChallengeDetail(String challengeId) throws GetChallengeDetailException{
 		Challenge challenge = null;
 		try {
-			challenge = getChallengeDao().getChallengeDetail(ChallengeId);
+			challenge = getChallengeDao().getChallengeDetail(challengeId);
 			if(challenge != null){
 				gson = new Gson();
 				return gson.toJson(challenge);
@@ -239,17 +247,34 @@ static Gson gson = null;
 		return ProjectManagementServiceConstant.EMPTY_STRING;
 	}
 		
-	public static String acceptChallenge(Project project) throws AcceptChallengeException{
+	public static String acceptChallenge(Project project) throws AcceptChallengeException, SaveProjectPhotoException{
 		String result = null;
+		String flag = "N";
 		response = new ChallengeServiceResponse();
 		try {
 			result = getChallengeDao().acceptChallenge(project);
-			if(result == "Y"){				
+			if(!(project.getImgName().equalsIgnoreCase("")&&project.getFooterImgName().equalsIgnoreCase(""))){
+				SaveProjectPhotoVO saveProjectPhoto =new SaveProjectPhotoVO();
+				saveProjectPhoto.setProjectId(project.getProjId());
+				saveProjectPhoto.setImgName(project.getImgName());
+				saveProjectPhoto.setImgByteArray(project.getImgByteArray());
+				saveProjectPhoto.setFooterImgName(project.getFooterImgName());
+				saveProjectPhoto.setFooterImgByteArray(project.getFooterImgByteArray());
+				flag = projectDao.uploadProjectPhoto(saveProjectPhoto);
+				}
+			if(result == "Y" && project.getImgName().equalsIgnoreCase("") && project.getFooterImgName().equalsIgnoreCase("")){				
 				gson = new Gson();
 				response.setStatus(ProjectManagementServiceConstant.SUCCESS);
 				response.setDescription(ProjectManagementServiceConstant.CHALLENGE_ACCEPT_SUCCESS);
 				return gson.toJson(response);
-			}else{
+			}
+			else if(result == "Y" && flag == "Y"){				
+				gson = new Gson();
+				response.setStatus(ProjectManagementServiceConstant.SUCCESS);
+				response.setDescription(ProjectManagementServiceConstant.CHALLENGE_ACCEPT_SUCCESS);
+				return gson.toJson(response);
+			}
+			else{
 				gson = new Gson();
 				response.setStatus(ProjectManagementServiceConstant.FAILURE);
 				response.setDescription(ProjectManagementServiceConstant.CHALLENGE_ACCEPT_FAILURE);

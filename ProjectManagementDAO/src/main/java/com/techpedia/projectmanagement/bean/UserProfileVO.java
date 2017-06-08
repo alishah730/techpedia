@@ -77,8 +77,17 @@ public class UserProfileVO {
 	  private String password;
 	  private String collegeName;
 	  private String collegeDesc;
+	  private String branch;
+	  
+		public String getBranch() {
+			return branch;
+		}
 
-	  public long getRgstrId()
+		public void setBranch(String branch) {
+			this.branch = branch;
+		}
+
+	public long getRgstrId()
 	  {
 	    return this.rgstrId;
 	  }

@@ -114,8 +114,8 @@ public class ChallengeService {
 	@Path("getchallengedetail")
 	@Consumes({"application/json"})
 	@Produces({"application/json"})
-	public Response getChallengeDetail(String ChallengeId) throws GetChallengeDetailException{		
-		return Response.ok().status(200).entity(ChallengeServiceHelper.getChallengeDetail(ChallengeId)).type("application/json").build();
+	public Response getChallengeDetail(String challengeId) throws GetChallengeDetailException{		
+		return Response.ok().status(200).entity(ChallengeServiceHelper.getChallengeDetail(challengeId)).type("application/json").build();
 	}
 
 	/**

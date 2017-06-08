@@ -97,7 +97,7 @@ public class ProjectManagementEMailHelper {
 		}*/	
 			
 
-		TechPediaEmailFunction.sendMail(project.getProjFacEMailId(), project.getProjTeamLeaderEMailId(), subject, messageBody.toString());
+		TechPediaEmailFunction.sendMail(project.getProjFacEmailId(), project.getProjTeamLeaderEMailId(), subject, messageBody.toString());
 	}
 	
 	public static void sendResubmitProjectEmail(Project project, ResubmitProjectResponse resubmitProjectResponse) throws EmailServiceException {

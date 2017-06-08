@@ -9,31 +9,54 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "USR_College_MASTER")
+@Table(name = "usr_mngt_college_master")
 public class UsrCollegeMaster {
 	
 	@Id   //@GeneratedValue
 	@GeneratedValue
-	@Column(name = "College_ID")
-	private String cId;
+	@Column(name = "COLG_ID")
+	private long colgId;
 		
 	@Column(name = "College_Name")
-	private String cName;
+	private String collegeName;
 	
-	public UsrCollegeMaster(String cId, String cName) {
+	@Column(name = "College_Desc")
+	private String collegeDesc;
+	
+	@Column(name = "STATE_ID")
+	private long stateId;
+	
+	
+
+	/**
+	 * @param colgId
+	 * @param collegeName
+	 * @param collegeDesc
+	 * @param stateId
+	 */
+	public UsrCollegeMaster(long colgId, String collegeName,
+			String collegeDesc, long stateId) {
 		super();
-		this.cId = cId;
-		this.cName = cName;		
+		this.colgId = colgId;
+		this.collegeName = collegeName;
+		this.collegeDesc = collegeDesc;
+		this.stateId = stateId;
 	}
 
 	public UsrCollegeMaster() {
 		super();
 		
 	}
-	
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
-		return "UsrCollegeMaster [cId=" + cId + ", cName=" + cName +"]";
+		return "UsrCollegeMaster [colgId=" + colgId + ", collegeName="
+				+ collegeName + ", collegeDesc=" + collegeDesc + ", stateId="
+				+ stateId + "]";
 	}
-
+	
+	
 }

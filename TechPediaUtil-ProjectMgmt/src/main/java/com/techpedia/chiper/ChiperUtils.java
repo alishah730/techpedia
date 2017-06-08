@@ -1,11 +1,14 @@
 package com.techpedia.chiper;
 
-import com.techpedia.logger.TechPediaLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 public class ChiperUtils
 {
 
-	  private static TechPediaLogger log = TechPediaLogger.getLogger(ChiperUtils.class.getName());
+	  private static Logger log = LoggerFactory.getLogger(ChiperUtils.class.getName());
 
     public static String encrypt2(String strToEncrypt)
         throws ChiperEncryptException

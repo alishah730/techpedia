@@ -4,11 +4,13 @@ package com.techpedia.usermanagement.chiper;
 
 import com.sun.mail.util.BASE64DecoderStream;
 import com.sun.mail.util.BASE64EncoderStream;
-import com.techpedia.logger.TechPediaLogger;
 import com.techpedia.usermanagement.chiper.TPChiperTextSun;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 	
 
@@ -20,7 +22,7 @@ import javax.crypto.spec.SecretKeySpec;
 	        123, 101, 116, 66, 98, 105
 	    };
 
-		private static TechPediaLogger log = TechPediaLogger.getLogger(TPChiperTextSun.class.getName());
+		private static final Logger LOGGER = LoggerFactory.getLogger(TPChiperTextSun.class.getName());
 		
 	    public TPChiperTextSun()
 	    {
@@ -30,8 +32,8 @@ import javax.crypto.spec.SecretKeySpec;
 	        throws Exception
 	    {
 	        String msg = encrypt("Venugopal");
-	        System.out.println((new StringBuilder("Encrypt Code is :")).append(msg).toString());
-	        System.out.println((new StringBuilder("Decryption Code is :")).append(decrypt(msg)).toString());
+	        LOGGER.info((new StringBuilder("Encrypt Code is :")).append(msg).toString());
+	        LOGGER.info((new StringBuilder("Decryption Code is :")).append(decrypt(msg)).toString());
 	    }
 
 	    public static String encrypt(String str)
@@ -47,8 +49,8 @@ import javax.crypto.spec.SecretKeySpec;
 	        enc = BASE64EncoderStream.encode(enc);
 	        return new String(enc);
 	        }catch( Exception ex){
-		        log.error("Error while encrypting in method (baseEncrypt) : ", ex);
-		        throw new Exception(ex);
+		        LOGGER.error("Error while encrypting in method (baseEncrypt) : ", ex);
+		        throw ex;
 	    	}
 	    }
 
@@ -65,8 +67,8 @@ import javax.crypto.spec.SecretKeySpec;
 	        return new String(utf8, "UTF8");
 	        }catch(Exception e)
 	        {
-	        	log.error("Error while decrypting in method (baseEncrypt) : ", e);
-	        	throw new Exception(e);
+	        	LOGGER.error("Error while decrypting in method (baseEncrypt) : ", e);
+	        	throw e;
 	        }
 	    }
 

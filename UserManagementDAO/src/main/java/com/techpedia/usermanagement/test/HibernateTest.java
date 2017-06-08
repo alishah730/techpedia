@@ -1,5 +1,6 @@
 package com.techpedia.usermanagement.test;
 
+import com.techpedia.usermanagement.dao.UserManagementDAOImpl;
 import com.techpedia.usermanagement.dataobject.SearchCriteriaDO;
 import com.techpedia.usermanagement.dataobject.UserProfileDO;
 import com.techpedia.usermanagement.exception.CreateProfileException;
@@ -98,7 +99,7 @@ public class HibernateTest {
 			 //sdo.setLastName("K");
 			// sdo.setDob("1987-11-10");
 			 
-		/*	try {
+			try {
 				retval = new UserManagementDAOImpl().createProfile(userprofile);
 			} catch (Exception e) {
 				System.out.println("error" + e.getMessage());
@@ -106,7 +107,7 @@ public class HibernateTest {
 				throw new CreateProfileException("getting exception while creating profile");
 				// TODO Auto-generated catch block
 				
-			}*/
+			}
 
 			 System.out.println("Inserted the object " + retval);
 			

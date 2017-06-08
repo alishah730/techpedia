@@ -35,7 +35,7 @@ public class ImageServlet extends HttpServlet {
 
         // Define base path somehow. You can define it as init-param of the servlet.
         //this.imagePath = "C:/Users/826862/Documents/TCS INTERNAL/Techpedia/ProjectImages/UploadedProjectImages/509";
-        this.imagePath = "E:/Techpedia/Project/UploadedDocuments/ProjectImages";
+        //this.imagePath = "E:/Techpedia/Project/UploadedDocuments/ProjectImages";
         
         
         // In a Windows environment with the Applicationserver running on the

@@ -5,8 +5,9 @@ package com.techpedia.usermanagement.chiper;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import com.techpedia.logger.TechPediaLogger;
 import com.techpedia.usermanagement.chiper.ChiperDencryptException;
 import com.techpedia.usermanagement.chiper.ChiperEncryptException;
 import com.techpedia.usermanagement.chiper.TPChiperTextAppache;
@@ -19,7 +20,7 @@ import com.techpedia.usermanagement.chiper.TPChiperTextAppache;
 	public class TPChiperTextAppache
 	{
 
-		  private static TechPediaLogger log = TechPediaLogger.getLogger(TPChiperTextAppache.class.getName());
+		  private static Logger log = LoggerFactory.getLogger(TPChiperTextAppache.class.getName());
 		    private static byte key[] = {
 		        116, 104, 105, 115, 73, 115, 65, 83, 101, 99, 114, 101, 116, 75, 101, 121
 		    };

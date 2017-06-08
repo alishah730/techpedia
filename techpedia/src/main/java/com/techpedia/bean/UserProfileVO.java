@@ -86,6 +86,9 @@ public class UserProfileVO {
 	private String twitterId;
 	private String linkedinId;
 	private String email;
+	private String isMobile;
+	private String gender;
+	private String age;
 
 	// USR_MNGT_ADDR
 	private String address;
@@ -112,8 +115,9 @@ public class UserProfileVO {
 	private String photo;
 	private String imgName;
 	private String imgByteArray;
+	private String isPhoto;
 	private String photoPath;
-
+	
 	// USR_MNGT_STUDENT
 	private String degreeOfStudent;
 	private String collge;
@@ -363,6 +367,48 @@ public class UserProfileVO {
 	 */
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	/**
+	 * @return the isMobile
+	 */
+	public String getIsMobile() {
+		return isMobile;
+	}
+
+	/**
+	 * @param isMobile the isMobile to set
+	 */
+	public void setIsMobile(String isMobile) {
+		this.isMobile = isMobile;
+	}
+	
+	/**
+	 * @return the gender
+	 */
+	public String getGender() {
+		return gender;
+	}
+
+	/**
+	 * @param gender the gender to set
+	 */
+	public void setGender(String gender) {
+		this.gender = gender;
+	}
+
+	/**
+	 * @return the age
+	 */
+	public String getAge() {
+		return age;
+	}
+
+	/**
+	 * @param age the age to set
+	 */
+	public void setAge(String age) {
+		this.age = age;
 	}
 
 	/**
@@ -874,26 +920,26 @@ public class UserProfileVO {
 		this.cntctInfoForNatnlInnovnClub = cntctInfoForNatnlInnovnClub;
 	}
 	
-	/**
-	 * @return the collegeInfoForCollege
-	 */
-	public String getcollegeInfoForCollege() {
-		return collegeInfoForCollege;
-	}
-
-	/**
-	 * @param collegeInfoForCollege
-	 *            the collegeInfoForCollege to set
-	 */
-	public void setcollegeInfoForCollege(String collegeInfoForCollege) {
-		this.collegeInfoForCollege = collegeInfoForCollege;
-	}
 
 	/**
 	 * @return the affltUniversityOfCollege
 	 */
 	public String getAffltUniversityOfCollege() {
 		return affltUniversityOfCollege;
+	}
+
+	/**
+	 * @return the collegeInfoForCollege
+	 */
+	public String getCollegeInfoForCollege() {
+		return collegeInfoForCollege;
+	}
+
+	/**
+	 * @param collegeInfoForCollege the collegeInfoForCollege to set
+	 */
+	public void setCollegeInfoForCollege(String collegeInfoForCollege) {
+		this.collegeInfoForCollege = collegeInfoForCollege;
 	}
 
 	/**
@@ -1234,17 +1280,16 @@ public class UserProfileVO {
 				+ ", dob=" + dob + ", iSactive=" + iSactive + ", userType="
 				+ userType + ", userName=" + userName + ", faceBookId="
 				+ faceBookId + ", twitterId=" + twitterId + ", linkedinId="
-				+ linkedinId + ", email=" + email + ", address=" + address
+				+ linkedinId + ", email=" + email +",isMobile="+isMobile+",gender="+gender+",age="+age+", address=" + address
 				+ ", addrLn1=" + addrLn1 + ", addrLn2=" + addrLn2 + ", city="
 				+ city + ", pincode=" + pincode + ", country=" + country
 				+ ", state=" + state + ", district=" + district + ", mobile="
 				+ mobile + ", homePhoneNo=" + homePhoneNo + ", photo=" + photo
-				+ ", imgName=" + imgName + ", imgByteArray=" + imgByteArray
-				+ ", photoPath=" + photoPath + ", degreeOfStudent="
-				+ degreeOfStudent + ", collge=" + collge + ", studentID="
-				+ studentID + ", completionYear=" + completionYear
-				+ ", university=" + university + ", collegeState="
-				+ collegeState + ", degreeOfMentor=" + degreeOfMentor
+				+ ", imgName=" + imgName + ", imgByteArray=" + imgByteArray + ",photoPath=" + photoPath + ",isPhoto=" + isPhoto
+				+ ", degreeOfStudent=" + degreeOfStudent + ", collge=" + collge
+				+ ", studentID=" + studentID + ", completionYear="
+				+ completionYear + ", university=" + university
+				+ ", degreeOfMentor=" + degreeOfMentor
 				+ ", designationOfMentor=" + designationOfMentor
 				+ ", specializationOfMentor=" + specializationOfMentor
 				+ ", institutionalAssctnInfo=" + institutionalAssctnInfo
@@ -1313,6 +1358,11 @@ public class UserProfileVO {
 	public void setImgByteArray(String imgByteArray) {
 		this.imgByteArray = imgByteArray;
 	}
+	
+	
+	/**
+	 * @param photoPath the photoPath to set
+	 */
 
 	public String getPhotoPath() {
 		return photoPath;
@@ -1321,5 +1371,18 @@ public class UserProfileVO {
 	public void setPhotoPath(String photoPath) {
 		this.photoPath = photoPath;
 	}
+
+	/**
+	 * @param isPhoto the isPhoto to set
+	 */
+	public String getIsPhoto() {
+		return isPhoto;
+	}
+
+	public void setIsPhoto(String isPhoto) {
+		this.isPhoto = isPhoto;
+	}
+	
+	
 
 }

@@ -13,6 +13,7 @@ import java.util.Date;
 public class ProjectXLSVO {
 	private String projUniversity;
 	private String projCollegeRgstrIdUsr;
+	private String projCollege;
 	private String projCollegeState;
 	private int projTypeId;
 	private String projTitle;
@@ -45,7 +46,36 @@ public class ProjectXLSVO {
 	private String userName;
 	private String userType;
 	private long  contactNo;
+	private int branchId;
+	private String degree;
+	private Date yearOfPass;
+	private String enrollmentNo;
 	
+	
+	public String getEnrollmentNo() {
+		return enrollmentNo;
+	}
+	public void setEnrollmentNo(String enrollmentNo) {
+		this.enrollmentNo = enrollmentNo;
+	}
+	public String getDegree() {
+		return degree;
+	}
+	public void setDegree(String degree) {
+		this.degree = degree;
+	}
+	public Date getYearOfPass() {
+		return yearOfPass;
+	}
+	public void setYearOfPass(Date yearOfPass) {
+		this.yearOfPass = yearOfPass;
+	}
+	public int getBranchId() {
+		return branchId;
+	}
+	public void setBranchId(int branchId) {
+		this.branchId = branchId;
+	}
 	public ArrayList<Long> getProjTeamMembers() {
 		return projTeamMembers;
 	}
@@ -64,6 +94,7 @@ public class ProjectXLSVO {
 	/**
 	 * @param projUniversity
 	 * @param projCollegeRgstrIdUsr
+	 * @param projCollege
 	 * @param projCollegeState
 	 * @param projTypeId
 	 * @param projTitle
@@ -93,10 +124,10 @@ public class ProjectXLSVO {
 	 * @param userName
 	 * @param userType
 	 * @param projTeamDesc
-	 * * @param facEmail
+	 * @param facEmail
 	 * @param contactNO
 	 */
-	public ProjectXLSVO(String projUniversity, String projCollegeRgstrIdUsr,
+	public ProjectXLSVO(String projUniversity, String projCollegeRgstrIdUsr,String projCollege,
 			String projCollegeState, int projTypeId, String projTitle,
 			String projAbstract, String projDescription, int projYear,
 			Date projStartDate, Date projEndDate,
@@ -109,6 +140,7 @@ public class ProjectXLSVO {
 			String userName, String userType, String projTeamDesc, String facEmail,long contactNo) {
 		this.projUniversity = projUniversity;
 		this.projCollegeRgstrIdUsr = projCollegeRgstrIdUsr;
+		this.projCollege = projCollege;
 		this.projCollegeState = projCollegeState;
 		this.projTypeId = projTypeId;
 		this.projTitle = projTitle;
@@ -151,6 +183,13 @@ public class ProjectXLSVO {
 	}
 	public void setProjCollegeRgstrIdUsr(String projCollegeRgstrIdUsr) {
 		this.projCollegeRgstrIdUsr = projCollegeRgstrIdUsr;
+	}
+	
+	public String getProjCollege() {
+		return projCollege;
+	}
+	public void setProjCollege(String projCollege) {
+		this.projCollege = projCollege;
 	}
 	public String getProjCollegeState() {
 		return projCollegeState;
@@ -374,5 +413,5 @@ public class ProjectXLSVO {
 	public void setContactNo(long contactNo) {
 		this.contactNo = contactNo;
 	}
-	 
+	
 	}

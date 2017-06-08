@@ -1,11 +1,14 @@
 package com.techpedia.chiper;
 
-import com.techpedia.logger.TechPediaLogger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 
 public class ChiperUtils
 {
 
-	  private static TechPediaLogger log = TechPediaLogger.getLogger(ChiperUtils.class.getName());
+	  private static final Logger LOGGER = LoggerFactory.getLogger(ChiperUtils.class.getName());
 
     public static String encrypt2(String strToEncrypt)
         throws ChiperEncryptException
@@ -16,7 +19,7 @@ public class ChiperUtils
            encryptedString = TPChiperTextSun.encrypt(msg);
            return encryptedString;
         }catch(Exception e){
-        	log.error((new StringBuilder("Error while encrypting in method (encrypt2):")).append(e).toString());
+        	LOGGER.error((new StringBuilder("Error while encrypting in method (encrypt2):")).append(e).toString());
         	throw new ChiperEncryptException("Unable to Encrypt message!");
         }
     }
@@ -32,7 +35,7 @@ public class ChiperUtils
         	return decryptedString;
         }catch(Exception e)
         {
-        log.error((new StringBuilder("Error while decrypting in method (decrypt2):")).append(e).toString());
+        LOGGER.error((new StringBuilder("Error while decrypting in method (decrypt2):")).append(e).toString());
         throw new ChiperDencryptException("Unable to Decrypt message!");
         }
     }
@@ -44,7 +47,7 @@ public class ChiperUtils
         	encryptedString = TPChiperTextSun.encrypt(strToEncrypt);
     		return encryptedString;
          }catch(Exception e){
-            System.out.println((new StringBuilder("Error while encrypting")).append(e).toString());
+            LOGGER.error((new StringBuilder("Error while encrypting")).append(e).toString());
         	throw new ChiperEncryptException("Unable to Encrypt message!");
         }
     }
@@ -56,7 +59,7 @@ public class ChiperUtils
         try{
          decryptedString = TPChiperTextSun.decrypt(strToDecrypt);
         }catch(Exception e){
-                System.out.println((new StringBuilder("Error while encrypting")).append(e).toString());
+                LOGGER.error((new StringBuilder("Error while encrypting")).append(e).toString());
                 throw new ChiperDencryptException("Unable to Decrypt message!");
         }
         return decryptedString;
@@ -66,17 +69,17 @@ public class ChiperUtils
         throws Exception
     {
         String msg = "Venugopal Drushetty";
-        System.out.println("Actual Message :Venugopal Drushetty");
+        LOGGER.info("Actual Message :Venugopal Drushetty");
         String encryptedStr = encrypt(msg);
-        System.out.println((new StringBuilder("Encrypted : ")).append(encryptedStr).toString());
+        LOGGER.info((new StringBuilder("Encrypted : ")).append(encryptedStr).toString());
         String decryptedStr = decrypt(encryptedStr.trim());
-        System.out.println((new StringBuilder("String To Decrypt : ")).append(encryptedStr).toString());
-        System.out.println((new StringBuilder("Decrypted : ")).append(decryptedStr).toString());
+        LOGGER.info((new StringBuilder("String To Decrypt : ")).append(encryptedStr).toString());
+        LOGGER.info((new StringBuilder("Decrypted : ")).append(decryptedStr).toString());
         String encryptedStr1 = encrypt2(msg);
-        System.out.println((new StringBuilder("Double Encrypted : ")).append(encryptedStr1).toString());
+        LOGGER.info((new StringBuilder("Double Encrypted : ")).append(encryptedStr1).toString());
         String decryptedStr1 = decrypt2(encryptedStr1.trim());
-        System.out.println((new StringBuilder("String To Decrypt : ")).append(encryptedStr1).toString());
-        System.out.println((new StringBuilder("Double Decrypted : ")).append(decryptedStr1).toString());
+        LOGGER.info((new StringBuilder("String To Decrypt : ")).append(encryptedStr1).toString());
+        LOGGER.info((new StringBuilder("Double Decrypted : ")).append(decryptedStr1).toString());
     }
 
   
