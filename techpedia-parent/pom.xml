@@ -16,7 +16,7 @@
 
   <modules>
   		<module>../gytiReviewSystem</module>
-        <!--<module>../techpedia</module> -->
+        <module>../techpedia</module> 
         <module>../TechPediaEmailService</module>
         <module>../TechPediaUtil</module>
         <module>../UserManagementDAO</module>
